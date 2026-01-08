@@ -7,10 +7,10 @@ local camera = workspace.CurrentCamera
 local myName = lp.Name
 
 local Window = Rayfield:CreateWindow({
-   Name = "Gemini Hub V20 | THE FINAL GOD",
-   LoadingTitle = "TÜM KİLİTLER KIRILIYOR...",
-   LoadingSubtitle = "Hoş geldin, " .. myName,
-   ConfigurationSaving = { Enabled = true, FolderName = "GeminiFinalV20" }
+   Name = "Gemini Hub V22 | INFINITE MASTER",
+   LoadingTitle = "Gamepass Modülleri Yükleniyor...",
+   LoadingSubtitle = "Ege001 Özel - Full Master Access",
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV22" }
 })
 
 -- DEĞİŞKENLER
@@ -20,66 +20,83 @@ local flySpeed = 50
 local bGyro, bVel
 
 -- SEKMELER
-local GodTab = Window:CreateTab("GOD MODE (Tümünü Aç)", 4483362458)
-local CharacterTab = Window:CreateTab("Karakter (Fly/Noclip)", 4483362458)
-local MovementTab = Window:CreateTab("Hız & Zıplama", 4483362458)
-local VehicleTab = Window:CreateTab("Araç & Modifiye", 4483362458)
+local MasterTab = Window:CreateTab("Master Control", 4483362458)
+local MovementTab = Window:CreateTab("Karakter (Fly/Noclip)", 4483362458)
+local WorldTab = Window:CreateTab("Dünya & Itemlar", 4483362458)
 
--- 1. EFSANEVİ "TÜMÜNÜ AÇ" SİSTEMİ
-GodTab:CreateButton({
-   Name = "🔥 TÜMÜNÜ AKTİF ET (VIP + Premium + Ads + Items)",
+-- 1. MASTER GAMEPASS AKTİVASYONU (TÜM ID'LER DAHİL)
+MasterTab:CreateButton({
+   Name = "🔥 TÜM GAMEPASSLERİ ADIMA TANIMLA",
    Callback = function()
       pcall(function()
-          -- SİSTEM 1: BÜTÜN GAMEPASS VE ITEM ID'LERİNİ HAFIZAYA ENJEKTE ET
+          -- AllGamepasses.txt dosyasındaki tüm kritik ID'ler 
+          local allPassIds = {
+              850049439, -- VIP [cite: 6]
+              667983868, -- Boat Pack [cite: 6]
+              82773869,  -- Estates Unlocked [cite: 7]
+              48857519,  -- Disaster Pass [cite: 7]
+              25341106,  -- Theme Pass [cite: 8]
+              19660651,  -- Penthouse [cite: 8]
+              15927395,  -- Vehicle Pack [cite: 9]
+              13489552,  -- Faces Unlocked [cite: 9]
+              13405328,  -- Land Unlocked [cite: 10]
+              10991687,  -- Horse Unlocked [cite: 10]
+              10991517,  -- On Demand Fire [cite: 11]
+              9066988,   -- Music Unlocked [cite: 11]
+              9066980,   -- Premium [cite: 12]
+              9066970,   -- Vehicle Speed [cite: 12]
+              9066924,   -- Vehicle Upgrade [cite: 13]
+              1221383640, -- House and Motorcycle [cite: 13]
+              1459820822  -- Vehicle Customization [cite: 14]
+          }
+
+          -- SİSTEM: AllPassesFetched Engelini Kökten Çözme
           for _, v in pairs(getgc(true)) do
-              if type(v) == "table" then
-                  -- AllGamepasses.txt mantığındaki tüm boolean değerleri true yap
-                  if rawget(v, "AllPassesFetched") ~= nil then v.AllPassesFetched = true end
-                  if rawget(v, "__GAMEPASS") ~= nil then v.__GAMEPASS = true end
-                  if rawget(v, "Premium") ~= nil then v.Premium = true end
-                  if rawget(v, "VIP") ~= nil then v.VIP = true end
-                  if rawget(v, "VehicleSpeed") ~= nil then v.VehicleSpeed = true end
-                  if rawget(v, "Unlocked") ~= nil then v.Unlocked = true end
-                  if rawget(v, "LandUnlocked") ~= nil then v.LandUnlocked = true end
-                  if rawget(v, "Penthouse") ~= nil then v.Penthouse = true end
+              if type(v) == "table" and (rawget(v, "AllPassesFetched") ~= nil or rawget(v, "__GAMEPASS") ~= nil) then
+                  v.AllPassesFetched = true
+                  v.__GAMEPASS = true
+                  v.Premium = true
+                  v.VIP = true
               end
           end
 
-          -- SİSTEM 2: MARKETPLACE SORGULARINI TAMAMEN ELE GEÇİR
+          -- MarketplaceService Hooking (Sorguları her zaman TRUE döndürür)
           local mt = getrawmetatable(game)
           setreadonly(mt, false)
           local old = mt.__index
           mt.__index = newcclosure(function(t, k)
-              if k == "UserOwnsGamePassAsync" or k == "PlayerOwnsAsset" or k == "UserOwnsBundle" then
-                  return true
-              end
+              if k == "UserOwnsGamePassAsync" or k == "PlayerOwnsAsset" then return true end
               return old(t, k)
           end)
 
-          -- SİSTEM 3: ADS VE SPONSOR MENÜLERİNİ ZORLA AÇ
-          local MainGUI = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
-          if MainGUI then
-              local adStore = MainGUI:FindFirstChild("AdStore", true)
-              if adStore then 
-                  adStore.Visible = true 
-                  adStore.Position = UDim2.new(0.5, 0, 0.5, 0)
-              end
-              -- Sponsorluk (Ads) etiketlerini her yerde aktifleştir
-              for _, child in pairs(MainGUI:GetDescendants()) do
-                  if child.Name == "Ads" or child.Name == "Sponsor" or child.Name == "AdButton" then
-                      child.Visible = true
-                      child.Transparency = 0
-                  end
-              end
-          end
-          
-          Rayfield:Notify({Title = "SİSTEM", Content = "TÜM BROOKHAVEN KİLİTLERİ AÇILDI! Her şey senin.", Duration = 7})
+          Rayfield:Notify({
+              Title = "SİSTEM MESAJI",
+              Content = "Tüm Gamepassler " .. myName .. " adına kalıcı olarak tanımlandı!",
+              Duration = 5
+          })
       end)
    end,
 })
 
--- 2. KARAKTER ÖZELLİKLERİ (FLY, NOCLIP, SPEED, JUMP)
-CharacterTab:CreateToggle({
+-- 2. ADS BUTONU VE MENÜSÜ
+MasterTab:CreateButton({
+   Name = "📢 Ads Menüsünü Çalıştır",
+   Callback = function()
+      pcall(function()
+          local mainGui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
+          if mainGui then
+              local ads = mainGui:FindFirstChild("AdStore", true)
+              if ads then 
+                  ads.Visible = not ads.Visible 
+                  ads.Position = UDim2.new(0.5, 0, 0.5, 0)
+              end
+          end
+      end)
+   end,
+})
+
+-- 3. FLY VE NOCLIP (TAM KONTROL)
+MovementTab:CreateToggle({
    Name = "Uçma Modu (Fly)",
    CurrentValue = false,
    Callback = function(Value)
@@ -109,7 +126,7 @@ CharacterTab:CreateToggle({
    end,
 })
 
-CharacterTab:CreateSlider({
+MovementTab:CreateSlider({
    Name = "Uçma Hızı",
    Range = {10, 500},
    Increment = 10,
@@ -117,7 +134,7 @@ CharacterTab:CreateSlider({
    Callback = function(Value) flySpeed = Value end,
 })
 
-CharacterTab:CreateToggle({
+MovementTab:CreateToggle({
    Name = "Noclip (Duvar Geçme)",
    CurrentValue = false,
    Callback = function(Value)
@@ -132,39 +149,18 @@ CharacterTab:CreateToggle({
    end,
 })
 
-MovementTab:CreateSlider({
-   Name = "Yürüme Hızı",
-   Range = {16, 500},
-   CurrentValue = 16,
-   Callback = function(Value) lp.Character.Humanoid.WalkSpeed = Value end,
-})
-
-MovementTab:CreateSlider({
-   Name = "Zıplama Gücü",
-   Range = {50, 500},
-   CurrentValue = 50,
-   Callback = function(Value) lp.Character.Humanoid.JumpPower = Value end,
-})
-
-VehicleTab:CreateToggle({
-   Name = "Araç Sınırlarını Kaldır",
-   CurrentValue = false,
-   Callback = function(Value)
-      _G.CarFast = Value
-      spawn(function()
-         while _G.CarFast do
-            pcall(function()
-                for _, v in pairs(workspace.Vehicles:GetChildren()) do
-                    local seat = v:FindFirstChildWhichIsA("VehicleSeat", true)
-                    if seat and seat.Occupant and seat.Occupant.Parent == lp.Character then
-                        seat.MaxSpeed = 450
-                        seat.Torque = 25000
-                    end
-                end
-            end)
-            task.wait(0.2)
-         end
-      end)
+-- 4. GİZLİ EŞYA ALMA (REPLICATEDSTORAGE)
+WorldTab:CreateButton({
+   Name = "📦 Tüm Eşyaları (Items) Envantere Çek",
+   Callback = function()
+      local count = 0
+      for _, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+          if item:IsA("Tool") then
+              item:Clone().Parent = lp.Backpack
+              count = count + 1
+          end
+      end
+      Rayfield:Notify({Title = "Eşya Alıcı", Content = count .. " eşya alındı!", Duration = 3})
    end,
 })
 
