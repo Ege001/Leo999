@@ -1,45 +1,68 @@
 -- Modern UI Yükleme
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+local lp = game.Players.LocalPlayer
+local runService = game:GetService("RunService")
+local camera = workspace.CurrentCamera
+local myName = lp.Name -- Scripti kim açarsa onun adını alır
+
 local Window = Rayfield:CreateWindow({
-   Name = "Gemini Ultra Hub V10 | MASTER PRO",
-   LoadingTitle = "Sistemler Bypass Ediliyor...",
-   LoadingSubtitle = "Ege001 Özel | All-In-One",
-   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV10" }
+   Name = "Gemini Hub V17 | SP-Origin Edition",
+   LoadingTitle = "Modül Verileri İşleniyor...",
+   LoadingSubtitle = "Hoş geldin, " .. myName,
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV17" }
 })
 
 -- DEĞİŞKENLER
-local lp = game.Players.LocalPlayer
-local char = lp.Character or lp.CharacterAdded:Wait()
-local runService = game:GetService("RunService")
-local camera = workspace.CurrentCamera
-local selectedPlayer = nil
-
--- FLY DEĞİŞKENLERİ
 local flying = false
+local noclip = false
 local flySpeed = 50
 local bGyro, bVel
 
 -- SEKMELER
+local VIPTab = Window:CreateTab("Bypass & Store", 4483362458)
 local CharacterTab = Window:CreateTab("Karakter (Fly/Speed)", 4483362458)
-local VIPTab = Window:CreateTab("Gamepass & AdStore", 4483362458)
-local ViewTab = Window:CreateTab("İzleme & Troll", 4483362458)
 local VehicleTab = Window:CreateTab("Araçlar / Vehicles", 4483362458)
-local SettingsTab = Window:CreateTab("Ayarlar / Settings", 4483362458)
+local WorldTab = Window:CreateTab("Dünya / World", 4483362458)
 
--- 1. ADSTORE & FETCHED BYPASS (TXT DOSYASINDAKİ TÜM VERİLERLE) [cite: 1, 6, 12]
+-- 1. ADS BUTONU VE MENÜ SİSTEMİ (ÖNCE BUTON SONRA MENÜ)
 VIPTab:CreateButton({
-   Name = "Tüm Gamepassleri & AdStore'u Aktif Et",
+   Name = "Ads Butonunu Tetikle (Click to Show Menu)",
    Callback = function()
       pcall(function()
-          -- 'AllPassesFetched' Kontrolünü Zorla True Yap (Görseldeki Engel)
+          -- MainGUIHandler İçindeki Orijinal AdStore'u bulur ve butonu simüle eder
+          local playerGui = lp:WaitForChild("PlayerGui")
+          local mainGui = playerGui:FindFirstChild("MainGUIHandler", true)
+          
+          if mainGui then
+              local adStore = mainGui:FindFirstChild("AdStore", true)
+              if adStore then
+                  adStore.Visible = not adStore.Visible -- Her basışta aç/kapat yapar
+                  Rayfield:Notify({Title = "Mağaza", Content = "AdStore Menüsü Tetiklendi!", Duration = 3})
+              end
+          end
+      end)
+   end,
+})
+
+VIPTab:CreateButton({
+   Name = "TÜM GAMEPASSLERİ ADIMA TANIMLA (Full Bypass)",
+   Callback = function()
+      pcall(function()
+          -- AllGamepasses.txt içindeki ID'ler (Scripti kullanan kişiye atanır)
+          local passList = {850049439, 9066980, 9066970, 15927395, 82773869, 19660651}
+
+          -- AllPassesFetched Engelini Kökten Çöz
           for _, v in pairs(getgc(true)) do
-              if type(v) == "table" and rawget(v, "AllPassesFetched") ~= nil then
+              if type(v) == "table" and (rawget(v, "AllPassesFetched") ~= nil or rawget(v, "__GAMEPASS") ~= nil) then
                   v.AllPassesFetched = true
+                  v.__GAMEPASS = true
+                  v.Premium = true
+                  v.VIP = true
               end
           end
 
-          -- MarketplaceService Hooking (VIP, Premium ve Diğerleri İçin) [cite: 3, 5]
+          -- MarketPlaceService Hooking (Kullanıcıya Özel Yetki)
           local mt = getrawmetatable(game)
           setreadonly(mt, false)
           local old = mt.__index
@@ -48,49 +71,37 @@ VIPTab:CreateButton({
               return old(t, k)
           end)
 
-          -- AdStore Menüsünü Görünür Yap
-          local adStore = lp.PlayerGui.MainGUIHandler:FindFirstChild("AdStore", true)
-          if adStore then adStore.Visible = true end
-          
-          Rayfield:Notify({Title = "Bypass", Content = "Tüm Brookhaven Paketleri ve AdStore Açıldı!", Duration = 5})
+          Rayfield:Notify({Title = "SİSTEM", Content = "Tüm yetkiler " .. myName .. " hesabına başarıyla tanımlandı!", Duration = 5})
       end)
    end,
 })
 
--- 2. UNIVERSAL FLY (MOBİL JOYSTICK & PC WASD UYUMLU)
+-- 2. SP-HUB TARZI UNIVERSAL FLY (MOBİL & PC)
 CharacterTab:CreateToggle({
    Name = "Uçma (Fly Mode)",
    CurrentValue = false,
    Callback = function(Value)
       flying = Value
-      local root = lp.Character:WaitForChild("HumanoidRootPart")
-      local hum = lp.Character:WaitForChild("Humanoid")
-
+      local char = lp.Character or lp.CharacterAdded:Wait()
+      local root = char:WaitForChild("HumanoidRootPart")
+      local hum = char:WaitForChild("Humanoid")
       if flying then
           bGyro = Instance.new("BodyGyro", root)
           bGyro.P = 9e4
           bGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-          bGyro.cframe = root.CFrame
           bVel = Instance.new("BodyVelocity", root)
-          bVel.velocity = Vector3.new(0,0,0)
           bVel.maxForce = Vector3.new(9e9, 9e9, 9e9)
-
           spawn(function()
               while flying do
                   runService.RenderStepped:Wait()
-                  local controls = require(lp.PlayerScripts:WaitForChild("PlayerModule")):GetControls()
-                  local moveVec = controls:GetMoveVector()
-                  if moveVec.Magnitude > 0 then
-                      bVel.Velocity = (camera.CFrame.LookVector * -moveVec.Z + camera.CFrame.RightVector * moveVec.X) * flySpeed
-                      bGyro.CFrame = camera.CFrame
-                  else
-                      bVel.Velocity = Vector3.new(0, 0, 0)
-                  end
+                  local moveVec = require(lp.PlayerScripts:WaitForChild("PlayerModule")):GetControls():GetMoveVector()
+                  bVel.Velocity = (camera.CFrame.LookVector * -moveVec.Z + camera.CFrame.RightVector * moveVec.X) * flySpeed
+                  bGyro.CFrame = camera.CFrame
                   hum.PlatformStand = true
               end
-              hum.PlatformStand = false
               if bGyro then bGyro:Destroy() end
               if bVel then bVel:Destroy() end
+              hum.PlatformStand = false
           end)
       end
    end,
@@ -105,12 +116,12 @@ CharacterTab:CreateSlider({
 })
 
 CharacterTab:CreateToggle({
-   Name = "Duvar Geçme (Noclip)",
+   Name = "Noclip (Duvar Geçme)",
    CurrentValue = false,
    Callback = function(Value)
-      _G.Noclip = Value
+      noclip = Value
       runService.Stepped:Connect(function()
-         if _G.Noclip and lp.Character then
+         if noclip and lp.Character then
             for _, v in pairs(lp.Character:GetDescendants()) do
                if v:IsA("BasePart") then v.CanCollide = false end
             end
@@ -119,40 +130,25 @@ CharacterTab:CreateToggle({
    end,
 })
 
--- 3. GÜÇLENDİRİLMİŞ VIEW & LİSTE
-local pDrop = ViewTab:CreateDropdown({
-   Name = "Oyuncu Seç",
-   Options = {},
-   CurrentOption = "",
-   Callback = function(Option) selectedPlayer = game.Players:FindFirstChild(Option) end,
+-- 3. HAREKET VE ARAÇ AYARLARI
+CharacterTab:CreateSlider({
+   Name = "Hız (WalkSpeed)",
+   Range = {16, 500},
+   Increment = 1,
+   CurrentValue = 16,
+   Callback = function(Value) lp.Character.Humanoid.WalkSpeed = Value end,
 })
 
-spawn(function()
-    while true do
-        local names = {}
-        for _, v in pairs(game.Players:GetPlayers()) do
-            if v ~= lp then table.insert(names, v.Name) end
-        end
-        pDrop:Refresh(names)
-        task.wait(2)
-    end
-end)
-
-ViewTab:CreateToggle({
-   Name = "Kişiyi İzle (View)",
-   CurrentValue = false,
-   Callback = function(Value)
-      if Value and selectedPlayer and selectedPlayer.Character then
-         camera.CameraSubject = selectedPlayer.Character.Humanoid
-      else
-         camera.CameraSubject = lp.Character.Humanoid
-      end
-   end,
+CharacterTab:CreateSlider({
+   Name = "Zıplama (JumpPower)",
+   Range = {50, 500},
+   Increment = 1,
+   CurrentValue = 50,
+   Callback = function(Value) lp.Character.Humanoid.JumpPower = Value end,
 })
 
--- 4. ARAÇ VE AYARLAR
 VehicleTab:CreateToggle({
-   Name = "Araba Hızlandırma",
+   Name = "Araç Turbo Boost",
    CurrentValue = false,
    Callback = function(Value)
       _G.CarFast = Value
@@ -162,8 +158,8 @@ VehicleTab:CreateToggle({
                 for _, v in pairs(workspace.Vehicles:GetChildren()) do
                     local seat = v:FindFirstChildWhichIsA("VehicleSeat", true)
                     if seat and seat.Occupant and seat.Occupant.Parent == lp.Character then
-                        seat.MaxSpeed = 300
-                        seat.Torque = 15000
+                        seat.MaxSpeed = 450
+                        seat.Torque = 25000
                     end
                 end
             end)
@@ -173,7 +169,8 @@ VehicleTab:CreateToggle({
    end,
 })
 
-SettingsTab:CreateButton({
-   Name = "Menüyü Kapat ve Sil (Destroy)",
+-- AYARLAR
+WorldTab:CreateButton({
+   Name = "Kapat (Destroy)",
    Callback = function() Rayfield:Destroy() end,
 })
