@@ -5,13 +5,13 @@ local lp = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
 local rs = game:GetService("ReplicatedStorage")
-local ownerName = "EgeKazak_Real1" -- Mutlak sahip ismi sisteme tanımlandı
+local ownerName = "EgeKazak_Real1" 
 
 local Window = Rayfield:CreateWindow({
-   Name = "Gemini Hub V25 | OWNER: " .. ownerName,
-   LoadingTitle = "Absolute Sovereign Yetkileri Alınıyor...",
-   LoadingSubtitle = "EgeKazak_Real1 İçin Tam Erişim Sistemi",
-   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV25" }
+   Name = "Gemini Hub V26 | OWNER: " .. ownerName,
+   LoadingTitle = "PlayersBag Verileri Çözülüyor...",
+   LoadingSubtitle = "EgeKazak_Real1 Mutlak Yetki",
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiFinalV26" }
 })
 
 -- DEĞİŞKENLER
@@ -20,114 +20,106 @@ local noclip = false
 local flySpeed = 50
 local bGyro, bVel
 
--- EŞYA LİSTESİ (TAMAMEN OTOMATİK TARAMA)
-local uniqueItems = {}
-local seen = {}
-for _, item in pairs(rs:GetDescendants()) do
-    if item:IsA("Tool") and not seen[item.Name] then
-        table.insert(uniqueItems, item.Name)
-        seen[item.Name] = true
-    end
+-- 1. PLAYERSBAG VE TÜM DEĞERLERİ TRUE YAPMA (KRİTİK MODÜL)
+local function unlockEverything()
+    pcall(function()
+        -- PlayersBag Klasörünü Bul ve Tüm Değerleri Aktif Et
+        local pb = lp:FindFirstChild("PlayersBag") or lp:WaitForChild("PlayersBag", 5)
+        if pb then
+            for _, val in pairs(pb:GetDescendants()) do
+                if val:IsA("BoolValue") then
+                    val.Value = true
+                elseif val:IsA("NumberValue") or val:IsA("IntValue") then
+                    val.Value = 1 -- 1 Genellikle True demektir
+                end
+            end
+        end
+
+        -- AllGamepasses.txt ID Bypass
+        for _, v in pairs(getgc(true)) do
+            if type(v) == "table" then
+                if rawget(v, "AllPassesFetched") ~= nil then v.AllPassesFetched = true end
+                if rawget(v, "__GAMEPASS") ~= nil then v.__GAMEPASS = true end
+                if rawget(v, "Premium") ~= nil then v.Premium = true end
+                if rawget(v, "VIP") ~= nil then v.VIP = true end
+            end
+        end
+
+        -- MarketPlace Hook
+        local mt = getrawmetatable(game)
+        setreadonly(mt, false)
+        local old = mt.__index
+        mt.__index = newcclosure(function(t, k)
+            if k == "UserOwnsGamePassAsync" or k == "PlayerOwnsAsset" then return true end
+            return old(t, k)
+        end)
+
+        -- Ads Button & Menu Fix
+        local MainGUI = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
+        if MainGUI then
+            local ads = MainGUI:FindFirstChild("AdStore", true)
+            if ads then 
+                ads.Visible = true 
+                ads.Position = UDim2.new(0.5, 0, 0.5, 0)
+            end
+            for _, b in pairs(MainGUI:GetDescendants()) do
+                if b.Name == "Ads" or b.Name == "Sponsor" then
+                    b.Visible = true
+                    b.Transparency = 0
+                end
+            end
+        end
+    end)
 end
-table.sort(uniqueItems)
 
 -- SEKMELER
-local MasterTab = Window:CreateTab("Owner All Gamepass", 4483362458)
-local ViewTab = Window:CreateTab("Tüm Eşyalar (View)", 4483362458)
-local MovementTab = Window:CreateTab("Hareket (Fly/Noclip)", 4483362458)
-local SettingsTab = Window:CreateTab("Ayarlar & Kapat", 4483362458)
+local MasterTab = Window:CreateTab("Owner Control", 4483362458)
+local ViewTab = Window:CreateTab("Eşya Seçici (View)", 4483362458)
+local MoveTab = Window:CreateTab("Hareket (Fly)", 4483362458)
+local SettingsTab = Window:CreateTab("Ayarlar", 4483362458)
 
--- 1. MUTLAK SAHİP (OWNER ALL GAMEPASS) SİSTEMİ
+-- MASTER BUTON
 MasterTab:CreateButton({
-   Name = "👑 OWNER ALL GAMEPASS - AKTİF ET (EgeKazak_Real1)",
+   Name = "👑 OWNER ALL GAMEPASS (PlayersBag Unlock)",
    Callback = function()
-      pcall(function()
-          -- AllGamepasses.txt içindeki tüm ID'ler sisteme tanımlanıyor [cite: 7, 8, 9, 10, 11, 12, 13, 14]
-          local ids = {
-              850049439, 667983868, 82773869, 48857519, 25341106, 19660651,
-              15927395, 13489552, 13405328, 10991687, 10991517, 9066988,
-              9066980, 9066970, 9066924, 1221383640, 1459820822
-          }
-
-          -- SİSTEM BYPASS: Brookhaven'ı "EgeKazak_Real1" için kandırıyoruz
-          for _, v in pairs(getgc(true)) do
-              if type(v) == "table" then
-                  if rawget(v, "AllPassesFetched") ~= nil then v.AllPassesFetched = true end
-                  if rawget(v, "__GAMEPASS") ~= nil then v.__GAMEPASS = true end
-                  if rawget(v, "Premium") ~= nil then v.Premium = true end
-                  if rawget(v, "VIP") ~= nil then v.VIP = true end
-                  if rawget(v, "Unlocked") ~= nil then v.Unlocked = true end
-              end
-          end
-
-          -- MarketPlace Hook (Sorgulara 'True' döndürür)
-          local mt = getrawmetatable(game)
-          setreadonly(mt, false)
-          local old = mt.__index
-          mt.__index = newcclosure(function(t, k)
-              if k == "UserOwnsGamePassAsync" or k == "PlayerOwnsAsset" then return true end
-              return old(t, k)
-          end)
-
-          -- ADS & SPONSOR MENÜSÜNÜ ZORLA AKTİF ET
-          local MainGUI = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
-          if MainGUI then
-              local adsFrame = MainGUI:FindFirstChild("AdStore", true)
-              if adsFrame then 
-                  adsFrame.Visible = true 
-                  adsFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-              end
-              -- Sponsor butonlarını EgeKazak_Real1 için aç
-              for _, b in pairs(MainGUI:GetDescendants()) do
-                  if b.Name == "Ads" or b.Name == "Sponsor" then
-                      b.Visible = true
-                      b.Transparency = 0
-                  end
-              end
-          end
-          
-          Rayfield:Notify({
-              Title = "SYSTEM STATUS",
-              Content = "Selam Owner! Tüm Gamepassler EgeKazak_Real1 adına tanımlandı.",
-              Duration = 6
-          })
-      end)
+       unlockEverything()
+       Rayfield:Notify({
+           Title = "SİSTEM ONAYI",
+           Content = "PlayersBag çözüldü! EgeKazak_Real1 için tüm kilitler açıldı.",
+           Duration = 5
+       })
    end,
 })
 
--- 2. TÜM EŞYALAR SEÇİCİ (VIEW/SPAWN)
+-- EŞYA SEÇİCİ (VIEW)
+local uniqueItems = {}
+for _, item in pairs(rs:GetDescendants()) do
+    if item:IsA("Tool") then table.insert(uniqueItems, item.Name) end
+end
+
 ViewTab:CreateDropdown({
-   Name = "Brookhaven Envanteri",
+   Name = "Tüm Brookhaven Eşyaları",
    Options = uniqueItems,
    CurrentOption = "",
    Callback = function(Option)
-       local target = nil
-       for _, item in pairs(rs:GetDescendants()) do
-           if item:IsA("Tool") and item.Name == Option then
-               target = item
-               break
-           end
-       end
-       if target then
+       local target = rs:FindFirstChild(Option, true)
+       if target and target:IsA("Tool") then
            target:Clone().Parent = lp.Backpack
-           Rayfield:Notify({Title = "Eşya Spawn Edildi", Content = Option .. " envanterine geldi.", Duration = 2})
        end
    end,
 })
 
--- 3. HAREKET SİSTEMİ (FLY/NOCLIP)
-MovementTab:CreateToggle({
+-- FLY SİSTEMİ
+MoveTab:CreateToggle({
    Name = "Uçma (Fly)",
    CurrentValue = false,
    Callback = function(Value)
       flying = Value
       local char = lp.Character or lp.CharacterAdded:Wait()
       local root = char:WaitForChild("HumanoidRootPart")
-      local hum = char:WaitForChild("Humanoid")
       if flying then
           bGyro = Instance.new("BodyGyro", root)
-          bGyro.P = 9e4
-          bGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+          bGyro.P = 9e4; bGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
           bVel = Instance.new("BodyVelocity", root)
           bVel.maxForce = Vector3.new(9e9, 9e9, 9e9)
           spawn(function()
@@ -136,43 +128,23 @@ MovementTab:CreateToggle({
                   local moveVec = require(lp.PlayerScripts:WaitForChild("PlayerModule")):GetControls():GetMoveVector()
                   bVel.Velocity = (camera.CFrame.LookVector * -moveVec.Z + camera.CFrame.RightVector * moveVec.X) * flySpeed
                   bGyro.CFrame = camera.CFrame
-                  hum.PlatformStand = true
+                  char.Humanoid.PlatformStand = true
               end
               if bGyro then bGyro:Destroy() end
               if bVel then bVel:Destroy() end
-              hum.PlatformStand = false
+              char.Humanoid.PlatformStand = false
           end)
       end
    end,
 })
 
-MovementTab:CreateSlider({
-   Name = "Fly Hızı",
-   Range = {10, 500},
-   Increment = 10,
-   CurrentValue = 50,
+MoveTab:CreateSlider({
+   Name = "Hız", Range = {10, 500}, Increment = 10, CurrentValue = 50,
    Callback = function(Value) flySpeed = Value end,
 })
 
-MovementTab:CreateToggle({
-   Name = "Noclip (Duvar Geçme)",
-   CurrentValue = false,
-   Callback = function(Value)
-      noclip = Value
-      runService.Stepped:Connect(function()
-         if noclip and lp.Character then
-            for _, v in pairs(lp.Character:GetDescendants()) do
-               if v:IsA("BasePart") then v.CanCollide = false end
-            end
-         end
-      end)
-   end,
-})
-
--- 4. SETTINGS & DESTROY
+-- DESTROY
 SettingsTab:CreateButton({
-   Name = "Scripti Kapat (Düzgün Destroy)",
-   Callback = function()
-      Rayfield:Destroy()
-   end,
+   Name = "Scripti Kapat (Clean Destroy)",
+   Callback = function() Rayfield:Destroy() end,
 })
