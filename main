@@ -6,10 +6,10 @@ local runService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
 
 local Window = Rayfield:CreateWindow({
-   Name = "Gemini Hub V18 | Full Unlocker",
-   LoadingTitle = "Sponsorluklar & Itemlar Alınıyor...",
-   LoadingSubtitle = "Ege001 Özel - Universal Bypass",
-   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV18" }
+   Name = "Gemini Hub V19 | UNLOCK EVERYTHING",
+   LoadingTitle = "VIP & Premium Kilidi Kırılıyor...",
+   LoadingSubtitle = "Ege001 Özel - Full Item Access",
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV19" }
 })
 
 -- DEĞİŞKENLER
@@ -19,28 +19,30 @@ local flySpeed = 50
 local bGyro, bVel
 
 -- SEKMELER
-local UnlockTab = Window:CreateTab("Tümünü Aç / Unlock All", 4483362458)
+local UnlockTab = Window:CreateTab("Tümünü Aç (Unlock All)", 4483362458)
 local CharacterTab = Window:CreateTab("Karakter (Fly/Noclip)", 4483362458)
 local MovementTab = Window:CreateTab("Hız & Zıplama", 4483362458)
-local CarTab = Window:CreateTab("Araçlar / Vehicles", 4483362458)
+local VehicleTab = Window:CreateTab("Araç Kontrol", 4483362458)
 
--- 1. SPONSOR, ADS VE TÜM ITEMLARI ALMA (V18 ÖZEL)
+-- 1. FULL ITEM & GAMEPASS BYPASS (HAYALİNDEKİ HER ŞEY)
 UnlockTab:CreateButton({
-   Name = "TÜMÜNÜ AL (VIP, Premium, Ads, Sponsor)",
+   Name = "HER ŞEYİ AÇ (Vip, Premium, Evler, Arabalar)",
    Callback = function()
       pcall(function()
-          -- SİSTEM 1: AllPassesFetched Engelini Hafızadan Kökten Silme
+          -- SİSTEM 1: Game Garbage Collector (Hafıza) Bypass
+          -- Oyunun "Sahip misin?" diye sorduğu her şeye "EVET" cevabı verir.
           for _, v in pairs(getgc(true)) do
               if type(v) == "table" then
                   if rawget(v, "AllPassesFetched") ~= nil then v.AllPassesFetched = true end
                   if rawget(v, "__GAMEPASS") ~= nil then v.__GAMEPASS = true end
-                  -- Tüm paketleri aktif et
                   if rawget(v, "Premium") ~= nil then v.Premium = true end
                   if rawget(v, "VIP") ~= nil then v.VIP = true end
+                  if rawget(v, "VehicleSpeed") ~= nil then v.VehicleSpeed = true end
+                  if rawget(v, "Unlocked") ~= nil then v.Unlocked = true end -- Eşya seçme kilidi
               end
           end
 
-          -- SİSTEM 2: MarketPlaceService Tam Bypass (Tüm Itemlar İçin)
+          -- SİSTEM 2: MarketPlaceService Hook (Satın alma ekranını engeller)
           local mt = getrawmetatable(game)
           setreadonly(mt, false)
           local old = mt.__index
@@ -51,35 +53,31 @@ UnlockTab:CreateButton({
               return old(t, k)
           end)
 
-          -- SİSTEM 3: Görünmeyen AdStore ve Sponsor Butonlarını Zorla Getirme
+          -- SİSTEM 3: AdStore & Sponsor Butonlarını Ekrana Basma
           local MainGUI = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
           if MainGUI then
-              -- AdStore (Sponsor Menüsü)
               local adStore = MainGUI:FindFirstChild("AdStore", true)
               if adStore then 
                   adStore.Visible = true 
-                  adStore.Position = UDim2.new(0.5, 0, 0.5, 0) -- Ekranın ortasına getir
+                  adStore.Position = UDim2.new(0.5, 0, 0.5, 0)
               end
-              
-              -- Gizli Butonları (ShopButtons içindeki) Bul ve Göster
-              for _, v in pairs(MainGUI:GetDescendants()) do
-                  if v:IsA("TextButton") or v:IsA("ImageButton") then
-                      if v.Name == "Ads" or v.Name == "Sponsor" or v.Name == "AdStore" then
-                          v.Visible = true
-                          v.Transparency = 0
-                      end
+              -- Sponsorluk (Ads) etiketlerini her yerde aktifleştir
+              for _, child in pairs(MainGUI:GetDescendants()) do
+                  if child.Name == "Ads" or child.Name == "Sponsor" then
+                      child.Visible = true
+                      child.Transparency = 0
                   end
               end
           end
           
-          Rayfield:Notify({Title = "SİSTEM", Content = "Tüm Brookhaven Itemları ve Sponsorluklar Aktif!", Duration = 5})
+          Rayfield:Notify({Title = "SİSTEM", Content = "Tüm Kilitler Açıldı! Artık her şeyi seçebilirsin.", Duration = 5})
       end)
    end,
 })
 
 -- 2. KARAKTER ÖZELLİKLERİ (FLY, NOCLIP, SPEED, JUMP)
 CharacterTab:CreateToggle({
-   Name = "Uçma Modu (Universal Fly)",
+   Name = "Uçma Modu (Fly)",
    CurrentValue = false,
    Callback = function(Value)
       flying = Value
@@ -111,7 +109,6 @@ CharacterTab:CreateToggle({
 CharacterTab:CreateSlider({
    Name = "Uçma Hızı",
    Range = {10, 500},
-   Increment = 10,
    CurrentValue = 50,
    Callback = function(Value) flySpeed = Value end,
 })
@@ -134,7 +131,6 @@ CharacterTab:CreateToggle({
 MovementTab:CreateSlider({
    Name = "Yürüme Hızı",
    Range = {16, 500},
-   Increment = 1,
    CurrentValue = 16,
    Callback = function(Value) lp.Character.Humanoid.WalkSpeed = Value end,
 })
@@ -142,13 +138,12 @@ MovementTab:CreateSlider({
 MovementTab:CreateSlider({
    Name = "Zıplama Gücü",
    Range = {50, 500},
-   Increment = 1,
    CurrentValue = 50,
    Callback = function(Value) lp.Character.Humanoid.JumpPower = Value end,
 })
 
-CarTab:CreateToggle({
-   Name = "Araç Süper Hız",
+VehicleTab:CreateToggle({
+   Name = "Araç Turbo Boost (Hızlı Araçlar)",
    CurrentValue = false,
    Callback = function(Value)
       _G.CarFast = Value
@@ -171,6 +166,6 @@ CarTab:CreateToggle({
 
 -- AYARLAR
 Window:CreateTab("Ayarlar").CreateButton({
-   Name = "Menüyü Kapat (Destroy)",
+   Name = "Kapat (Destroy)",
    Callback = function() Rayfield:Destroy() end,
 })
