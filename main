@@ -1,1 +1,85 @@
+-- Modern UI Yükleme
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+local Window = Rayfield:CreateWindow({
+   Name = "Gemini Hub | Brookhaven RP Edition",
+   LoadingTitle = "Brookhaven Sistemleri Yükleniyor...",
+   LoadingSubtitle = "Hazırlanıyor...",
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiBrookhaven" }
+})
+
+-- SEKMELER
+local MainTab = Window:CreateTab("Karakter", 4483362458)
+local CarTab = Window:CreateTab("Araçlar", 4483362458)
+local TrollTab = Window:CreateTab("Troll & Avatar", 4483362458)
+
+-- 1. GÖRÜNMEZLİK VE HIZ (Karakter Sekmesi)
+MainTab:CreateSlider({
+   Name = "Yürüme Hızı",
+   Range = {16, 250},
+   Increment = 1,
+   CurrentValue = 16,
+   Callback = function(Value)
+      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
+})
+
+MainTab:CreateButton({
+   Name = "Görünmez Ol (Invisible)",
+   Callback = function()
+      local char = game.Players.LocalPlayer.Character
+      for i, v in pairs(char:GetDescendants()) do
+          if v:IsA("BasePart") or v:IsA("Decal") then
+              v.Transparency = 1
+          end
+      end
+      Rayfield:Notify({Title = "Sistem", Content = "Artık Görünmezsin!", Duration = 3})
+   end,
+})
+
+-- 2. ARABA HIZLANDIRMA (Araçlar Sekmesi)
+CarTab:CreateButton({
+   Name = "Araba Hızını Arttır (X2)",
+   Callback = function()
+       local vehicle = game.Workspace.Vehicles:FindFirstChild(game.Players.LocalPlayer.Name .. "Vehicle")
+       if vehicle then
+           for i, v in pairs(vehicle:GetDescendants()) do
+               if v:IsA("VehicleSeat") then
+                   v.MaxSpeed = 200
+                   v.Torque = 1000
+               end
+           end
+       else
+           Rayfield:Notify({Title = "Hata", Content = "Önce bir araca binmelisin!", Duration = 3})
+       end
+   end,
+})
+
+-- 3. AVATAR KOPYALAMA (Troll & Avatar Sekmesi)
+TrollTab:CreateInput({
+   Name = "Avatarını Kopyala (Kullanıcı Adı)",
+   PlaceholderText = "Oyuncu ismi yaz...",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      local TargetPlayer = game.Players:FindFirstChild(Text)
+      if TargetPlayer and TargetPlayer.Character then
+          local LocalChar = game.Players.LocalPlayer.Character
+          -- Kıyafetleri kopyalama işlemi
+          for i, v in pairs(TargetPlayer.Character:GetChildren()) do
+              if v:IsA("Shirt") or v:IsA("Pants") or v:IsA("Accessory") then
+                  local clone = v:Clone()
+                  clone.Parent = LocalChar
+              end
+          end
+          Rayfield:Notify({Title = "Başarılı", Content = Text .. " adlı kişinin avatarı kopyalandı!", Duration = 3})
+      else
+          Rayfield:Notify({Title = "Hata", Content = "Oyuncu bulunamadı!", Duration = 3})
+      end
+   end,
+})
+
+Rayfield:Notify({
+   Title = "Gemini Hub Aktif",
+   Content = "Sadece Brookhaven için optimize edildi.",
+   Duration = 5
+})
