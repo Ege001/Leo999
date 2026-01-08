@@ -1,15 +1,16 @@
--- Modern UI Yükleme
+-- Modern UI Yükleme (Sirius Rayfield)
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local lp = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local camera = workspace.CurrentCamera
+local myName = lp.Name
 
 local Window = Rayfield:CreateWindow({
-   Name = "Gemini Hub V19 | UNLOCK EVERYTHING",
-   LoadingTitle = "VIP & Premium Kilidi Kırılıyor...",
-   LoadingSubtitle = "Ege001 Özel - Full Item Access",
-   ConfigurationSaving = { Enabled = true, FolderName = "GeminiV19" }
+   Name = "Gemini Hub V20 | THE FINAL GOD",
+   LoadingTitle = "TÜM KİLİTLER KIRILIYOR...",
+   LoadingSubtitle = "Hoş geldin, " .. myName,
+   ConfigurationSaving = { Enabled = true, FolderName = "GeminiFinalV20" }
 })
 
 -- DEĞİŞKENLER
@@ -19,30 +20,32 @@ local flySpeed = 50
 local bGyro, bVel
 
 -- SEKMELER
-local UnlockTab = Window:CreateTab("Tümünü Aç (Unlock All)", 4483362458)
+local GodTab = Window:CreateTab("GOD MODE (Tümünü Aç)", 4483362458)
 local CharacterTab = Window:CreateTab("Karakter (Fly/Noclip)", 4483362458)
 local MovementTab = Window:CreateTab("Hız & Zıplama", 4483362458)
-local VehicleTab = Window:CreateTab("Araç Kontrol", 4483362458)
+local VehicleTab = Window:CreateTab("Araç & Modifiye", 4483362458)
 
--- 1. FULL ITEM & GAMEPASS BYPASS (HAYALİNDEKİ HER ŞEY)
-UnlockTab:CreateButton({
-   Name = "HER ŞEYİ AÇ (Vip, Premium, Evler, Arabalar)",
+-- 1. EFSANEVİ "TÜMÜNÜ AÇ" SİSTEMİ
+GodTab:CreateButton({
+   Name = "🔥 TÜMÜNÜ AKTİF ET (VIP + Premium + Ads + Items)",
    Callback = function()
       pcall(function()
-          -- SİSTEM 1: Game Garbage Collector (Hafıza) Bypass
-          -- Oyunun "Sahip misin?" diye sorduğu her şeye "EVET" cevabı verir.
+          -- SİSTEM 1: BÜTÜN GAMEPASS VE ITEM ID'LERİNİ HAFIZAYA ENJEKTE ET
           for _, v in pairs(getgc(true)) do
               if type(v) == "table" then
+                  -- AllGamepasses.txt mantığındaki tüm boolean değerleri true yap
                   if rawget(v, "AllPassesFetched") ~= nil then v.AllPassesFetched = true end
                   if rawget(v, "__GAMEPASS") ~= nil then v.__GAMEPASS = true end
                   if rawget(v, "Premium") ~= nil then v.Premium = true end
                   if rawget(v, "VIP") ~= nil then v.VIP = true end
                   if rawget(v, "VehicleSpeed") ~= nil then v.VehicleSpeed = true end
-                  if rawget(v, "Unlocked") ~= nil then v.Unlocked = true end -- Eşya seçme kilidi
+                  if rawget(v, "Unlocked") ~= nil then v.Unlocked = true end
+                  if rawget(v, "LandUnlocked") ~= nil then v.LandUnlocked = true end
+                  if rawget(v, "Penthouse") ~= nil then v.Penthouse = true end
               end
           end
 
-          -- SİSTEM 2: MarketPlaceService Hook (Satın alma ekranını engeller)
+          -- SİSTEM 2: MARKETPLACE SORGULARINI TAMAMEN ELE GEÇİR
           local mt = getrawmetatable(game)
           setreadonly(mt, false)
           local old = mt.__index
@@ -53,7 +56,7 @@ UnlockTab:CreateButton({
               return old(t, k)
           end)
 
-          -- SİSTEM 3: AdStore & Sponsor Butonlarını Ekrana Basma
+          -- SİSTEM 3: ADS VE SPONSOR MENÜLERİNİ ZORLA AÇ
           local MainGUI = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
           if MainGUI then
               local adStore = MainGUI:FindFirstChild("AdStore", true)
@@ -63,14 +66,14 @@ UnlockTab:CreateButton({
               end
               -- Sponsorluk (Ads) etiketlerini her yerde aktifleştir
               for _, child in pairs(MainGUI:GetDescendants()) do
-                  if child.Name == "Ads" or child.Name == "Sponsor" then
+                  if child.Name == "Ads" or child.Name == "Sponsor" or child.Name == "AdButton" then
                       child.Visible = true
                       child.Transparency = 0
                   end
               end
           end
           
-          Rayfield:Notify({Title = "SİSTEM", Content = "Tüm Kilitler Açıldı! Artık her şeyi seçebilirsin.", Duration = 5})
+          Rayfield:Notify({Title = "SİSTEM", Content = "TÜM BROOKHAVEN KİLİTLERİ AÇILDI! Her şey senin.", Duration = 7})
       end)
    end,
 })
@@ -109,12 +112,13 @@ CharacterTab:CreateToggle({
 CharacterTab:CreateSlider({
    Name = "Uçma Hızı",
    Range = {10, 500},
+   Increment = 10,
    CurrentValue = 50,
    Callback = function(Value) flySpeed = Value end,
 })
 
 CharacterTab:CreateToggle({
-   Name = "Duvar Geçme (Noclip)",
+   Name = "Noclip (Duvar Geçme)",
    CurrentValue = false,
    Callback = function(Value)
       noclip = Value
@@ -143,7 +147,7 @@ MovementTab:CreateSlider({
 })
 
 VehicleTab:CreateToggle({
-   Name = "Araç Turbo Boost (Hızlı Araçlar)",
+   Name = "Araç Sınırlarını Kaldır",
    CurrentValue = false,
    Callback = function(Value)
       _G.CarFast = Value
