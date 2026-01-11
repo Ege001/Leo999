@@ -1,162 +1,161 @@
 --[[
-    👑 SOVEREIGN V46 | ELITE PREMIUM
+    👑 SOVEREIGN V46 | ULTIMATE ELITE EDITION
     OWNER: EgeKazak_Real1
-    SİSTEM: Yapay Zekalı Eşya Verme, Akıllı Destroy & Gelişmiş Giriş
+    BROOKHAVEN SPECIAL: Tüm Gizli Mekanlar, Admin Komutları & Ultimate Araçlar
 ]]
 
 -- GLOBAL KONTROLLER
 _G.SovereignActive = true
 local connections = {}
 
--- 1. PREMIUM ANIMATED LOADER
-local function StartPremiumLoader()
-    local sg = Instance.new("ScreenGui", game:GetService("CoreGui"))
-    sg.Name = "SovereignLoader"
+-- 1. ULTIMATE ASENKRON LOADER (TAKILMAYA SON)
+local function StartUltimateLoader()
+    local sg = Instance.new("ScreenGui")
+    sg.Name = "SovUltimateLoader"
+    sg.DisplayOrder = 999
     sg.IgnoreGuiInset = true
     
-    -- Background Image
-    local bg = Instance.new("ImageLabel", sg)
+    local success, _ = pcall(function() sg.Parent = game:GetService("CoreGui") end)
+    if not success then sg.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") end
+
+    local bg = Instance.new("Frame", sg)
     bg.Size = UDim2.new(1, 0, 1, 0)
-    bg.Image = "rbxassetid://12521111620" -- Brookhaven/City Theme
-    bg.ScaleType = Enum.ScaleType.Crop
-    bg.ImageTransparency = 1
-    
-    local blur = Instance.new("BlurEffect", game.Lighting)
-    blur.Size = 0
-    
-    local mainFrame = Instance.new("Frame", sg)
-    mainFrame.Size = UDim2.new(0, 450, 0, 250)
-    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    mainFrame.BackgroundTransparency = 1
-    
-    local title = Instance.new("TextLabel", mainFrame)
+    bg.BackgroundColor3 = Color3.fromRGB(1, 1, 5)
+    bg.ZIndex = 1
+
+    local main = Instance.new("Frame", sg)
+    main.Size = UDim2.new(0, 450, 0, 250)
+    main.Position = UDim2.new(0.5, 0, 0.5, 0)
+    main.AnchorPoint = Vector2.new(0.5, 0.5)
+    main.BackgroundTransparency = 1
+    main.ZIndex = 2
+
+    local title = Instance.new("TextLabel", main)
     title.Size = UDim2.new(1, 0, 0, 60)
-    title.Text = "SOVEREIGN APEX V46"
+    title.Text = "SOVEREIGN ULTIMATE V46"
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 42
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.TextTransparency = 1
+    title.TextSize = 38
     title.BackgroundTransparency = 1
-    
-    local status = Instance.new("TextLabel", mainFrame)
+
+    local status = Instance.new("TextLabel", main)
     status.Position = UDim2.new(0, 0, 0.5, 0)
     status.Size = UDim2.new(1, 0, 0, 30)
-    status.Text = "Sistem Modülleri Hazırlanıyor..."
+    status.Text = "Brookhaven Protokolleri Yükleniyor..."
     status.Font = Enum.Font.Gotham
-    status.TextSize = 22
-    status.TextColor3 = Color3.fromRGB(0, 200, 255)
-    status.TextTransparency = 1
+    status.TextColor3 = Color3.fromRGB(0, 255, 150)
+    status.TextSize = 20
     status.BackgroundTransparency = 1
 
-    local barBg = Instance.new("Frame", mainFrame)
+    local barBg = Instance.new("Frame", main)
     barBg.Position = UDim2.new(0.1, 0, 0.75, 0)
-    barBg.Size = UDim2.new(0.8, 0, 0, 8)
+    barBg.Size = UDim2.new(0.8, 0, 0, 6)
     barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     barBg.BorderSizePixel = 0
-    local fill = Instance.new("Frame", barBg)
-    fill.Size = UDim2.new(0, 0, 1, 0)
-    fill.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-    fill.BorderSizePixel = 0
+    local barFill = Instance.new("Frame", barBg)
+    barFill.Size = UDim2.new(0, 0, 1, 0)
+    barFill.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
+    barFill.BorderSizePixel = 0
     Instance.new("UICorner", barBg)
-    Instance.new("UICorner", fill)
+    Instance.new("UICorner", barFill)
 
-    -- Animasyonlar
-    local ts = game:GetService("TweenService")
-    ts:Create(bg, TweenInfo.new(1.2), {ImageTransparency = 0.3}):Play()
-    ts:Create(blur, TweenInfo.new(1.2), {Size = 25}):Play()
-    task.wait(0.5)
-    ts:Create(title, TweenInfo.new(0.8), {TextTransparency = 0}):Play()
-    ts:Create(status, TweenInfo.new(0.8), {TextTransparency = 0}):Play()
-    
-    local loadingSteps = {"Eşya Protokolleri...", "Bitcoin Kanalları...", "V46 Elite Hazır!"}
-    for i, step in ipairs(loadingSteps) do
-        status.Text = step
-        ts:Create(fill, TweenInfo.new(1), {Size = UDim2.new(i/3, 0, 1, 0)}):Play()
-        task.wait(1.1)
-    end
-    
-    ts:Create(sg, TweenInfo.new(0.8), {Opacity = 0}):Play()
-    ts:Create(blur, TweenInfo.new(0.8), {Size = 0}):Play()
-    task.wait(0.8)
-    sg:Destroy()
-    if blur then blur:Destroy() end
+    task.spawn(function()
+        local ts = game:GetService("TweenService")
+        local steps = {"Veri Tabanı Analizi...", "ESP & Görüş Protokolü...", "Sovereign Elite Hazır!"}
+        
+        for i, msg in ipairs(steps) do
+            status.Text = msg
+            ts:Create(barFill, TweenInfo.new(0.6), {Size = UDim2.new(i/#steps, 0, 1, 0)}):Play()
+            task.wait(0.7)
+        end
+        
+        ts:Create(bg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
+        ts:Create(title, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+        ts:Create(status, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+        ts:Create(barBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
+        task.wait(0.4)
+        sg:Destroy()
+    end)
 end
 
-StartPremiumLoader()
+StartUltimateLoader()
 
--- 2. SERVİSLER
-local Players = game:GetService("Players")
+-- 2. SERVİSLER & AYARLAR
+local lp = game:GetService("Players").LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local lp = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
--- Global Değişkenler
 _G.Speed = 16
 _G.Jump = 50
 _G.FOV = 70
 _G.SpeedEnabled = false
 _G.JumpEnabled = false
-_G.Fly = false
-_G.Noclip = false
 _G.InfJump = false
+_G.NoClip = false
+_G.EspEnabled = false
 _G.SelectedTool = "MoneyGun"
 
--- 3. YAPAY ZEKALI EŞYA VERME (SMART GIVE)
-local function AI_GiveItem(itemName)
+-- 3. AI & ÖZEL FONKSİYONLAR
+local function GiveToolUltimate(name)
     pcall(function()
-        -- 1. Yol: Brookhaven Remote
-        local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true) or ReplicatedStorage:FindFirstChild("GiveItem", true)
-        if remote then remote:FireServer(itemName) end
-        
-        -- 2. Yol: ReplicatedStorage Clone
-        local tool = ReplicatedStorage:FindFirstChild(itemName, true)
-        if tool and tool:IsA("Tool") then
-            tool:Clone().Parent = lp.Backpack
-        else
-            -- 3. Yol: Geniş Arama
-            for _, v in pairs(ReplicatedStorage:GetDescendants()) do
-                if v:IsA("Tool") and v.Name:lower():find(itemName:lower()) then
-                    v:Clone().Parent = lp.Backpack
-                    break
-                end
-            end
-        end
+        local r = ReplicatedStorage:FindFirstChild("ItemRemote", true) or ReplicatedStorage:FindFirstChild("GiveItem", true)
+        if r then r:FireServer(name) end
+        local t = ReplicatedStorage:FindFirstChild(name, true)
+        if t and t:IsA("Tool") then t:Clone().Parent = lp.Backpack end
     end)
 end
 
--- 4. UI KURULUMU (RAYFIELD)
+local function ApplyEsp()
+    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+        if v ~= lp and v.Character and not v.Character:FindFirstChild("SovEsp") then
+            local box = Instance.new("Highlight", v.Character)
+            box.Name = "SovEsp"
+            box.FillTransparency = 0.5
+            box.OutlineTransparency = 0
+            box.FillColor = Color3.fromRGB(0, 255, 150)
+            box.Enabled = _G.EspEnabled
+        end
+    end
+end
+
+-- 4. ULTIMATE UI (RAYFIELD) KURULUMU
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V46 | ELITE PREMIUM",
-   LoadingTitle = "Hoş Geldin, " .. lp.DisplayName,
-   LoadingSubtitle = "Sovereign Elite System",
+   Name = "👑 SOVEREIGN ULTIMATE V46",
+   LoadingTitle = "Ultimate Brookhaven System",
+   LoadingSubtitle = "by EgeKazak_Real1",
    Theme = "DarkBlue",
    ConfigurationSaving = { Enabled = false }
 })
 
+-- TABLARIN OLUŞTURULMASI
 local MainTab = Window:CreateTab("🏠 Ana Sayfa", 4483362458)
 local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
+local VisualTab = Window:CreateTab("👁️ Görsel", 4483362458)
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
-local ExtraTab = Window:CreateTab("✨ Ekstralar", 4483362458)
+local MiscTab = Window:CreateTab("🛠️ Ekstra", 4483362458)
 
--- 5. ANA SAYFA (DESTROY & ADS)
+-- 5. ANA SAYFA BUTONLARI
+MainTab:CreateSection("Sistem Kontrolü")
+
 MainTab:CreateButton({
-    Name = "🗑️ SCRIPTI KALDIR (Destroy Script)",
+    Name = "🗑️ SCRIPTI YOK ET (Destroy)",
+    Info = "Tüm hileyi ve arayüzü tamamen kapatır.",
     Callback = function()
         _G.SovereignActive = false
-        for _, conn in pairs(connections) do conn:Disconnect() end
+        _G.EspEnabled = false
+        for _, c in pairs(connections) do c:Disconnect() end
         Rayfield:Destroy()
-        local h = lp.PlayerGui:FindFirstChild("SovereignHUD")
+        local h = lp.PlayerGui:FindFirstChild("UltHUD")
         if h then h:Destroy() end
     end,
 })
 
 MainTab:CreateButton({
-    Name = "📢 REKLAMLARI VE PANELLERİ AÇ",
+    Name = "📢 REKLAMLARI VE FRAMELERİ AÇ",
     Callback = function()
         for _, v in pairs(lp.PlayerGui:GetDescendants()) do
             if v:IsA("GuiObject") and (v.Name:lower():find("ad") or v.Name:lower():find("frame")) then
@@ -166,103 +165,207 @@ MainTab:CreateButton({
     end,
 })
 
--- 6. HAREKET (+/- VE SAYI)
-MoveTab:CreateToggle({ Name = "Hız Aktif", Callback = function(v) _G.SpeedEnabled = v end })
-MoveTab:CreateInput({ Name = "Hız Sayısı", Callback = function(v) _G.Speed = tonumber(v) or 16 end })
-MoveTab:CreateButton({ Name = "Hız +10", Callback = function() _G.Speed = _G.Speed + 10 end })
-MoveTab:CreateButton({ Name = "Hız -10", Callback = function() _G.Speed = _G.Speed - 10 end })
+-- 6. HAREKET BUTONLARI
+MoveTab:CreateSection("Karakter Ayarları")
 
-MoveTab:CreateDivider()
+MoveTab:CreateToggle({
+    Name = "Hız Aktif",
+    CurrentValue = false,
+    Callback = function(v) _G.SpeedEnabled = v end,
+})
 
-MoveTab:CreateToggle({ Name = "Zıplama Aktif", Callback = function(v) _G.JumpEnabled = v end })
-MoveTab:CreateInput({ Name = "Zıplama Sayısı", Callback = function(v) _G.Jump = tonumber(v) or 50 end })
-MoveTab:CreateButton({ Name = "Zıplama +10", Callback = function() _G.Jump = _G.Jump + 10 end })
+MoveTab:CreateInput({
+    Name = "Hız Miktarı",
+    PlaceholderText = "16 - 500",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(v) _G.Speed = tonumber(v) or 16 end,
+})
 
--- 7. IŞINLANMA (BİTCOİN)
-TPTab:CreateButton({ Name = "💰 Merkez Bankası", Callback = function() lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end })
-TPTab:CreateButton({ Name = "💰 Bitcoin Bankası", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) end })
-TPTab:CreateButton({ Name = "💰 Altın Bankası", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) end })
+MoveTab:CreateToggle({
+    Name = "Zıplama Aktif",
+    CurrentValue = false,
+    Callback = function(v) _G.JumpEnabled = v end,
+})
 
--- 8. EŞYA ALICI (GIVE BUTTON DAHİL)
-ToolTab:CreateSection("Eşya Verme Sistemi")
+MoveTab:CreateInput({
+    Name = "Zıplama Miktarı",
+    PlaceholderText = "50 - 500",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(v) _G.Jump = tonumber(v) or 50 end,
+})
+
+MoveTab:CreateToggle({
+    Name = "Sonsuz Zıplama",
+    CurrentValue = false,
+    Callback = function(v) _G.InfJump = v end,
+})
+
+MoveTab:CreateToggle({
+    Name = "Noclip (Duvar Geçme)",
+    CurrentValue = false,
+    Callback = function(v) _G.NoClip = v end,
+})
+
+MoveTab:CreateSection("Kamera")
+
+MoveTab:CreateSlider({
+   Name = "FOV Ayarı",
+   Range = {70, 120},
+   Increment = 1,
+   Suffix = "FOV",
+   CurrentValue = 70,
+   Callback = function(Value) Camera.FieldOfView = Value end,
+})
+
+-- 7. GÖRSEL BUTONLARI (ESP)
+VisualTab:CreateSection("Görünürlük Hileleri")
+
+VisualTab:CreateToggle({
+    Name = "Oyuncu ESP (Highlight)",
+    CurrentValue = false,
+    Callback = function(v)
+        _G.EspEnabled = v
+        for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("SovEsp") then
+                player.Character.SovEsp.Enabled = v
+            end
+        end
+    end
+})
+
+-- 8. IŞINLANMA BUTONLARI (BROOKHAVEN SPECIAL)
+TPTab:CreateSection("Banka & Soygun")
+
+TPTab:CreateButton({
+    Name = "💰 Merkez Bankası",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end,
+})
+
+TPTab:CreateButton({
+    Name = "💰 Kasa Arkası (Gizli)",
+    Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-31.4, -51.3, 271.8) end,
+})
+
+TPTab:CreateButton({
+    Name = "💰 Bitcoin Odası",
+    Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) end,
+})
+
+TPTab:CreateSection("Kamu Binaları")
+
+TPTab:CreateButton({
+    Name = "🚨 Polis Merkezi (Karakol)",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-165.0, 15.4, -40.0)) end,
+})
+
+TPTab:CreateButton({
+    Name = "🏥 Hastane",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-232.0, 15.4, 60.0)) end,
+})
+
+TPTab:CreateButton({
+    Name = "🏢 Belediye",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-1.0, 15.4, -137.0)) end,
+})
+
+TPTab:CreateButton({
+    Name = "🔥 İtfaiye",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-165.0, 15.4, -100.0)) end,
+})
+
+TPTab:CreateSection("Gizli Mekanlar")
+
+TPTab:CreateButton({
+    Name = "🛸 UFO Gizli Bölge",
+    Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-500.0, 400.0, -500.0) end,
+})
+
+TPTab:CreateButton({
+    Name = "🏚️ Terk Edilmiş Ev",
+    Callback = function() lp.Character:MoveTo(Vector3.new(-400.0, 15.0, 300.0)) end,
+})
+
+-- 9. EŞYA BUTONLARI
+ToolTab:CreateSection("Envanter Sistemi")
 
 ToolTab:CreateDropdown({
-    Name = "Eşya Listesi",
-    Options = {"MoneyGun", "Hammer", "Pizza", "KeyCard", "Camera", "Smartphone", "Briefcase", "Flashlight", "Binoculars"},
+    Name = "Eşya Seç",
+    Options = {"MoneyGun", "Hammer", "Pizza", "KeyCard", "Camera", "Smartphone", "Briefcase", "Flashlight", "Laptop", "Skull", "C4"},
     CurrentOption = "MoneyGun",
     Callback = function(Option) _G.SelectedTool = Option end,
 })
 
 ToolTab:CreateButton({
-    Name = "✅ SEÇİLEN EŞYAYI VER (Give Item)",
-    Callback = function()
-        AI_GiveItem(_G.SelectedTool)
-        Rayfield:Notify({Title = "Eşya Sistemi", Content = _G.SelectedTool .. " envantere gönderildi!", Duration = 2})
-    end,
+    Name = "✅ SEÇİLENİ VER (Give)",
+    Callback = function() GiveToolUltimate(_G.SelectedTool) end,
 })
 
--- 9. EKSTRALAR
-ExtraTab:CreateInput({ Name = "FOV Sayısı", Callback = function(v) _G.FOV = tonumber(v) or 70; Camera.FieldOfView = _G.FOV end })
-ExtraTab:CreateButton({ Name = "FOV +5", Callback = function() _G.FOV = _G.FOV + 5; Camera.FieldOfView = _G.FOV end })
-ExtraTab:CreateToggle({ Name = "Uçma (Fly)", Callback = function(v) _G.Fly = v end })
-ExtraTab:CreateToggle({ Name = "Duvar Geçme (Noclip)", Callback = function(v) _G.Noclip = v end })
-ExtraTab:CreateToggle({ Name = "Sonsuz Zıplama", Callback = function(v) _G.InfJump = v end })
+-- 10. EKSTRA BUTONLAR (ADMIN & TROLL)
+MiscTab:CreateSection("Admin Komutları")
 
--- 10. DÖNGÜLER
+MiscTab:CreateButton({
+    Name = "👻 GÖRÜNMEZ OL (Admin)",
+    Callback = function()
+        local char = lp.Character
+        if char then
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("BasePart") or v:IsA("Decal") then
+                    v.Transparency = 1
+                end
+            end
+        end
+    end
+})
+
+MiscTab:CreateButton({
+    Name = "🌊 YÜZME MODU (Fly)",
+    Callback = function()
+        lp.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, true)
+        lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Swimming)
+    end
+})
+
+-- 11. DÖNGÜLER & SİSTEMLER
 local hb = RunService.Heartbeat:Connect(function()
     if not _G.SovereignActive then return end
     pcall(function()
         local char = lp.Character
         local hum = char and char:FindFirstChildOfClass("Humanoid")
-        local hrp = char and char:FindFirstChild("HumanoidRootPart")
-        
         if hum then
             hum.WalkSpeed = _G.SpeedEnabled and _G.Speed or 16
             hum.JumpPower = _G.JumpEnabled and _G.Jump or 50
         end
         
-        if _G.Noclip and char then
-            for _, v in pairs(char:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end
+        if _G.NoClip then
+            for _, v in pairs(char:GetDescendants()) do
+                if v:IsA("BasePart") then v.CanCollide = false end
+            end
         end
         
-        if _G.Fly and hrp then
-            if not hrp:FindFirstChild("FlyPart") then
-                local bv = Instance.new("BodyVelocity", hrp); bv.Name = "FlyPart"; bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-                local bg = Instance.new("BodyGyro", hrp); bg.Name = "FlyGyro"; bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
-            end
-            hrp.FlyGyro.CFrame = Camera.CFrame
-            local move = Vector3.new(0,0,0)
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then move = move + Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then move = move - Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then move = move + Camera.CFrame.RightVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then move = move - Camera.CFrame.RightVector end
-            hrp.FlyPart.Velocity = move * 75
-        elseif hrp and hrp:FindFirstChild("FlyPart") then
-            hrp.FlyPart:Destroy(); hrp.FlyGyro:Destroy()
-        end
+        if _G.EspEnabled then ApplyEsp() end
     end)
 end)
 table.insert(connections, hb)
 
-local jumpConn = UserInputService.JumpRequest:Connect(function()
+local jumpReq = UserInputService.JumpRequest:Connect(function()
     if _G.InfJump and lp.Character then
         lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
     end
 end)
-table.insert(connections, jumpConn)
+table.insert(connections, jumpReq)
 
--- HUD
-local function CreateHUD()
-    local sg = Instance.new("ScreenGui", lp.PlayerGui); sg.Name = "SovereignHUD"
-    local f = Instance.new("Frame", sg); f.Size = UDim2.new(0, 160, 0, 70); f.Position = UDim2.new(0, 10, 0, 10); f.BackgroundColor3 = Color3.new(0,0,0); f.BackgroundTransparency = 0.5
+-- HUD (GÖRSEL PANEL)
+local function BuildHUD()
+    local sg = Instance.new("ScreenGui", lp.PlayerGui); sg.Name = "UltHUD"
+    local f = Instance.new("Frame", sg); f.Size = UDim2.new(0, 150, 0, 70); f.Position = UDim2.new(0, 10, 0, 10); f.BackgroundColor3 = Color3.new(0,0,0); f.BackgroundTransparency = 0.5
     Instance.new("UICorner", f)
-    local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1,0,1,0); l.BackgroundTransparency = 1; l.TextColor3 = Color3.new(1,1,1); l.Font = Enum.Font.Code; l.TextSize = 11
+    local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1,0,1,0); l.BackgroundTransparency = 1; l.TextColor3 = Color3.fromRGB(0, 255, 150); l.Font = Enum.Font.Code; l.TextSize = 10
     task.spawn(function()
-        while task.wait(0.5) and _G.SovereignActive do
-            l.Text = string.format("SOVEREIGN PREMIUM\nS:%d | J:%d | F:%d\nSTATUS: Aktif", _G.Speed, _G.Jump, _G.FOV)
+        while task.wait(1) and _G.SovereignActive do
+            l.Text = string.format("ULTIMATE V46\nHIZ:%d | ZIP:%d\nSTATUS: ELITE", _G.Speed, _G.Jump)
         end
     end)
 end
-CreateHUD()
+BuildHUD()
 
-Rayfield:Notify({Title = "Sovereign Premium", Content = "Elite V46 Yüklendi!", Duration = 5})
+Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Tüm Butonlar ve Protokoller Aktif!", Duration = 5})
