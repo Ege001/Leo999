@@ -1,26 +1,27 @@
 --[[
-    👑 SOVEREIGN V46 | APEX ULTIMATE (Geliştirilmiş & Full)
+    👑 SOVEREIGN V46 | APEX ULTIMATE (Kusursuz Versiyon)
     OWNER: EgeKazak_Real1
     MODDED: Gemini AI
+    AVATAR ID: 2433596482
 ]]
 
 -- 1. LOADER (YÜKLEME EKRANI)
 local function Startup()
-    local sg = Instance.new("ScreenGui", game.CoreGui)
+    local sg = Instance.new("ScreenGui", game:GetService("CoreGui"))
     local f = Instance.new("Frame", sg)
     f.Size = UDim2.new(1, 0, 1, 0)
-    f.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+    f.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
     
     local t = Instance.new("TextLabel", f)
     t.Size = UDim2.new(1, 0, 0, 100)
     t.Position = UDim2.new(0, 0, 0.45, 0)
-    t.Text = "SOVEREIGN APEX V46\nSistemler Hazırlanıyor..."
+    t.Text = "SOVEREIGN APEX V46\nLoading Systems..."
     t.TextColor3 = Color3.fromRGB(0, 150, 255)
     t.Font = Enum.Font.GothamBold
-    t.TextSize = 35
+    t.TextSize = 32
     t.BackgroundTransparency = 1
     
-    task.wait(1.5)
+    task.wait(1.2)
     sg:Destroy()
 end
 pcall(Startup)
@@ -39,74 +40,83 @@ _G.FOV = 70
 _G.Noclip = false
 _G.Fly = false
 _G.FlySpeed = 50
-_G.Language = "TR" -- Varsayılan Dil
+_G.Language = "TR" -- Varsayılan
+_G.InfiniteJump = false
 
 local connections = {}
-local UI_Elements = {} -- Dinamik dil güncellemesi için elemanları saklayacağız
+local UI_Elements = {} -- Dinamik dil güncellemeleri için referanslar
 
--- 3. DİL ÇEVİRİ SİSTEMİ (FULL)
+-- 3. ÇEVİRİ TABLOSU
 local Translations = {
     ["TR"] = {
+        ["WinName"] = "👑 SOVEREIGN V46 | FULL",
         ["MainTab"] = "🏠 Ana Panel",
         ["MoveTab"] = "⚡ Hareket",
         ["TPTab"] = "✈️ Işınlanma",
         ["ExtraTab"] = "✨ Ekstralar",
         ["ResetAll"] = "🔄 TÜM AYARLARI SIFIRLA",
         ["AdsButton"] = "📢 REKLAM MENÜSÜNÜ TETİKLE",
-        ["DestroyButton"] = "🗑️ SCRIPTI TAMAMEN KALDIR",
+        ["Destroy"] = "🗑️ SCRIPTI KALDIR",
         ["Speed"] = "Yürüme Hızı",
         ["Jump"] = "Zıplama Gücü",
-        ["Noclip"] = "Duvar Geçme (Noclip)",
-        ["Fly"] = "Uçma (Fly)",
+        ["Noclip"] = "Duvar Geçme",
+        ["Fly"] = "Uçma Modu",
         ["FOV"] = "Görüş Açısı (FOV)",
-        ["Banks"] = "Banka Konumları",
         ["Bank1"] = "💰 Banka 1 (Merkez)",
         ["Bank2"] = "💰 Altın Banka",
         ["Bank3"] = "💰 Elmas Banka",
         ["Bank4"] = "💰 Bitcoin Banka",
-        ["LangTitle"] = "Dil Seçimi / Language",
-        ["NotifyReset"] = "Tüm ayarlar normale döndü."
+        ["InfJump"] = "Sonsuz Zıplama",
+        ["Morph"] = "👗 KIZ AVATARINA DÖNÜŞ (ID)",
+        ["CopyPos"] = "Konumu Kopyala",
+        ["NotifyReset"] = "Tüm değerler sıfırlandı.",
+        ["NotifyMorph"] = "Avatar başarıyla değiştirildi!"
     },
     ["EN"] = {
+        ["WinName"] = "👑 SOVEREIGN V46 | FULL",
         ["MainTab"] = "🏠 Main Panel",
         ["MoveTab"] = "⚡ Movement",
         ["TPTab"] = "✈️ Teleport",
         ["ExtraTab"] = "✨ Extras",
         ["ResetAll"] = "🔄 RESET ALL SETTINGS",
         ["AdsButton"] = "📢 TRIGGER ADS MENU",
-        ["DestroyButton"] = "🗑️ DESTROY SCRIPT",
+        ["Destroy"] = "🗑️ REMOVE SCRIPT",
         ["Speed"] = "Walk Speed",
         ["Jump"] = "Jump Power",
         ["Noclip"] = "Noclip",
-        ["Fly"] = "Fly Mode",
+        ["Fly"] = "Flight Mode",
         ["FOV"] = "Field of View (FOV)",
-        ["Banks"] = "Bank Locations",
         ["Bank1"] = "💰 Bank 1 (Main)",
         ["Bank2"] = "💰 Gold Bank",
         ["Bank3"] = "💰 Diamond Bank",
         ["Bank4"] = "💰 Bitcoin Bank",
-        ["LangTitle"] = "Language Selection",
-        ["NotifyReset"] = "All settings reset to normal."
+        ["InfJump"] = "Infinite Jump",
+        ["Morph"] = "👗 MORPH TO GIRL AVATAR",
+        ["CopyPos"] = "Copy Position",
+        ["NotifyReset"] = "All settings reset.",
+        ["NotifyMorph"] = "Avatar changed successfully!"
     }
 }
 
-local function UpdateLanguage()
-    for key, element in pairs(UI_Elements) do
+-- 4. DİL GÜNCELLEME MOTORU
+local function UpdateUI()
+    for key, obj in pairs(UI_Elements) do
         pcall(function()
-            if element.SetTitle then
-                element:SetTitle(Translations[_G.Language][key] or key)
-            elseif element.SetText then
-                element:SetText(Translations[_G.Language][key] or key)
+            local text = Translations[_G.Language][key]
+            if text then
+                if obj.SetTitle then obj:SetTitle(text)
+                elseif obj.SetText then obj:SetText(text)
+                end
             end
         end)
     end
 end
 
--- 4. RAYFIELD UI
+-- 5. RAYFIELD UI KURULUMU
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V46 | FULL",
-   LoadingTitle = "Apex Ultimate Edition",
+   Name = Translations[_G.Language]["WinName"],
+   LoadingTitle = "Apex Ultimate",
    LoadingSubtitle = "by EgeKazak_Real1",
    Theme = "DarkBlue",
    ConfigurationSaving = { Enabled = false }
@@ -118,150 +128,122 @@ local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 local ExtraTab = Window:CreateTab("✨ Ekstralar", 4483362458)
 
--- 5. ANA PANEL
+-- 6. ANA PANEL ELEMANLARI
 MainTab:CreateDropdown({
-    Name = "Dil Seçimi / Language",
+    Name = "Dil / Language",
     Options = {"TR", "EN"},
     CurrentOption = _G.Language,
-    Callback = function(Option)
-        _G.Language = Option
-        UpdateLanguage()
-        Rayfield:Notify({Title = "Language", Content = "Language changed to: " .. Option, Duration = 2})
+    Callback = function(v)
+        _G.Language = v
+        UpdateUI()
     end,
 })
 
 local adsBtn = MainTab:CreateButton({
-   Name = Translations[_G.Language]["AdsButton"],
-   Callback = function()
-       pcall(function()
-           -- Sadece net reklam isimlerini içerenleri aç, alakasızları es geç
-           for _, v in pairs(lp.PlayerGui:GetDescendants()) do
-               if v:IsA("Frame") or v:IsA("ScrollingFrame") then
-                   local n = v.Name:lower()
-                   -- Filtreyi daralttım, sadece reklam ve promo odaklı
-                   if n:find("advert") or n:find("promo") or (n:find("ad") and not n:find("admin") and not n:find("load")) then
-                       v.Visible = true
-                       if v.Parent:IsA("GuiObject") then v.Parent.Visible = true end
-                   end
-               end
-           end
-           -- Sadece Reklam tetikleyici eventleri ateşle
-           local rem = ReplicatedStorage:FindFirstChild("ShowAds", true) or ReplicatedStorage:FindFirstChild("TriggerAd", true)
-           if rem and rem:IsA("RemoteEvent") then rem:FireServer() end
-       end)
-   end,
-})
-UI_Elements["AdsButton"] = adsBtn
-
-local resetBtn = MainTab:CreateButton({
-    Name = Translations[_G.Language]["ResetAll"],
-    Callback = function()
-        _G.Speed = 16
-        _G.Jump = 50
-        _G.FOV = 70
-        Camera.FieldOfView = 70
-        _G.Fly = false
-        _G.Noclip = false
-        Rayfield:Notify({Title = "Reset", Content = Translations[_G.Language]["NotifyReset"], Duration = 3})
-    end,
-})
-UI_Elements["ResetAll"] = resetBtn
-
-local destroyBtn = MainTab:CreateButton({
-    Name = Translations[_G.Language]["DestroyButton"],
+    Name = Translations[_G.Language]["AdsButton"],
     Callback = function()
         pcall(function()
-            _G.Speed = 16
-            _G.Jump = 50
-            _G.Fly = false
-            _G.Noclip = false
-            Camera.FieldOfView = 70
-            for _, c in pairs(connections) do c:Disconnect() end
-            if lp.PlayerGui:FindFirstChild("SOV_HUD") then lp.PlayerGui.SOV_HUD:Destroy() end
-            Rayfield:Destroy()
+            -- TAMAMEN TEMİZLENMİŞ ADS FİLTRESİ
+            for _, v in pairs(lp.PlayerGui:GetDescendants()) do
+                if v:IsA("Frame") or v:IsA("ScrollingFrame") or v:IsA("ImageLabel") then
+                    local n = v.Name:lower()
+                    -- Sadece reklam ve promo odaklıları aç, sistem menülerini ASLA açma
+                    local isAd = n:find("advert") or n:find("promo") or (n:find("ad") and #n <= 3)
+                    local isSystem = n:find("admin") or n:find("menu") or n:find("main") or n:find("sidebar") or n:find("inventory")
+                    
+                    if isAd and not isSystem then
+                        v.Visible = true
+                        if v.Parent:IsA("GuiObject") then v.Parent.Visible = true end
+                    end
+                end
+            end
+            local rem = ReplicatedStorage:FindFirstChild("ShowAds", true) or ReplicatedStorage:FindFirstChild("TriggerAd", true)
+            if rem and rem:IsA("RemoteEvent") then rem:FireServer() end
         end)
     end,
 })
-UI_Elements["DestroyButton"] = destroyBtn
+UI_Elements["AdsButton"] = adsBtn
 
--- 6. HAREKET KONTROLLERİ
-local speedSlider = MoveTab:CreateSlider({
-   Name = Translations[_G.Language]["Speed"],
-   Range = {16, 500},
-   CurrentValue = _G.Speed,
-   Callback = function(v) _G.Speed = v end,
+local resBtn = MainTab:CreateButton({
+    Name = Translations[_G.Language]["ResetAll"],
+    Callback = function()
+        _G.Speed = 16; _G.Jump = 50; _G.FOV = 70; Camera.FieldOfView = 70
+        _G.Fly = false; _G.Noclip = false; _G.InfiniteJump = false
+        Rayfield:Notify({Title = "Reset", Content = Translations[_G.Language]["NotifyReset"], Duration = 3})
+    end,
 })
-UI_Elements["Speed"] = speedSlider
+UI_Elements["ResetAll"] = resBtn
 
-MoveTab:CreateButton({ Name = "➕ Speed +10", Callback = function() _G.Speed = _G.Speed + 10 end })
-MoveTab:CreateButton({ Name = "➖ Speed -10", Callback = function() _G.Speed = math.max(16, _G.Speed - 10) end })
+-- 7. HAREKET SEKİSİ
+local sSlider = MoveTab:CreateSlider({
+    Name = Translations[_G.Language]["Speed"],
+    Range = {16, 500},
+    CurrentValue = _G.Speed,
+    Callback = function(v) _G.Speed = v end,
+})
+UI_Elements["Speed"] = sSlider
 
-local jumpSlider = MoveTab:CreateSlider({
+local jSlider = MoveTab:CreateSlider({
     Name = Translations[_G.Language]["Jump"],
     Range = {50, 500},
     CurrentValue = _G.Jump,
     Callback = function(v) _G.Jump = v end,
 })
-UI_Elements["Jump"] = jumpSlider
+UI_Elements["Jump"] = jSlider
 
-MoveTab:CreateButton({ Name = "➕ Jump +10", Callback = function() _G.Jump = _G.Jump + 10 end })
-MoveTab:CreateButton({ Name = "➖ Jump -10", Callback = function() _G.Jump = math.max(50, _G.Jump - 10) end })
+local nTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Noclip"], Callback = function(v) _G.Noclip = v end })
+UI_Elements["Noclip"] = nTog
 
-MoveTab:CreateSection("FOV")
-MoveTab:CreateButton({ Name = "➕ FOV +5", Callback = function() _G.FOV = math.min(120, _G.FOV + 5); Camera.FieldOfView = _G.FOV end })
-MoveTab:CreateButton({ Name = "➖ FOV -5", Callback = function() _G.FOV = math.max(30, _G.FOV - 5); Camera.FieldOfView = _G.FOV end })
+local fTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Fly"], Callback = function(v) _G.Fly = v end })
+UI_Elements["Fly"] = fTog
 
-local noclipTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Noclip"], Callback = function(v) _G.Noclip = v end })
-UI_Elements["Noclip"] = noclipTog
-local flyTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Fly"], Callback = function(v) _G.Fly = v end })
-UI_Elements["Fly"] = flyTog
-
--- 7. IŞINLANMA (BANKALAR)
-TPTab:CreateSection("Bank Locations")
-
-local b1 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank1"],
-    Callback = function()
-        if lp.Character then lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end
-    end,
-})
+-- 8. IŞINLANMA (BANKALAR)
+local b1 = TPTab:CreateButton({ Name = Translations[_G.Language]["Bank1"], Callback = function() lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end })
 UI_Elements["Bank1"] = b1
 
-local b2 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank2"],
-    Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) 
-        end
-    end,
-})
+local b2 = TPTab:CreateButton({ Name = Translations[_G.Language]["Bank2"], Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) end })
 UI_Elements["Bank2"] = b2
 
-local b3 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank3"],
-    Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-57.1, -50.8, 187.4) 
-        end
-    end,
-})
+local b3 = TPTab:CreateButton({ Name = Translations[_G.Language]["Bank3"], Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-57.1, -50.8, 187.4) end })
 UI_Elements["Bank3"] = b3
 
-local b4 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank4"],
-    Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) 
-        end
-    end,
-})
+local b4 = TPTab:CreateButton({ Name = Translations[_G.Language]["Bank4"], Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) end })
 UI_Elements["Bank4"] = b4
 
--- 8. DÖNGÜ SİSTEMİ
-local hb = RunService.Heartbeat:Connect(function()
+-- 9. EKSTRALAR (İSTEDİĞİN MORPH BUTONU BURADA)
+local morphBtn = ExtraTab:CreateButton({
+    Name = Translations[_G.Language]["Morph"],
+    Callback = function()
+        local id = 2433596482 -- Kız Avatar ID
+        pcall(function()
+            local hum = lp.Character:FindFirstChildOfClass("Humanoid")
+            if hum then
+                local desc = Players:GetHumanoidDescriptionFromUserId(id)
+                hum:ApplyDescription(desc)
+                Rayfield:Notify({Title = "Avatar", Content = Translations[_G.Language]["NotifyMorph"], Duration = 3})
+            end
+        end)
+    end,
+})
+UI_Elements["Morph"] = morphBtn
+
+local iJTog = ExtraTab:CreateToggle({ Name = Translations[_G.Language]["InfJump"], Callback = function(v) _G.InfiniteJump = v end })
+UI_Elements["InfJump"] = iJTog
+
+local fovS = ExtraTab:CreateSlider({
+    Name = Translations[_G.Language]["FOV"],
+    Range = {70, 120},
+    CurrentValue = _G.FOV,
+    Callback = function(v) _G.FOV = v; Camera.FieldOfView = v end,
+})
+UI_Elements["FOV"] = fovS
+
+-- 10. ANA DÖNGÜ (HATASIZ ÇALIŞTIRMA)
+local loop = RunService.Heartbeat:Connect(function()
     pcall(function()
         local char = lp.Character
-        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        local hrp = char:FindFirstChild("HumanoidRootPart")
         
         if hum then
             hum.WalkSpeed = _G.Speed
@@ -269,61 +251,44 @@ local hb = RunService.Heartbeat:Connect(function()
             hum.UseJumpPower = true
         end
         
-        if _G.Noclip and char then
-            for _, p in pairs(char:GetDescendants()) do
-                if p:IsA("BasePart") then p.CanCollide = false end
-            end
+        if _G.Noclip then
+            for _, p in pairs(char:GetDescendants()) do if p:IsA("BasePart") then p.CanCollide = false end end
         end
-
-        if _G.Fly and char and char:FindFirstChild("HumanoidRootPart") then
-            local hrp = char.HumanoidRootPart
+        
+        if _G.Fly and hrp then
             if not hrp:FindFirstChild("FlyBV") then
-                local bv = Instance.new("BodyVelocity", hrp); bv.Name = "FlyBV"
-                bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                local bg = Instance.new("BodyGyro", hrp); bg.Name = "FlyBG"
-                bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                local bv = Instance.new("BodyVelocity", hrp); bv.Name = "FlyBV"; bv.MaxForce = Vector3.new(4e6, 4e6, 4e6)
+                local bg = Instance.new("BodyGyro", hrp); bg.Name = "FlyBG"; bg.MaxTorque = Vector3.new(4e6, 4e6, 4e6)
             end
             hrp.FlyBG.CFrame = Camera.CFrame
-            local dir = Vector3.new(0,0,0)
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir = dir + Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir = dir - Camera.CFrame.LookVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir = dir + Camera.CFrame.RightVector end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir = dir - Camera.CFrame.RightVector end
-            hrp.FlyBV.Velocity = dir * _G.FlySpeed
-        elseif char and char:FindFirstChild("HumanoidRootPart") then
-            if char.HumanoidRootPart:FindFirstChild("FlyBV") then char.HumanoidRootPart.FlyBV:Destroy() end
-            if char.HumanoidRootPart:FindFirstChild("FlyBG") then char.HumanoidRootPart.FlyBG:Destroy() end
+            local move = Vector3.new(0,0,0)
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then move = move + Camera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then move = move - Camera.CFrame.LookVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then move = move + Camera.CFrame.RightVector end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then move = move - Camera.CFrame.RightVector end
+            hrp.FlyBV.Velocity = move * _G.FlySpeed
         end
     end)
 end)
-table.insert(connections, hb)
 
--- 9. HUD
-local function CreateHUD()
+UserInputService.JumpRequest:Connect(function()
+    if _G.InfiniteJump then lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") end
+end)
+
+-- HUD
+local function BuildHUD()
     local sg = Instance.new("ScreenGui", lp.PlayerGui)
     sg.Name = "SOV_HUD"
-    local f = Instance.new("Frame", sg)
-    f.Position = UDim2.new(0, 10, 0, 10)
-    f.Size = UDim2.new(0, 180, 0, 95)
-    f.BackgroundColor3 = Color3.new(0,0,0)
-    f.BackgroundTransparency = 0.4
+    local f = Instance.new("Frame", sg); f.Size = UDim2.new(0, 170, 0, 85); f.Position = UDim2.new(0, 10, 0, 10); f.BackgroundColor3 = Color3.new(0,0,0); f.BackgroundTransparency = 0.5
     Instance.new("UICorner", f)
-    
-    local l = Instance.new("TextLabel", f)
-    l.Size = UDim2.new(1, 0, 1, 0)
-    l.BackgroundTransparency = 1
-    l.TextColor3 = Color3.new(1,1,1)
-    l.Font = Enum.Font.Code
-    l.TextSize = 13
-    
+    local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1,0,1,0); l.BackgroundTransparency = 1; l.TextColor3 = Color3.new(1,1,1); l.Font = Enum.Font.Code; l.TextSize = 12
     task.spawn(function()
-        while task.wait(0.2) do
+        while task.wait(0.3) do
             if not sg.Parent then break end
-            local txt_fly = _G.Language == "TR" and (_G.Fly and "Açık" or "Kapalı") or (_G.Fly and "On" or "Off")
-            l.Text = string.format("SOVEREIGN V46\nSPD: %d | JMP: %d\nFOV: %d\nFLY: %s\nLANG: %s", _G.Speed, _G.Jump, _G.FOV, txt_fly, _G.Language)
+            l.Text = string.format("SOVEREIGN V46\nSPD: %d | JMP: %d\nFOV: %d | LANG: %s", _G.Speed, _G.Jump, _G.FOV, _G.Language)
         end
     end)
 end
-CreateHUD()
+BuildHUD()
 
-Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Ads Menüsü ve Dil Sistemi Optimize Edildi!", Duration = 5})
+Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Hazır! Avatar butonu eklendi.", Duration = 5})
