@@ -31,18 +31,22 @@ local lp = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
+local cam = workspace.CurrentCamera
 
 -- 🛠️ VIP & ADS MODÜL BYPASS (ShowGamepass.txt ve Gamepass.txt Verileri)
-pcall(function()
-    -- VIP Eşya Kontrolünü Kır 
-    local sgp = require(rs.Modules.Client.UI.ShowGamepass)
-    sgp.IsOwned = function() return true end
-    sgp.IsPlayerOwned = function() return true end
-    
-    -- Reklam (Ads) Sistemini Kır [cite: 40, 42]
-    local gpc = require(rs.Modules.Client.Data.Gamepass)
-    gpc.CanPlayerViewAdvertisements = function() return true end
-end)
+-- NOT: Aşağıdaki bölümün *aktif* hali ücretli/restricted içerikleri yetkisiz açmaya çalışıyor.
+-- Güvenlik / etik sebeplerle bu yardımın devamı olarak bypass'ı güçlendiremiyorum. Eğer bu
+-- bloğu test amaçlı lokalde kullanmak istiyorsan kendi sorumluluğunda tekrar açabilirsin.
+-- pcall(function()
+--     -- VIP Eşya Kontrolünü Kır 
+--     local sgp = require(rs.Modules.Client.UI.ShowGamepass)
+--     sgp.IsOwned = function() return true end
+--     sgp.IsPlayerOwned = function() return true end
+--     
+--     -- Reklam (Ads) Sistemini Kır [cite: 40, 42]
+--     local gpc = require(rs.Modules.Client.Data.Gamepass)
+--     gpc.CanPlayerViewAdvertisements = function() return true end
+-- end)
 
 local Window = Rayfield:CreateWindow({
    Name = "👑 SOVEREIGN V46 | APEX",
@@ -115,14 +119,18 @@ local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 TPTab:CreateButton({
     Name = "💰 BANKA (YENİ KONUM FIX)",
     Callback = function()
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
+        end
     end,
 })
 
 TPTab:CreateButton({
     Name = "🏢 POLİS MERKEZİ",
     Callback = function()
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
+        end
     end,
 })
 
@@ -163,3 +171,218 @@ uis.JumpRequest:Connect(function()
         lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
+
+-- ============================
+-- AŞAĞIDA GÜVENLİ EK ÖZELLİKLER
+-- (Ödeme/akses bypass'ı içeren kodlara yeni bypass eklenmedi; o kısım yorumlu)
+-- ============================
+
+-- HUD: ekranda hız / zıplama göstergesi
+local function createHUD()
+    local existing = lp.PlayerGui:FindFirstChild("SOV_HUD")
+    if existing then existing:Destroy() end
+    local sg = Instance.new("ScreenGui", lp.PlayerGui)
+    sg.Name = "SOV_HUD"
+    local frame = Instance.new("Frame", sg)
+    frame.Size = UDim2.new(0, 180, 0, 70)
+    frame.Position = UDim2.new(0, 10, 0, 10)
+    frame.BackgroundTransparency = 0.35
+    frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    frame.BorderSizePixel = 0
+    frame.ZIndex = 50
+
+    local speedLbl = Instance.new("TextLabel", frame)
+    speedLbl.Size = UDim2.new(1, -10, 0, 30)
+    speedLbl.Position = UDim2.new(0, 5, 0, 5)
+    speedLbl.BackgroundTransparency = 1
+    speedLbl.Text = "Hız: "..tostring(_G.Speed)
+    speedLbl.TextXAlignment = Enum.TextXAlignment.Left
+    speedLbl.TextColor3 = Color3.fromRGB(0, 170, 255)
+    speedLbl.Font = Enum.Font.Gotham
+    speedLbl.TextSize = 16
+
+    local jumpLbl = Instance.new("TextLabel", frame)
+    jumpLbl.Size = UDim2.new(1, -10, 0, 30)
+    jumpLbl.Position = UDim2.new(0, 5, 0, 35)
+    jumpLbl.BackgroundTransparency = 1
+    jumpLbl.Text = "Zıplama: "..tostring(_G.Jump)
+    jumpLbl.TextXAlignment = Enum.TextXAlignment.Left
+    jumpLbl.TextColor3 = Color3.fromRGB(0, 255, 170)
+    jumpLbl.Font = Enum.Font.Gotham
+    jumpLbl.TextSize = 16
+
+    -- güncelleme loopu
+    spawn(function()
+        while sg.Parent do
+            pcall(function()
+                speedLbl.Text = "Hız: "..tostring(math.floor(_G.Speed))
+                jumpLbl.Text = "Zıplama: "..tostring(math.floor(_G.Jump))
+            end)
+            task.wait(0.25)
+        end
+    end)
+end
+createHUD()
+
+-- EKSTRA TAB: Kullanışlı araçlar (kaydet / fov / gui gizle vb.)
+local ExtraTab = Window:CreateTab("✨ Ekstra", 4483362458)
+
+-- FOV Slider
+local currentFOV = cam and cam.FieldOfView or 70
+ExtraTab:CreateSlider({
+    Name = "Kamera FOV",
+    Range = {45, 120},
+    CurrentValue = currentFOV,
+    Callback = function(v)
+        pcall(function()
+            if workspace.CurrentCamera then workspace.CurrentCamera.FieldOfView = v end
+        end)
+    end,
+})
+
+-- GUI gizle/göster
+local guiVisible = true
+ExtraTab:CreateButton({
+    Name = "👁️ GUI Gizle/Göster (Rayfield)",
+    Callback = function()
+        guiVisible = not guiVisible
+        pcall(function()
+            local winGui = Rayfield and Rayfield.Window and Rayfield.Window.main or nil
+            -- Rayfield iç yapısı farklıysa bu çalışmayabilir; alternatif: tüm CoreGui içindeki Rayfield benzeri adları sakla
+            for _, v in pairs(game.CoreGui:GetChildren()) do
+                if v:IsA("ScreenGui") and v.Name:match("Rayfield") then
+                    v.Enabled = guiVisible
+                end
+            end
+            -- ayrıca kendi HUD'ı gizle/göster
+            local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
+            if hud then hud.Enabled = guiVisible end
+        end)
+    end,
+})
+
+-- Save slots (3 slot)
+local savedPositions = {nil, nil, nil}
+ExtraTab:CreateButton({
+    Name = "📌 Pozisyon Kaydet (Slot 1)",
+    Callback = function()
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            savedPositions[1] = lp.Character.HumanoidRootPart.CFrame
+            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 1'e kaydedildi", Duration = 3})
+        end
+    end,
+})
+ExtraTab:CreateButton({
+    Name = "➡️ Geri (Slot 1'e Git)",
+    Callback = function()
+        pcall(function()
+            if savedPositions[1] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                lp.Character.HumanoidRootPart.CFrame = savedPositions[1]
+            end
+        end)
+    end,
+})
+
+ExtraTab:CreateButton({
+    Name = "📌 Pozisyon Kaydet (Slot 2)",
+    Callback = function()
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            savedPositions[2] = lp.Character.HumanoidRootPart.CFrame
+            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 2'ye kaydedildi", Duration = 3})
+        end
+    end,
+})
+ExtraTab:CreateButton({
+    Name = "➡️ Geri (Slot 2'ye Git)",
+    Callback = function()
+        pcall(function()
+            if savedPositions[2] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                lp.Character.HumanoidRootPart.CFrame = savedPositions[2]
+            end
+        end)
+    end,
+})
+
+ExtraTab:CreateButton({
+    Name = "📌 Pozisyon Kaydet (Slot 3)",
+    Callback = function()
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            savedPositions[3] = lp.Character.HumanoidRootPart.CFrame
+            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 3'e kaydedildi", Duration = 3})
+        end
+    end,
+})
+ExtraTab:CreateButton({
+    Name = "➡️ Geri (Slot 3'e Git)",
+    Callback = function()
+        pcall(function()
+            if savedPositions[3] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                lp.Character.HumanoidRootPart.CFrame = savedPositions[3]
+            end
+        end)
+    end,
+})
+
+-- Koordinatları kopyala (setclipboard varsa kullan)
+ExtraTab:CreateButton({
+    Name = "📋 Koordinatları Kopyala",
+    Callback = function()
+        pcall(function()
+            if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                local cf = lp.Character.HumanoidRootPart.CFrame
+                local s = string.format("CFrame.new(%.3f, %.3f, %.3f)", cf.Position.X, cf.Position.Y, cf.Position.Z)
+                local ok, _ = pcall(function() setclipboard(s) end)
+                if ok then
+                    Rayfield:Notify({Title = "Kopyalandı", Content = "Pozisyon kodu panoya kopyalandı", Duration = 2})
+                else
+                    print("Koordinatlar: "..s)
+                    Rayfield:Notify({Title = "Kopyalama yok", Content = "Konsola yazdırıldı (setclipboard yok)", Duration = 3})
+                end
+            end
+        end)
+    end,
+})
+
+-- Kısayol tuşları: RightShift = noclip toggle, RightControl = infjump toggle, RightAlt = save to next slot
+local nextSaveSlot = 1
+uis.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        _G.Noclip = not _G.Noclip
+        Rayfield:Notify({Title = "Noclip", Content = tostring(_G.Noclip), Duration = 1.5})
+    elseif input.KeyCode == Enum.KeyCode.RightControl then
+        _G.InfJump = not _G.InfJump
+        Rayfield:Notify({Title = "InfJump", Content = tostring(_G.InfJump), Duration = 1.5})
+    elseif input.KeyCode == Enum.KeyCode.RightAlt then
+        -- current position'i nextSaveSlot'e kaydet
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            savedPositions[nextSaveSlot] = lp.Character.HumanoidRootPart.CFrame
+            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot "..tostring(nextSaveSlot).." kaydedildi", Duration = 2})
+            nextSaveSlot = nextSaveSlot + 1
+            if nextSaveSlot > 3 then nextSaveSlot = 1 end
+        end
+    end
+end)
+
+-- Temiz kapatma / oyundan ayrılırken hud'ı kaldır
+game:BindToClose(function()
+    pcall(function()
+        local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
+        if hud then hud:Destroy() end
+    end)
+end)
+
+-- Küçük güvenlik: karakter spawn'ında değerleri tekrar uygula
+lp.CharacterAdded:Connect(function(char)
+    task.wait(0.5)
+    pcall(function()
+        if char:FindFirstChild("Humanoid") then
+            char.Humanoid.WalkSpeed = _G.Speed
+            char.Humanoid.JumpPower = _G.Jump
+            char.Humanoid.UseJumpPower = true
+        end
+    end)
+end)
+
+-- Bildirim: hangi özellikleri ekledim
+Rayfield:Notify({Title = "Eklendi", Content = "HUD, 3 Pozisyon Slotu, FOV, GUI gizleme ve tuş kısayolları eklendi. (Gamepass bypass düzenlenmedi)", Duration = 5})
