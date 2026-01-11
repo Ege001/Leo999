@@ -1,8 +1,8 @@
 --[[
-    👑 SOVEREIGN V46 | ELITE PLUS
+    👑 SOVEREIGN V46 | APEX ULTIMATE
     OWNER: EgeKazak_Real1
     MODDED: Gemini AI
-    FEATURES: Speed/Jump/FOV with +/- controls, Strict Ad Filter, Avatar Morph
+    FEATURES: Brookhaven Item Spawner, Bitcoin TP, +/- Controls, Full Ads
 ]]
 
 -- 1. BAŞLANGIÇ EKRANI
@@ -14,19 +14,20 @@ local function Startup()
     
     local t = Instance.new("TextLabel", f)
     t.Size = UDim2.new(1, 0, 0, 100)
-    t.Position = UDim2.new(0, 0, 0.45, 0)
-    t.Text = "SOVEREIGN ELITE PLUS\nYükleniyor..."
+    t.Position = UDim2.new(0.5, -250, 0.45, 0)
+    t.AnchorPoint = Vector2.new(0.5, 0.5)
+    t.Text = "SOVEREIGN ULTIMATE V46\nHazırlanıyor..."
     t.TextColor3 = Color3.fromRGB(0, 200, 255)
     t.Font = Enum.Font.GothamBold
     t.TextSize = 35
     t.BackgroundTransparency = 1
     
-    task.wait(1)
+    task.wait(1.2)
     sg:Destroy()
 end
 pcall(Startup)
 
--- 2. DEĞİŞKENLER
+-- 2. DEĞİŞKENLER & SERVİSLER
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -43,11 +44,11 @@ _G.Fly = false
 _G.Noclip = false
 _G.InfiniteJump = false
 
--- 3. RAYFIELD UI
+-- 3. RAYFIELD UI YÜKLEME
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V46 | ELITE PLUS",
-   LoadingTitle = "Apex Ultimate",
+   Name = "👑 SOVEREIGN V46 | ULTIMATE",
+   LoadingTitle = "Brookhaven Edition",
    LoadingSubtitle = "by EgeKazak_Real1",
    Theme = "DarkBlue",
    ConfigurationSaving = { Enabled = false }
@@ -56,90 +57,125 @@ local Window = Rayfield:CreateWindow({
 local MainTab = Window:CreateTab("🏠 Ana Panel", 4483362458)
 local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
+local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
 local ExtraTab = Window:CreateTab("✨ Ekstralar", 4483362458)
 
--- 4. ANA PANEL (STRİCT ADS)
+-- 4. ANA PANEL (FULL ADS & RESET)
 MainTab:CreateButton({
-    Name = "📢 REKLAMLARI TETİKLE (Strict Ad Filter)",
+    Name = "📢 TÜM REKLAMLARI VE FRAMELERİ AÇ",
     Callback = function()
         pcall(function()
             for _, v in pairs(lp.PlayerGui:GetDescendants()) do
                 if v:IsA("GuiObject") then
                     local n = v.Name:lower()
-                    -- SADECE "Ad" veya "Frame" içerenleri hedefle, sistemleri engelle
-                    local isStrictAd = (n:find("ad") and not n:find("admin")) or (n:find("promo") and n:find("frame"))
-                    if isStrictAd then
+                    if n:find("ad") or n:find("frame") or n:find("promo") or n:find("advert") then
                         v.Visible = true
+                        -- İçindeki tüm elemanları da göster
+                        for _, child in pairs(v:GetDescendants()) do
+                            if child:IsA("GuiObject") then child.Visible = true end
+                        end
                     end
                 end
             end
+            -- Remote tetikleme (Brookhaven özel reklamları için)
+            local rem = ReplicatedStorage:FindFirstChild("TriggerAd", true) or ReplicatedStorage:FindFirstChild("ShowAds", true)
+            if rem and rem:IsA("RemoteEvent") then rem:FireServer() end
         end)
     end,
 })
 
 MainTab:CreateButton({
-    Name = "🔄 Tüm Ayarları Sıfırla",
+    Name = "🔄 Ayarları Sıfırla",
     Callback = function()
         _G.Speed = 16; _G.Jump = 50; _G.FOV = 70; _G.SpeedEnabled = false; _G.JumpEnabled = false
         _G.Fly = false; _G.Noclip = false; Camera.FieldOfView = 70
+        Rayfield:Notify({Title = "Sıfırlandı", Content = "Tüm değerler normale döndü.", Duration = 2})
     end,
 })
 
--- 5. HAREKET (SAYI GİRİŞİ + ARTTIR/AZALT)
-MoveTab:CreateSection("Speed Control")
+-- 5. HAREKET (SAYI + ON/OFF + PLUS/MINUS)
+MoveTab:CreateSection("Hız Kontrolü")
 MoveTab:CreateToggle({ Name = "Hız Aktif", CurrentValue = false, Callback = function(v) _G.SpeedEnabled = v end })
 MoveTab:CreateInput({
-    Name = "Hız Sayısı Gir", PlaceholderText = "16-500",
+    Name = "Hız Değeri", PlaceholderText = "16-1000",
     Callback = function(v) _G.Speed = tonumber(v) or 16 end,
 })
 MoveTab:CreateButton({ Name = "Hız +5", Callback = function() _G.Speed = _G.Speed + 5 end })
 MoveTab:CreateButton({ Name = "Hız -5", Callback = function() _G.Speed = _G.Speed - 5 end })
 
-MoveTab:CreateSection("Jump Control")
+MoveTab:CreateSection("Zıplama Kontrolü")
 MoveTab:CreateToggle({ Name = "Zıplama Aktif", CurrentValue = false, Callback = function(v) _G.JumpEnabled = v end })
 MoveTab:CreateInput({
-    Name = "Zıplama Sayısı Gir", PlaceholderText = "50-500",
+    Name = "Zıplama Değeri", PlaceholderText = "50-1000",
     Callback = function(v) _G.Jump = tonumber(v) or 50 end,
 })
 MoveTab:CreateButton({ Name = "Zıplama +10", Callback = function() _G.Jump = _G.Jump + 10 end })
 MoveTab:CreateButton({ Name = "Zıplama -10", Callback = function() _G.Jump = _G.Jump - 10 end })
 
-MoveTab:CreateSection("Flight")
+MoveTab:CreateSection("Yetenekler")
 MoveTab:CreateToggle({ Name = "Uçma (Fly)", Callback = function(v) _G.Fly = v end })
 MoveTab:CreateToggle({ Name = "Duvar Geçme (Noclip)", Callback = function(v) _G.Noclip = v end })
 
--- 6. IŞINLANMA
-TPTab:CreateButton({ Name = "💰 Banka 1", Callback = function() lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end })
+-- 6. IŞINLANMA (BİTCOİN DAHİL)
+TPTab:CreateButton({ Name = "💰 Banka 1 (Merkez)", Callback = function() lp.Character:MoveTo(Vector3.new(-10.7, 15.4, 275.0)) end })
 TPTab:CreateButton({ Name = "💰 Altın Banka", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) end })
 TPTab:CreateButton({ Name = "💰 Elmas Banka", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-57.1, -50.8, 187.4) end })
+TPTab:CreateButton({ Name = "💰 Bitcoin Bankası", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) end })
+TPTab:CreateButton({ Name = "🏢 Polis Merkezi", Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.5, 2.7, 12.2) end })
 
--- 7. EKSTRALAR (MORPH & FOV +/-)
-ExtraTab:CreateSection("Avatar")
-ExtraTab:CreateButton({
-    Name = "👗 KIZ AVATARINA DÖNÜŞ (ID: 2433596482)",
-    Callback = function()
+-- 7. EŞYALAR (BROOKHAVEN ÖZEL)
+ToolTab:CreateSection("Envantere Eşya Al")
+
+local bhTools = {
+    "MoneyGun", "Hammer", "Pizza", "KeyCard", "Camera", "Smartphone", "Briefcase", "Flashlight", "Binoculars", "SleepingBag"
+}
+
+ToolTab:CreateDropdown({
+    Name = "Eşya Seç",
+    Options = bhTools,
+    CurrentOption = "MoneyGun",
+    Callback = function(Option)
         pcall(function()
-            local hum = lp.Character:FindFirstChildOfClass("Humanoid")
-            if hum then
-                local desc = Players:GetHumanoidDescriptionFromUserId(2433596482)
-                hum:ApplyDescription(desc)
-                Rayfield:Notify({Title = "Başarılı", Content = "Dönüşüm Tamamlandı!", Duration = 2})
+            -- Brookhaven eşya verme sistemi (RemoteEvent üzerinden)
+            local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true) or ReplicatedStorage:FindFirstChild("GiveItem", true)
+            if remote then
+                remote:FireServer(Option)
             end
+            
+            -- Manuel Clone (Eğer remote çalışmazsa)
+            local tool = ReplicatedStorage:FindFirstChild(Option, true)
+            if tool and tool:IsA("Tool") then
+                tool:Clone().Parent = lp.Backpack
+            end
+            
+            Rayfield:Notify({Title = "Eşya Alındı", Content = Option .. " envanterine eklendi!", Duration = 2})
         end)
     end,
 })
 
-ExtraTab:CreateSection("Visuals")
+ToolTab:CreateButton({
+    Name = "💵 Hızlı Money Gun Al",
+    Callback = function()
+        pcall(function()
+            local tool = ReplicatedStorage:FindFirstChild("MoneyGun", true)
+            if tool then tool:Clone().Parent = lp.Backpack end
+        end)
+    end,
+})
+
+-- 8. EKSTRALAR (FOV +/-)
+ExtraTab:CreateSection("Kamera Ayarları")
 ExtraTab:CreateInput({
-    Name = "FOV Sayısı Gir", PlaceholderText = "70-120",
+    Name = "FOV Değeri", PlaceholderText = "70-120",
     Callback = function(v) _G.FOV = tonumber(v) or 70; Camera.FieldOfView = _G.FOV end,
 })
 ExtraTab:CreateButton({ Name = "FOV +5", Callback = function() _G.FOV = _G.FOV + 5; Camera.FieldOfView = _G.FOV end })
 ExtraTab:CreateButton({ Name = "FOV -5", Callback = function() _G.FOV = _G.FOV - 5; Camera.FieldOfView = _G.FOV end })
 
+ExtraTab:CreateSection("Diğer")
 ExtraTab:CreateToggle({ Name = "Sonsuz Zıplama", Callback = function(v) _G.InfiniteJump = v end })
 
--- 8. DÖNGÜ VE KONTROLLER
+-- 9. ANA DÖNGÜ (STABİL)
 RunService.Heartbeat:Connect(function()
     pcall(function()
         local char = lp.Character
@@ -156,19 +192,19 @@ RunService.Heartbeat:Connect(function()
         end
         
         if _G.Fly and hrp then
-            if not hrp:FindFirstChild("FlyBV") then
-                local bv = Instance.new("BodyVelocity", hrp); bv.Name = "FlyBV"; bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-                local bg = Instance.new("BodyGyro", hrp); bg.Name = "FlyBG"; bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            if not hrp:FindFirstChild("SovFly") then
+                local bv = Instance.new("BodyVelocity", hrp); bv.Name = "SovFly"; bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+                local bg = Instance.new("BodyGyro", hrp); bg.Name = "SovGyro"; bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
             end
-            hrp.FlyBG.CFrame = Camera.CFrame
+            hrp.SovGyro.CFrame = Camera.CFrame
             local move = Vector3.new(0,0,0)
             if UserInputService:IsKeyDown(Enum.KeyCode.W) then move = move + Camera.CFrame.LookVector end
             if UserInputService:IsKeyDown(Enum.KeyCode.S) then move = move - Camera.CFrame.LookVector end
             if UserInputService:IsKeyDown(Enum.KeyCode.D) then move = move + Camera.CFrame.RightVector end
             if UserInputService:IsKeyDown(Enum.KeyCode.A) then move = move - Camera.CFrame.RightVector end
-            hrp.FlyBV.Velocity = move * 60
-        elseif hrp and hrp:FindFirstChild("FlyBV") then
-            hrp.FlyBV:Destroy(); hrp.FlyBG:Destroy()
+            hrp.SovFly.Velocity = move * 70
+        elseif hrp and hrp:FindFirstChild("SovFly") then
+            hrp.SovFly:Destroy(); hrp.SovGyro:Destroy()
         end
     end)
 end)
@@ -180,15 +216,15 @@ end)
 -- HUD
 local function BuildHUD()
     local sg = Instance.new("ScreenGui", lp.PlayerGui)
-    local f = Instance.new("Frame", sg); f.Size = UDim2.new(0, 150, 0, 60); f.Position = UDim2.new(0, 10, 0, 10); f.BackgroundColor3 = Color3.new(0,0,0); f.BackgroundTransparency = 0.5; Instance.new("UICorner", f)
+    local f = Instance.new("Frame", sg); f.Size = UDim2.new(0, 160, 0, 60); f.Position = UDim2.new(0, 10, 0, 10); f.BackgroundColor3 = Color3.new(0,0,0); f.BackgroundTransparency = 0.5; Instance.new("UICorner", f)
     local l = Instance.new("TextLabel", f); l.Size = UDim2.new(1,0,1,0); l.BackgroundTransparency = 1; l.TextColor3 = Color3.new(1,1,1); l.Font = Enum.Font.Code; l.TextSize = 12
     task.spawn(function()
         while task.wait(0.5) do
             if not sg.Parent then break end
-            l.Text = string.format("SOV ELITE PLUS\nS:%d | J:%d | F:%d", _G.Speed, _G.Jump, _G.FOV)
+            l.Text = string.format("SOV ULTIMATE V46\nSPD: %d | JMP: %d\nITEM: Hazır", _G.Speed, _G.Jump)
         end
     end)
 end
 BuildHUD()
 
-Rayfield:Notify({Title = "Sovereign Elite Plus", Content = "+/- Kontrolleri ve Strict Ads Hazır!", Duration = 5})
+Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Brookhaven Eşyaları ve Bitcoin TP Eklendi!", Duration = 5})
