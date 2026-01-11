@@ -47,6 +47,16 @@ _G.FOV = _G.FOV or (Camera and Camera.FieldOfView) or 70
 _G.Noclip = _G.Noclip or false
 _G.InfJump = _G.InfJump or false
 
+-- STEP SIZES FOR +/- (you can tweak these)
+_G.SpeedStep = _G.SpeedStep or 1
+_G.JumpStep  = _G.JumpStep  or 1
+_G.FOVStep   = _G.FOVStep   or 2
+
+-- MIN/MAX LIMITS
+local MIN_SPEED, MAX_SPEED = 16, 1000
+local MIN_JUMP,  MAX_JUMP  = 50, 1000
+local MIN_FOV,   MAX_FOV   = 45, 120
+
 -- ---------------------
 -- SAFE: GAMEPASS BYPASS KISMI (YORUMLU)
 -- ---------------------
@@ -70,7 +80,7 @@ if Rayfield then
        ConfigurationSaving = { Enabled = false }
     })
 else
-    -- minimal stub
+    -- minimal stub (harici kullanımda hata verilmesin diye)
     Window = {
         CreateTab = function(_, n) return { CreateSlider = function() end, CreateToggle = function() end, CreateButton = function() end, CreateDropdown = function() end } end
     }
@@ -85,15 +95,27 @@ local ExtraTab = Window:CreateTab("✨ Ekstra", 4483362458)
 local ViewerTab = Window:CreateTab("🔭 İzle & Avatar", 4483362458)
 
 -- ---------- APPLY FUNCTIONS (Slider callback'leri buraya bağlanacak) ----------
+local function safeClamp(n, minv, maxv)
+    return math.max(minv, math.min(maxv, n))
+end
+
 local function applySpeed(v)
+    v = math.floor(v)
+    v = safeClamp(v, MIN_SPEED, MAX_SPEED)
     _G.Speed = v
     pcall(function()
         if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
             lp.Character:FindFirstChildWhichIsA("Humanoid").WalkSpeed = _G.Speed
         end
     end)
+    if Rayfield and Rayfield.Notify then
+        pcall(function() Rayfield:Notify({Title="Hız", Content=tostring(_G.Speed), Duration=1}) end)
+    end
 end
+
 local function applyJump(v)
+    v = math.floor(v)
+    v = safeClamp(v, MIN_JUMP, MAX_JUMP)
     _G.Jump = v
     pcall(function()
         if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
@@ -102,24 +124,33 @@ local function applyJump(v)
             h.UseJumpPower = true
         end
     end)
+    if Rayfield and Rayfield.Notify then
+        pcall(function() Rayfield:Notify({Title="Zıplama", Content=tostring(_G.Jump), Duration=1}) end)
+    end
 end
+
 local function applyFOV(v)
+    v = tonumber(v) or _G.FOV
+    v = safeClamp(v, MIN_FOV, MAX_FOV)
     _G.FOV = v
     pcall(function()
         if Camera then Camera.FieldOfView = _G.FOV end
     end)
+    if Rayfield and Rayfield.Notify then
+        pcall(function() Rayfield:Notify({Title="FOV", Content=tostring(_G.FOV), Duration=1}) end)
+    end
 end
 
 -- ---------- UI CONTROLS: MoveTab sliders/toggles (callback'leri apply* ile direkt bağlı) ----------
 MoveTab:CreateSlider({
    Name = "Hız (WalkSpeed)",
-   Range = {16, 1000},
+   Range = {MIN_SPEED, MAX_SPEED},
    CurrentValue = _G.Speed,
    Callback = function(v) applySpeed(v) end,
 })
 MoveTab:CreateSlider({
    Name = "Zıplama (JumpPower)",
-   Range = {50, 1000},
+   Range = {MIN_JUMP, MAX_JUMP},
    CurrentValue = _G.Jump,
    Callback = function(v) applyJump(v) end,
 })
@@ -130,6 +161,60 @@ MoveTab:CreateToggle({
 MoveTab:CreateToggle({
    Name = "Sonsuz Zıplama",
    Callback = function(v) _G.InfJump = v end,
+})
+
+-- ---------- ADD +/- BUTTONS (Speed / Jump / FOV) ----------
+-- Speed + / -
+MoveTab:CreateButton({
+    Name = "Speed +",
+    Callback = function()
+        applySpeed((_G.Speed or MIN_SPEED) + (_G.SpeedStep or 1))
+    end,
+})
+MoveTab:CreateButton({
+    Name = "Speed -",
+    Callback = function()
+        applySpeed((_G.Speed or MIN_SPEED) - (_G.SpeedStep or 1))
+    end,
+})
+
+-- Jump + / -
+MoveTab:CreateButton({
+    Name = "Jump +",
+    Callback = function()
+        applyJump((_G.Jump or MIN_JUMP) + (_G.JumpStep or 1))
+    end,
+})
+MoveTab:CreateButton({
+    Name = "Jump -",
+    Callback = function()
+        applyJump((_G.Jump or MIN_JUMP) - (_G.JumpStep or 1))
+    end,
+})
+
+-- FOV + / - (put in MoveTab for easy access; also present in ExtraTab slider)
+MoveTab:CreateButton({
+    Name = "FOV +",
+    Callback = function()
+        applyFOV((_G.FOV or 70) + (_G.FOVStep or 2))
+    end,
+})
+MoveTab:CreateButton({
+    Name = "FOV -",
+    Callback = function()
+        applyFOV((_G.FOV or 70) - (_G.FOVStep or 2))
+    end,
+})
+
+-- Optional quick reset button
+MoveTab:CreateButton({
+    Name = "Reset Speed/Jump/FOV",
+    Callback = function()
+        applySpeed(MIN_SPEED)
+        applyJump(MIN_JUMP)
+        applyFOV(70)
+        if Rayfield and Rayfield.Notify then pcall(function() Rayfield:Notify({Title="Sıfırlandı", Content="Speed/Jump/FOV sıfırlandı", Duration=2}) end) end
+    end,
 })
 
 -- ---------- MAIN TAB ADS & ADMIN ----------
@@ -171,7 +256,10 @@ MainTab:CreateButton({
                                if d.Activated then
                                    d:Activate()
                                else
-                                   d:Fire("MouseButton1Click")
+                                   -- Fire event in safe way if possible
+                                   if d.MouseButton1Click then
+                                       d.MouseButton1Click:Fire()
+                                   end
                                end
                            end)
                        end
@@ -274,7 +362,7 @@ createHUD()
 -- ---------- EXTRA TAB: FOV Slider, Save slots, GUI toggle, copy coords ----------
 ExtraTab:CreateSlider({
     Name = "Kamera FOV",
-    Range = {45, 120},
+    Range = {MIN_FOV, MAX_FOV},
     CurrentValue = _G.FOV,
     Callback = function(v) applyFOV(v) end,
 })
@@ -533,6 +621,6 @@ else
 end
 
 -- FINAL NOTIFY
-if Rayfield then Rayfield:Notify({Title="Hazır", Content="Tam entegre sürüm yüklendi. Slider'lar artık düzgün çalışıyor.", Duration=4}) end
+if Rayfield then Rayfield:Notify({Title="Hazır", Content="Tam entegre sürüm yüklendi. +/- kontroller eklendi.", Duration=4}) end
 
 -- END OF SINGLE-FILE SAFE SCRIPT
