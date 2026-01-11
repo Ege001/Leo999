@@ -1,4 +1,4 @@
--- Sovereign Elite UI Loader
+-- Sovereign Elite V32 Loader
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local lp = game.Players.LocalPlayer
@@ -6,13 +6,13 @@ local camera = workspace.CurrentCamera
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 
--- PENCERE AYARLARI (Fotoğraftaki gibi tarz menü)
+-- PENCERE AYARLARI (Fotoğraftaki Lyra Hub Teması)
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN ELITE | V31",
-   LoadingTitle = "Sistemler Başlatılıyor...",
-   LoadingSubtitle = "EgeKazak_Real1 İçin Optimize Edildi",
-   ConfigurationSaving = { Enabled = true, FolderName = "SovereignElite" },
-   Theme = "DarkBlue" -- Neon ve şık görünüm
+   Name = "👑 SOVEREIGN ELITE V32 | EgeKazak_Real1",
+   LoadingTitle = "Veri Motoru Başlatılıyor...",
+   LoadingSubtitle = "Hatalar Giderildi & Ads Eklendi",
+   ConfigurationSaving = { Enabled = true, FolderName = "SovereignEliteV32" },
+   Theme = "DarkBlue" 
 })
 
 -- DEĞİŞKENLER
@@ -24,15 +24,16 @@ local MainTab = Window:CreateTab("🏠 Ana Panel", 4483362458)
 local PlayerTab = Window:CreateTab("👤 Oyuncu", 4483362458)
 local MovementTab = Window:CreateTab("⚡ Hareket", 4483362458)
 local VisualTab = Window:CreateTab("🌈 Görsel (RGB)", 4483362458)
-local ToolTab = Window:CreateTab("📦 Eşya Seçici", 4483362458)
+local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
 
--- --- [1. ANA PANEL: PLAYERSBAG GOD MODE] ---
-MainTab:CreateSection("Sistem Kontrolü")
+-- --- [1. ANA PANEL: HATA DÜZELTME & ADS] ---
+MainTab:CreateSection("Sistem Bypass")
 
 MainTab:CreateButton({
-   Name = "🔓 PLAYERSBAG UNLOCK (Tüm Yetkiler)",
+   Name = "🔓 FIX: 'Zaten Sahipsin' & Full Yetki",
    Callback = function()
        pcall(function()
+           -- 1. PlayersBag Override
            local pb = lp:FindFirstChild("PlayersBag")
            if pb then
                for _, v in pairs(pb:GetDescendants()) do
@@ -40,27 +41,51 @@ MainTab:CreateButton({
                    elseif v:IsA("NumberValue") or v:IsA("IntValue") then v.Value = 1 end
                end
            end
-           Rayfield:Notify({Title = "SİSTEM", Content = "EgeKazak_Real1: Tüm veriler TRUE yapıldı!", Duration = 5})
+           
+           -- 2. Veri Kontrolcü Bypass (GlobalReplicatedData Fix)
+           for _, v in pairs(getgc(true)) do
+               if type(v) == "table" and rawget(v, "GetReplicatedData") then
+                   hookfunction(v.GetReplicatedData, function()
+                       return { profile = { gamepasses = { ["850049439"] = true, ["9066980"] = true } } } -- Örnek bypass
+                   end)
+               end
+           end
+           Rayfield:Notify({Title = "BAŞARILI", Content = "Hata düzeltildi ve yetkiler tanımlandı!", Duration = 5})
        end)
    end,
 })
 
 MainTab:CreateButton({
-   Name = "📢 Ads Menüsünü Zorla Aç",
+   Name = "📢 ADS / SPONSOR BUTONUNU AKTİF ET",
    Callback = function()
        pcall(function()
-           local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
-           local ads = gui and gui:FindFirstChild("AdStore", true)
-           if ads then ads.Visible = true; ads.Position = UDim2.new(0.5, 0, 0.5, 0) end
+           local mainGui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
+           if mainGui then
+               -- Menüyü bul ve tetikle
+               local adsMenu = mainGui:FindFirstChild("AdStore", true)
+               if adsMenu then 
+                   adsMenu.Visible = true 
+                   adsMenu.Position = UDim2.new(0.5, 0, 0.5, 0)
+               end
+               -- Butonu görünür yap
+               for _, b in pairs(mainGui:GetDescendants()) do
+                   if b.Name == "Ads" or b.Name == "Sponsor" then
+                       b.Visible = true
+                       b.Transparency = 0
+                       b.Size = UDim2.new(0, 50, 0, 50) -- Görünür boyut
+                   end
+               end
+           end
+           Rayfield:Notify({Title = "BİLGİ", Content = "Ads butonu ve menüsü aktif edildi!", Duration = 3})
        end)
    end,
 })
 
--- --- [2. OYUNCU: VIEW & AVATAR COPY] ---
-PlayerTab:CreateSection("Oyuncu Etkileşimi")
+-- --- [2. OYUNCU: VIEW & COPY] ---
+PlayerTab:CreateSection("Oyuncu Araçları")
 
 PlayerTab:CreateInput({
-   Name = "Oyuncu Ara", PlaceholderText = "İsim...",
+   Name = "Oyuncu Adı Yaz", PlaceholderText = "Ege...",
    Callback = function(t)
        for _, p in pairs(game.Players:GetPlayers()) do
            if p.Name:lower():find(t:lower()) then viewTarget = p end
@@ -76,27 +101,27 @@ PlayerTab:CreateToggle({
 })
 
 PlayerTab:CreateButton({
-   Name = "Avatar Kopyala (Copy)",
+   Name = "Kişiyi Kopyala (Copy Avatar)",
    Callback = function()
        if viewTarget then lp.CharacterAppearanceId = viewTarget.UserId; lp.Character:BreakJoints() end
    end,
 })
 
--- --- [3. HAREKET: FLY / NOCLIP / INF JUMP] ---
-MovementTab:CreateSection("Fizik Ayarları")
+-- --- [3. HAREKET: FOTOĞRAFTAKİ ÖZELLİKLER] ---
+MovementTab:CreateSection("Hareket Ayarları")
 
 MovementTab:CreateSlider({
-   Name = "Yürüme Hızı (WalkSpeed)", Range = {16, 500}, CurrentValue = 16,
+   Name = "WalkSpeed (Hız)", Range = {16, 500}, CurrentValue = 16,
    Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end,
 })
 
 MovementTab:CreateSlider({
-   Name = "Zıplama Gücü (JumpPower)", Range = {50, 500}, CurrentValue = 50,
+   Name = "JumpPower (Zıplama)", Range = {50, 500}, CurrentValue = 50,
    Callback = function(v) lp.Character.Humanoid.JumpPower = v end,
 })
 
 MovementTab:CreateToggle({
-   Name = "Noclip (Duvar Geçme)", CurrentValue = false,
+   Name = "Noclip (Duvar Geçme)",
    Callback = function(v)
        noclip = v
        runService.Stepped:Connect(function()
@@ -110,7 +135,7 @@ MovementTab:CreateToggle({
 })
 
 MovementTab:CreateToggle({
-   Name = "Infinite Jump (Sınırsız Zıplama)", CurrentValue = false,
+   Name = "Infinite Jump (Sınırsız)",
    Callback = function(v) infJump = v end,
 })
 
@@ -118,15 +143,15 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
     if infJump then lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") end
 end)
 
--- --- [4. GÖRSEL: RGB & RAINBOW HOUSES] ---
-VisualTab:CreateSection("Efektler")
+-- --- [4. GÖRSEL: RGB & RAINBOW] ---
+VisualTab:CreateSection("Renk Efektleri")
 
 VisualTab:CreateToggle({
-   Name = "RGB Araçlar & Rainbow Evler", CurrentValue = false,
+   Name = "RGB Araçlar & Rainbow Evler",
    Callback = function(v)
-       _G.EliteVisual = v
+       _G.EliteV32 = v
        spawn(function()
-           while _G.EliteVisual do
+           while _G.EliteV32 do
                local c = Color3.fromHSV(tick() % 5 / 5, 1, 1)
                for _, car in pairs(workspace.Vehicles:GetChildren()) do
                    if car:FindFirstChild("Body") then car.Body.Color = c end
@@ -141,22 +166,9 @@ VisualTab:CreateToggle({
    end,
 })
 
--- --- [5. EŞYA SEÇİCİ: VIEW TOOLS] ---
-ToolTab:CreateSection("Envanter")
-
-local tools = {}
-for _, t in pairs(rs:GetDescendants()) do if t:IsA("Tool") then table.insert(tools, t.Name) end end
-ToolTab:CreateDropdown({
-   Name = "Eşya Seç", Options = tools,
-   Callback = function(o)
-       local t = rs:FindFirstChild(o, true)
-       if t then t:Clone().Parent = lp.Backpack end
-   end,
-})
-
 -- --- [AYARLAR] ---
 local SettingsTab = Window:CreateTab("⚙️ Ayarlar", 4483362458)
 SettingsTab:CreateButton({
-   Name = "🔴 SCRIPT DESTROY (TAMAMEN KAPAT)",
+   Name = "🔴 SCRIPT DESTROY (TAM SİL)",
    Callback = function() Rayfield:Destroy() end,
 })
