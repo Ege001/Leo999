@@ -33,17 +33,11 @@ local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 local cam = workspace.CurrentCamera
 
--- 🛠️ VIP & ADS MODÜL BYPASS (ShowGamepass.txt ve Gamepass.txt Verileri)
--- NOT: Aşağıdaki bölümün *aktif* hali ücretli/restricted içerikleri yetkisiz açmaya çalışıyor.
--- Güvenlik / etik sebeplerle bu yardımın devamı olarak bypass'ı güçlendiremiyorum. Eğer bu
--- bloğu test amaçlı lokalde kullanmak istiyorsan kendi sorumluluğunda tekrar açabilirsin.
+-- 🛠️ (Bypass kısmı yorumlu bırakıldı - etik/güvenlik sebebiyle aktif hale getirilmeyecek)
 -- pcall(function()
---     -- VIP Eşya Kontrolünü Kır 
 --     local sgp = require(rs.Modules.Client.UI.ShowGamepass)
 --     sgp.IsOwned = function() return true end
 --     sgp.IsPlayerOwned = function() return true end
---     
---     -- Reklam (Ads) Sistemini Kır [cite: 40, 42]
 --     local gpc = require(rs.Modules.Client.Data.Gamepass)
 --     gpc.CanPlayerViewAdvertisements = function() return true end
 -- end)
@@ -67,14 +61,14 @@ local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
 
 MoveTab:CreateSlider({
    Name = "Hız (WalkSpeed)",
-   Range = {16, 1000}, -- İstediğin 1000 sınırı eklendi
+   Range = {16, 1000},
    CurrentValue = 16,
    Callback = function(v) _G.Speed = v end,
 })
 
 MoveTab:CreateSlider({
    Name = "Zıplama (JumpPower)",
-   Range = {50, 1000}, -- İstediğin 1000 sınırı eklendi
+   Range = {50, 1000},
    CurrentValue = 50,
    Callback = function(v) _G.Jump = v end,
 })
@@ -113,6 +107,48 @@ MainTab:CreateButton({
    end,
 })
 
+-- NEW: Ads tetikleyici fonksiyonu (daha geniş arama + görünür yapma)
+local function TryOpenAds()
+    pcall(function()
+        -- 1) PlayerGui içinde direkt AdStore bul
+        local found = {}
+        for _, g in ipairs({lp.PlayerGui, game.CoreGui}) do
+            for _, child in ipairs(g:GetDescendants()) do
+                if child:IsA("GuiObject") and tostring(child.Name):lower():match("ad") then
+                    table.insert(found, child)
+                end
+            end
+        end
+        -- ek olarak "AdStore", "Advertisement", "AdPanel" gibi isimleri kontrol et
+        if #found > 0 then
+            for _, gui in ipairs(found) do
+                pcall(function()
+                    gui.Visible = true
+                    -- altındaki tüm GuiObject'leri de görünür yap
+                    for _, d in ipairs(gui:GetDescendants()) do
+                        if d:IsA("GuiObject") then
+                            d.Visible = true
+                        end
+                    end
+                end)
+            end
+            Rayfield:Notify({Title = "Reklam Menüsü", Content = "Bulundu ve açıldı (client-side).", Duration = 3})
+            return true
+        else
+            Rayfield:Notify({Title = "Reklam Menüsü", Content = "Client GUI bulunamadı.", Duration = 3})
+            return false
+        end
+    end)
+end
+
+-- Ads butonu (yeni)
+MainTab:CreateButton({
+    Name = "📢 REKLAM MENÜSÜNÜ TETİKLE (Aç)",
+    Callback = function()
+        TryOpenAds()
+    end,
+})
+
 -- --- [3. IŞINLANMA (GÜNCEL KONUMLAR)] ---
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 
@@ -149,11 +185,13 @@ ToolTab:CreateButton({
    end,
 })
 
+-- EVENT BAĞLANTILARINI SAKLA (sonradan destroy edebilmek için)
+local heartConn, jumpConn, inputConn, charAddedConn
+
 -- --- [ DÖNGÜSEL SİSTEMLER - KESİN ÇÖZÜM ] ---
-runService.Heartbeat:Connect(function()
+heartConn = runService.Heartbeat:Connect(function()
     pcall(function()
         if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-            -- Oyunun değerleri 16/50'ye çekmesini engellemek için sürekli zorla
             lp.Character.Humanoid.WalkSpeed = _G.Speed
             lp.Character.Humanoid.JumpPower = _G.Jump
             lp.Character.Humanoid.UseJumpPower = true
@@ -166,7 +204,7 @@ runService.Heartbeat:Connect(function()
     end)
 end)
 
-uis.JumpRequest:Connect(function()
+jumpConn = uis.JumpRequest:Connect(function()
     if _G.InfJump and lp.Character then
         lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     end
@@ -174,7 +212,6 @@ end)
 
 -- ============================
 -- AŞAĞIDA GÜVENLİ EK ÖZELLİKLER
--- (Ödeme/akses bypass'ı içeren kodlara yeni bypass eklenmedi; o kısım yorumlu)
 -- ============================
 
 -- HUD: ekranda hız / zıplama göstergesi
@@ -211,7 +248,6 @@ local function createHUD()
     jumpLbl.Font = Enum.Font.Gotham
     jumpLbl.TextSize = 16
 
-    -- güncelleme loopu
     spawn(function()
         while sg.Parent do
             pcall(function()
@@ -247,14 +283,11 @@ ExtraTab:CreateButton({
     Callback = function()
         guiVisible = not guiVisible
         pcall(function()
-            local winGui = Rayfield and Rayfield.Window and Rayfield.Window.main or nil
-            -- Rayfield iç yapısı farklıysa bu çalışmayabilir; alternatif: tüm CoreGui içindeki Rayfield benzeri adları sakla
             for _, v in pairs(game.CoreGui:GetChildren()) do
-                if v:IsA("ScreenGui") and v.Name:match("Rayfield") then
+                if v:IsA("ScreenGui") and tostring(v.Name):lower():match("rayfield") then
                     v.Enabled = guiVisible
                 end
             end
-            -- ayrıca kendi HUD'ı gizle/göster
             local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
             if hud then hud.Enabled = guiVisible end
         end)
@@ -345,7 +378,7 @@ ExtraTab:CreateButton({
 
 -- Kısayol tuşları: RightShift = noclip toggle, RightControl = infjump toggle, RightAlt = save to next slot
 local nextSaveSlot = 1
-uis.InputBegan:Connect(function(input, gameProcessed)
+inputConn = uis.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
         _G.Noclip = not _G.Noclip
@@ -354,7 +387,6 @@ uis.InputBegan:Connect(function(input, gameProcessed)
         _G.InfJump = not _G.InfJump
         Rayfield:Notify({Title = "InfJump", Content = tostring(_G.InfJump), Duration = 1.5})
     elseif input.KeyCode == Enum.KeyCode.RightAlt then
-        -- current position'i nextSaveSlot'e kaydet
         if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
             savedPositions[nextSaveSlot] = lp.Character.HumanoidRootPart.CFrame
             Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot "..tostring(nextSaveSlot).." kaydedildi", Duration = 2})
@@ -365,15 +397,16 @@ uis.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 -- Temiz kapatma / oyundan ayrılırken hud'ı kaldır
-game:BindToClose(function()
+local bindCloseFunc = function()
     pcall(function()
         local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
         if hud then hud:Destroy() end
     end)
-end)
+end
+game:BindToClose(bindCloseFunc)
 
--- Küçük güvenlik: karakter spawn'ında değerleri tekrar uygula
-lp.CharacterAdded:Connect(function(char)
+-- Karakter spawn'ında değerleri tekrar uygula
+charAddedConn = lp.CharacterAdded:Connect(function(char)
     task.wait(0.5)
     pcall(function()
         if char:FindFirstChild("Humanoid") then
@@ -384,5 +417,58 @@ lp.CharacterAdded:Connect(function(char)
     end)
 end)
 
+-- ========== DESTROY / CLEANUP ==========
+
+local function TryDisableRayfieldGUIs()
+    pcall(function()
+        for _, v in pairs(game.CoreGui:GetChildren()) do
+            if v:IsA("ScreenGui") and tostring(v.Name):lower():match("rayfield") or tostring(v.Name):lower():match("sirius") then
+                -- mümkünse kapat
+                if rawget(v, "Enabled") ~= nil then
+                    v.Enabled = false
+                else
+                    v:Destroy()
+                end
+            end
+        end
+    end)
+end
+
+local function DestroyEverything()
+    pcall(function()
+        -- vars revert
+        _G.Noclip = false
+        _G.InfJump = false
+        _G.Speed = 16
+        _G.Jump = 50
+
+        -- HUD temizle
+        local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
+        if hud then hud:Destroy() end
+
+        -- saved positions temizle
+        savedPositions = {nil, nil, nil}
+
+        -- disconnect eventler
+        if heartConn then heartConn:Disconnect() end
+        if jumpConn then jumpConn:Disconnect() end
+        if inputConn then inputConn:Disconnect() end
+        if charAddedConn then charAddedConn:Disconnect() end
+
+        -- Rayfield GUI'lerini devre dışı bırakmayı dene
+        TryDisableRayfieldGUIs()
+
+        -- bildirim
+        pcall(function() Rayfield:Notify({Title = "Temizlendi", Content = "Eklentiler kaldırıldı ve eventler kesildi.", Duration = 4}) end)
+    end)
+end
+
+MainTab:CreateButton({
+    Name = "🗑️ Kaldır (Destroy Script)",
+    Callback = function()
+        DestroyEverything()
+    end,
+})
+
 -- Bildirim: hangi özellikleri ekledim
-Rayfield:Notify({Title = "Eklendi", Content = "HUD, 3 Pozisyon Slotu, FOV, GUI gizleme ve tuş kısayolları eklendi. (Gamepass bypass düzenlenmedi)", Duration = 5})
+Rayfield:Notify({Title = "Güncellendi", Content = "Destroy ve Ads tetikleme eklendi. (Bypass kısmı değişmedi.)", Duration = 5})
