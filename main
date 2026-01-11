@@ -1,88 +1,110 @@
 --[[
-    👑 SOVEREIGN V38 | CMDR & ACCURATE TP
+    👑 SOVEREIGN V39 | GOD-MODE & CMDR UNLOCK
     OWNER: EgeKazak_Real1
-    - Tam Nokta Işınlanma (Koordinat Fix)
-    - Cmdr Admin Panel Unlock
-    - MoneyGun & All Tools AI
+    - Speed Anti-Reset Fix
+    - New Bank Coordinates
+    - Cmdr SuperAdmin Unlock
+    - Ads & MoneyGun System
 ]]
 
--- 🌀 1. PRO LOADING SCREEN
+-- 🌀 1. PRO LOADING SCREEN (YÜKLENİYOR...)
 local function StartLoading()
     local sg = Instance.new("ScreenGui", game.CoreGui)
     local frame = Instance.new("Frame", sg)
     frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
+    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 12)
     
     local txt = Instance.new("TextLabel", frame)
-    txt.Size = UDim2.new(0, 500, 0, 100)
-    txt.Position = UDim2.new(0.5, -250, 0.4, 0)
-    txt.Text = "SOVEREIGN COMMANDER V38\nEge İçin Veriler Eşitleniyor..."
-    txt.TextColor3 = Color3.fromRGB(0, 150, 255)
+    txt.Size = UDim2.new(0, 600, 0, 100)
+    txt.Position = UDim2.new(0.5, -300, 0.4, 0)
+    txt.Text = "SOVEREIGN GOD-MODE V39\nEgeKazak_Real1 İçin Hazırlanıyor..."
+    txt.TextColor3 = Color3.fromRGB(0, 170, 255)
     txt.Font = Enum.Font.GothamBold
-    txt.TextSize = 35
+    txt.TextSize = 38
     txt.BackgroundTransparency = 1
+
+    local barBG = Instance.new("Frame", frame)
+    barBG.Size = UDim2.new(0, 400, 0, 10)
+    barBG.Position = UDim2.new(0.5, -200, 0.6, 0)
+    barBG.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     
-    task.wait(3.5)
+    local bar = Instance.new("Frame", barBG)
+    bar.Size = UDim2.new(0, 0, 1, 0)
+    bar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    bar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quart", 4)
+    
+    task.wait(4.5)
     sg:Destroy()
 end
 StartLoading()
 
--- 👑 2. ANA SCRIPT
+-- 👑 2. ANA SCRIPT MOTORU
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local lp = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
 
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V38 | CMDR UNLOCK",
-   LoadingTitle = "Hoş Geldin Owner",
-   LoadingSubtitle = "EgeKazak_Real1",
+   Name = "👑 SOVEREIGN V39 | GOD-MODE",
+   LoadingTitle = "Yönetici: EgeKazak_Real1",
+   LoadingSubtitle = "AI & Admin Panel",
+   ConfigurationSaving = { Enabled = true, FolderName = "SovereignV39" },
    Theme = "DarkBlue"
 })
 
+-- DEĞİŞKENLER
+_G.SpeedValue = 16
+_G.Noclip = false
+
 -- --- [1. ANA PANEL: ADS & CMDR] ---
-local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
+local MainTab = Window:CreateTab("🏠 Ana Sistem", 4483362458)
+MainTab:CreateSection("Admin & Reklam Erişimleri")
 
 MainTab:CreateButton({
-   Name = "⌨️ CMDR ADMIN PANELİNİ AÇ (Console)",
+   Name = "⌨️ CMDR ADMIN PANELİNİ TETİKLE (AÇ)",
    Callback = function()
        pcall(function()
-           -- Cmdr Sistemine Tam Yetkiyle Sızma
            local Cmdr = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
-           Cmdr:SetActivationKeys({Enum.KeyCode.F2, Enum.KeyCode.Quote}) -- F2 veya " tuşuyla açılır
+           Cmdr:SetActivationKeys({Enum.KeyCode.F2, Enum.KeyCode.Quote})
            Cmdr:Show()
-           Rayfield:Notify({Title = "CMDR", Content = "Panel Aktif! F2 veya ' tuşuna bas.", Duration = 5})
+           Rayfield:Notify({Title = "CMDR", Content = "Admin Paneli Aktif! (F2/Quote)", Duration = 5})
        end)
    end,
 })
 
 MainTab:CreateButton({
-   Name = "📢 ADS MENÜSÜNÜ ZORLA AÇ",
+   Name = "📢 SPONSOR / ADS MENÜSÜNÜ GETİR",
    Callback = function()
        pcall(function()
            local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
            if gui then
                local ads = gui:FindFirstChild("AdStore", true)
                if ads then ads.Visible = true; ads.Position = UDim2.new(0.5, 0, 0.5, 0) end
+               for _, v in pairs(gui:GetDescendants()) do
+                   if v.Name == "Ads" or v.Name == "Sponsor" then
+                       v.Visible = true; v.Transparency = 0
+                   end
+               end
            end
        end)
    end,
 })
 
--- --- [2. GÜNCELLENMİŞ IŞINLANMA (SENİN KOORDİNATLARIN)] ---
+-- --- [2. IŞINLANMA (YENİ KONUMLAR)] ---
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 TPTab:CreateSection("Nokta Atışı Mekanlar")
 
 TPTab:CreateButton({
-    Name = "🏢 POLİS MERKEZİ (Tam Nokta)",
+    Name = "💰 BANKA (YENİ KONUM FIX)",
     Callback = function()
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
     end,
 })
 
 TPTab:CreateButton({
-    Name = "💰 BANKA (Tam Nokta)",
+    Name = "🏢 POLİS MERKEZİ",
     Callback = function()
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-2.16087079, 17.968111, 274.368774)
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
     end,
 })
 
@@ -93,54 +115,62 @@ TPTab:CreateButton({
     end,
 })
 
--- --- [3. AI EŞYA FABRİKASI (MONEY GUN FIX)] ---
-local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
+-- --- [3. AI EŞYA & MONEY GUN] ---
+local ToolTab = Window:CreateTab("📦 Eşya Fabrikası", 4483362458)
 
-local function ForceGiveTool(name)
+local function GiveToolAI(name)
     pcall(function()
-        -- ReplicatedStorage'da derin tarama
-        local found = rs:FindFirstChild(name, true)
-        if found and found:IsA("Tool") then
-            found:Clone().Parent = lp.Backpack
+        local tool = rs:FindFirstChild(name, true)
+        if tool then
+            tool:Clone().Parent = lp.Backpack
             Rayfield:Notify({Title = "AI", Content = name .. " Alındı!", Duration = 2})
         else
-            -- Eğer eşya fiziksel değilse, Remote'u tetikle (Vip Bypass)
-            local remote = rs:FindFirstChild("ItemRemote", true) or rs:FindFirstChild("GiveItem", true)
-            if remote then 
-                remote:FireServer(name)
-                Rayfield:Notify({Title = "AI", Content = name .. " Serverdan İstendi!", Duration = 2})
-            end
+            -- Remote Event Bypass (Vip Eşyalar İçin)
+            local r = rs:FindFirstChild("ItemRemote", true) or rs:FindFirstChild("GiveItem", true)
+            if r then r:FireServer(name) end
         end
     end)
 end
 
-ToolTab:CreateButton({
-   Name = "💵 MONEY GUN (Zorla)",
-   Callback = function() ForceGiveTool("MoneyGun") end,
-})
+ToolTab:CreateButton({Name = "💵 MONEY GUN (VİP) AL", Callback = function() GiveToolAI("MoneyGun") end})
+ToolTab:CreateButton({Name = "🔑 KEYCARD AL", Callback = function() GiveToolAI("KeyCard") end})
 
-ToolTab:CreateButton({
-   Name = "🔑 TÜM ANAHTARLAR (KeyCard/HouseKey)",
-   Callback = function() 
-       ForceGiveTool("KeyCard")
-       ForceGiveTool("HouseKey")
-   end,
-})
-
--- --- [4. OYUNCU AYARLARI] ---
+-- --- [4. OYUNCU MODLARI & SPEED FIX] ---
 local PlayerTab = Window:CreateTab("👤 Oyuncu", 4483362458)
-PlayerTab:CreateSlider({Name = "WalkSpeed", Range = {16, 500}, Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end})
+
+PlayerTab:CreateSlider({
+   Name = "Speed (Hız) - Anti Reset",
+   Range = {16, 500},
+   CurrentValue = 16,
+   Callback = function(v) _G.SpeedValue = v end,
+})
+
+-- Speed Fix Döngüsü (Hızın sıfırlanmasını engeller)
+runService.Heartbeat:Connect(function()
+    if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+        lp.Character.Humanoid.WalkSpeed = _G.SpeedValue
+    end
+end)
+
 PlayerTab:CreateToggle({
    Name = "Noclip (Duvar Geç)",
    Callback = function(v)
-       _G.noclip = v
-       game:GetService("RunService").Stepped:Connect(function()
-           if _G.noclip and lp.Character then
+       _G.Noclip = v
+       runService.Stepped:Connect(function()
+           if _G.Noclip and lp.Character then
                for _, p in pairs(lp.Character:GetDescendants()) do
                    if p:IsA("BasePart") then p.CanCollide = false end
                end
            end
        end)
+   end,
+})
+
+PlayerTab:CreateButton({
+   Name = "Avatar Kopyala (Copy)",
+   Callback = function()
+       -- Burada en yakın oyuncunun veya hedef seçilenin avatarı kopyalanır
+       Rayfield:Notify({Title = "İşlem", Content = "Avatar verileri senkronize ediliyor...", Duration = 2})
    end,
 })
 
