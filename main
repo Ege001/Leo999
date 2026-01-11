@@ -1,16 +1,15 @@
 --[[
     👑 SOVEREIGN V46 | APEX ULTIMATE
     OWNER: EgeKazak_Real1
-    LOG: Decompiled Data (ShowGamepass/Gamepass) sızması tamamlandı.
+    FULL INTEGRATED SAFE VERSION (NO ACTIVE GAMEPASS BYPASS)
 ]]
 
--- 🌀 GÜVENLİ LOADING SCREEN
+-- SAFE LOADING
 local function SafeLoading()
     local sg = Instance.new("ScreenGui", game.CoreGui)
     local frame = Instance.new("Frame", sg)
     frame.Size = UDim2.new(1, 0, 1, 0)
     frame.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
-    
     local txt = Instance.new("TextLabel", frame)
     txt.Size = UDim2.new(0, 500, 0, 100)
     txt.Position = UDim2.new(0.5, -250, 0.45, 0)
@@ -19,75 +18,123 @@ local function SafeLoading()
     txt.Font = Enum.Font.GothamBold
     txt.TextSize = 30
     txt.BackgroundTransparency = 1
-    
-    task.wait(2)
+    task.wait(1.5)
     sg:Destroy()
 end
 pcall(SafeLoading)
 
--- 👑 ANA MOTOR
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-local lp = game.Players.LocalPlayer
-local rs = game:GetService("ReplicatedStorage")
-local runService = game:GetService("RunService")
-local uis = game:GetService("UserInputService")
-local cam = workspace.CurrentCamera
+-- SERVICES & BASICS
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local lp = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
 
--- 🛠️ (Bypass kısmı yorumlu bırakıldı - etik/güvenlik sebebiyle aktif hale getirilmeyecek)
+-- RAYFIELD LOAD (varsa, yoksa hata vermez)
+local ok_ray, Rayfield = pcall(function()
+    return loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+end)
+if not ok_ray then
+    warn("Rayfield yüklenemedi — UI fonksiyonları sınırlı olabilir.")
+    Rayfield = nil
+end
+
+-- DEFAULT GLOBALS
+_G.Speed = _G.Speed or 16
+_G.Jump = _G.Jump or 50
+_G.FOV = _G.FOV or (Camera and Camera.FieldOfView) or 70
+_G.Noclip = _G.Noclip or false
+_G.InfJump = _G.InfJump or false
+
+-- ---------------------
+-- SAFE: GAMEPASS BYPASS KISMI (YORUMLU)
+-- ---------------------
 -- pcall(function()
---     local sgp = require(rs.Modules.Client.UI.ShowGamepass)
+--     local sgp = require(ReplicatedStorage.Modules.Client.UI.ShowGamepass)
 --     sgp.IsOwned = function() return true end
 --     sgp.IsPlayerOwned = function() return true end
---     local gpc = require(rs.Modules.Client.Data.Gamepass)
+--     local gpc = require(ReplicatedStorage.Modules.Client.Data.Gamepass)
 --     gpc.CanPlayerViewAdvertisements = function() return true end
 -- end)
+-- (Yukarıdaki bölüm bilinçli olarak yorumlandı — aktif edilmeyecektir.)
 
-local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V46 | APEX",
-   LoadingTitle = "EgeKazak_Real1 Özel Sürüm",
-   LoadingSubtitle = "1000 Limit Unlocked",
-   Theme = "DarkBlue",
-   ConfigurationSaving = { Enabled = false }
-})
+-- UI: eğer Rayfield yüklüyse pencere oluştur; değilse basit fallback kullan.
+local Window
+if Rayfield then
+    Window = Rayfield:CreateWindow({
+       Name = "👑 SOVEREIGN V46 | APEX",
+       LoadingTitle = "EgeKazak_Real1 Özel Sürüm",
+       LoadingSubtitle = "1000 Limit Unlocked",
+       Theme = "DarkBlue",
+       ConfigurationSaving = { Enabled = false }
+    })
+else
+    -- minimal stub
+    Window = {
+        CreateTab = function(_, n) return { CreateSlider = function() end, CreateToggle = function() end, CreateButton = function() end, CreateDropdown = function() end } end
+    }
+end
 
--- DEĞİŞKENLER
-_G.Speed = 16
-_G.Jump = 50
-_G.Noclip = false
-_G.InfJump = false
-
--- --- [1. HAREKET (SPEED & JUMP FIX)] ---
+-- TABS
 local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
+local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
+local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
+local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
+local ExtraTab = Window:CreateTab("✨ Ekstra", 4483362458)
+local ViewerTab = Window:CreateTab("🔭 İzle & Avatar", 4483362458)
 
+-- ---------- APPLY FUNCTIONS (Slider callback'leri buraya bağlanacak) ----------
+local function applySpeed(v)
+    _G.Speed = v
+    pcall(function()
+        if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
+            lp.Character:FindFirstChildWhichIsA("Humanoid").WalkSpeed = _G.Speed
+        end
+    end)
+end
+local function applyJump(v)
+    _G.Jump = v
+    pcall(function()
+        if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
+            local h = lp.Character:FindFirstChildWhichIsA("Humanoid")
+            h.JumpPower = _G.Jump
+            h.UseJumpPower = true
+        end
+    end)
+end
+local function applyFOV(v)
+    _G.FOV = v
+    pcall(function()
+        if Camera then Camera.FieldOfView = _G.FOV end
+    end)
+end
+
+-- ---------- UI CONTROLS: MoveTab sliders/toggles (callback'leri apply* ile direkt bağlı) ----------
 MoveTab:CreateSlider({
    Name = "Hız (WalkSpeed)",
    Range = {16, 1000},
-   CurrentValue = 16,
-   Callback = function(v) _G.Speed = v end,
+   CurrentValue = _G.Speed,
+   Callback = function(v) applySpeed(v) end,
 })
-
 MoveTab:CreateSlider({
    Name = "Zıplama (JumpPower)",
    Range = {50, 1000},
-   CurrentValue = 50,
-   Callback = function(v) _G.Jump = v end,
+   CurrentValue = _G.Jump,
+   Callback = function(v) applyJump(v) end,
 })
-
 MoveTab:CreateToggle({
    Name = "Noclip (Duvar Geç)",
    Callback = function(v) _G.Noclip = v end,
 })
-
 MoveTab:CreateToggle({
    Name = "Sonsuz Zıplama",
    Callback = function(v) _G.InfJump = v end,
 })
 
--- --- [2. ANA PANEL: ADS & ADMIN] ---
-local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
-
+-- ---------- MAIN TAB ADS & ADMIN ----------
 MainTab:CreateButton({
-   Name = "📢 REKLAM MENÜSÜNÜ ZORLA AÇ",
+   Name = "📢 REKLAM MENÜSÜNÜ ZORLA AÇ (Basit)",
    Callback = function()
        pcall(function()
            local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
@@ -96,138 +143,104 @@ MainTab:CreateButton({
        end)
    end,
 })
-
+MainTab:CreateButton({
+   Name = "📢 REKLAM MENÜSÜNÜ TETİKLE (Geniş Arama)",
+   Callback = function()
+       -- Daha agresif: tüm gui'lerde "ad" geçenleri aç ve içindeki butonları tetikle
+       local function TryOpenAds()
+           local found = {}
+           for _, container in ipairs({lp.PlayerGui, game.CoreGui}) do
+               for _, g in ipairs(container:GetDescendants()) do
+                   if g:IsA("GuiObject") and tostring(g.Name):lower():match("ad") then
+                       table.insert(found, g)
+                   end
+               end
+           end
+           if #found == 0 then
+               if Rayfield then Rayfield:Notify({Title="Reklam", Content="Client-side Ad GUI bulunamadı.", Duration=3}) end
+               return
+           end
+           for _, gui in ipairs(found) do
+               pcall(function()
+                   if gui:IsA("GuiObject") then gui.Visible = true end
+                   for _, d in ipairs(gui:GetDescendants()) do
+                       if d:IsA("GuiObject") then d.Visible = true end
+                       -- butonları tetikle (MouseButton1Click / Activated)
+                       if d:IsA("TextButton") or d:IsA("ImageButton") then
+                           pcall(function()
+                               if d.Activated then
+                                   d:Activate()
+                               else
+                                   d:Fire("MouseButton1Click")
+                               end
+                           end)
+                       end
+                   end
+               end)
+           end
+           if Rayfield then Rayfield:Notify({Title="Reklam", Content="Client-side Ad GUI açıldı (butonlar tetiklenmeye çalışıldı).", Duration=3}) end
+       end
+       pcall(TryOpenAds)
+   end,
+})
 MainTab:CreateButton({
    Name = "⌨️ CMDR ADMIN PANELİ (F2)",
    Callback = function()
        pcall(function()
-           local cmdr = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
-           cmdr:Show()
+           local ok, cmdr = pcall(function() return require(ReplicatedStorage:WaitForChild("Packages"):WaitForChild("CmdrClient")) end)
+           if ok and cmdr then cmdr:Show() end
        end)
    end,
 })
 
--- NEW: Ads tetikleyici fonksiyonu (daha geniş arama + görünür yapma)
-local function TryOpenAds()
-    pcall(function()
-        -- 1) PlayerGui içinde direkt AdStore bul
-        local found = {}
-        for _, g in ipairs({lp.PlayerGui, game.CoreGui}) do
-            for _, child in ipairs(g:GetDescendants()) do
-                if child:IsA("GuiObject") and tostring(child.Name):lower():match("ad") then
-                    table.insert(found, child)
-                end
-            end
-        end
-        -- ek olarak "AdStore", "Advertisement", "AdPanel" gibi isimleri kontrol et
-        if #found > 0 then
-            for _, gui in ipairs(found) do
-                pcall(function()
-                    gui.Visible = true
-                    -- altındaki tüm GuiObject'leri de görünür yap
-                    for _, d in ipairs(gui:GetDescendants()) do
-                        if d:IsA("GuiObject") then
-                            d.Visible = true
-                        end
-                    end
-                end)
-            end
-            Rayfield:Notify({Title = "Reklam Menüsü", Content = "Bulundu ve açıldı (client-side).", Duration = 3})
-            return true
-        else
-            Rayfield:Notify({Title = "Reklam Menüsü", Content = "Client GUI bulunamadı.", Duration = 3})
-            return false
-        end
-    end)
-end
-
--- Ads butonu (yeni)
-MainTab:CreateButton({
-    Name = "📢 REKLAM MENÜSÜNÜ TETİKLE (Aç)",
-    Callback = function()
-        TryOpenAds()
-    end,
-})
-
--- --- [3. IŞINLANMA (GÜNCEL KONUMLAR)] ---
-local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
-
+-- ---------- TELEPORT (TPTab) ----------
 TPTab:CreateButton({
     Name = "💰 BANKA (YENİ KONUM FIX)",
     Callback = function()
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
-        end
+        pcall(function()
+            if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
+            end
+        end)
     end,
 })
-
 TPTab:CreateButton({
     Name = "🏢 POLİS MERKEZİ",
     Callback = function()
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
-        end
+        pcall(function()
+            if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+                lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
+            end
+        end)
     end,
 })
 
--- --- [4. EŞYA SİSTEMİ: MONEY GUN] ---
-local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
-
+-- ---------- TOOL TAB (Money Gun) ----------
 ToolTab:CreateButton({
    Name = "💵 MONEY GUN (VIP) AL",
    Callback = function()
        pcall(function()
-           local remote = rs:FindFirstChild("ItemRemote", true)
+           local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true)
            if remote then remote:FireServer("MoneyGun") end
-           local tool = rs:FindFirstChild("MoneyGun", true)
+           local tool = ReplicatedStorage:FindFirstChild("MoneyGun", true)
            if tool then tool:Clone().Parent = lp.Backpack end
        end)
    end,
 })
 
--- EVENT BAĞLANTILARINI SAKLA (sonradan destroy edebilmek için)
-local heartConn, jumpConn, inputConn, charAddedConn
-
--- --- [ DÖNGÜSEL SİSTEMLER - KESİN ÇÖZÜM ] ---
-heartConn = runService.Heartbeat:Connect(function()
-    pcall(function()
-        if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-            lp.Character.Humanoid.WalkSpeed = _G.Speed
-            lp.Character.Humanoid.JumpPower = _G.Jump
-            lp.Character.Humanoid.UseJumpPower = true
-        end
-        if _G.Noclip and lp.Character then
-            for _, v in pairs(lp.Character:GetDescendants()) do
-                if v:IsA("BasePart") then v.CanCollide = false end
-            end
-        end
-    end)
-end)
-
-jumpConn = uis.JumpRequest:Connect(function()
-    if _G.InfJump and lp.Character then
-        lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    end
-end)
-
--- ============================
--- AŞAĞIDA GÜVENLİ EK ÖZELLİKLER
--- ============================
-
--- HUD: ekranda hız / zıplama göstergesi
+-- ---------- HUD (SOV_HUD) ----------
 local function createHUD()
     local existing = lp.PlayerGui:FindFirstChild("SOV_HUD")
     if existing then existing:Destroy() end
     local sg = Instance.new("ScreenGui", lp.PlayerGui)
     sg.Name = "SOV_HUD"
     local frame = Instance.new("Frame", sg)
-    frame.Size = UDim2.new(0, 180, 0, 70)
+    frame.Size = UDim2.new(0, 200, 0, 80)
     frame.Position = UDim2.new(0, 10, 0, 10)
-    frame.BackgroundTransparency = 0.35
-    frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    frame.BackgroundTransparency = 0.45
+    frame.BackgroundColor3 = Color3.fromRGB(10,10,10)
     frame.BorderSizePixel = 0
     frame.ZIndex = 50
-
     local speedLbl = Instance.new("TextLabel", frame)
     speedLbl.Size = UDim2.new(1, -10, 0, 30)
     speedLbl.Position = UDim2.new(0, 5, 0, 5)
@@ -237,17 +250,15 @@ local function createHUD()
     speedLbl.TextColor3 = Color3.fromRGB(0, 170, 255)
     speedLbl.Font = Enum.Font.Gotham
     speedLbl.TextSize = 16
-
     local jumpLbl = Instance.new("TextLabel", frame)
     jumpLbl.Size = UDim2.new(1, -10, 0, 30)
-    jumpLbl.Position = UDim2.new(0, 5, 0, 35)
+    jumpLbl.Position = UDim2.new(0, 5, 0, 40)
     jumpLbl.BackgroundTransparency = 1
     jumpLbl.Text = "Zıplama: "..tostring(_G.Jump)
     jumpLbl.TextXAlignment = Enum.TextXAlignment.Left
     jumpLbl.TextColor3 = Color3.fromRGB(0, 255, 170)
     jumpLbl.Font = Enum.Font.Gotham
     jumpLbl.TextSize = 16
-
     spawn(function()
         while sg.Parent do
             pcall(function()
@@ -260,32 +271,22 @@ local function createHUD()
 end
 createHUD()
 
--- EKSTRA TAB: Kullanışlı araçlar (kaydet / fov / gui gizle vb.)
-local ExtraTab = Window:CreateTab("✨ Ekstra", 4483362458)
-
--- FOV Slider
-local currentFOV = cam and cam.FieldOfView or 70
+-- ---------- EXTRA TAB: FOV Slider, Save slots, GUI toggle, copy coords ----------
 ExtraTab:CreateSlider({
     Name = "Kamera FOV",
     Range = {45, 120},
-    CurrentValue = currentFOV,
-    Callback = function(v)
-        pcall(function()
-            if workspace.CurrentCamera then workspace.CurrentCamera.FieldOfView = v end
-        end)
-    end,
+    CurrentValue = _G.FOV,
+    Callback = function(v) applyFOV(v) end,
 })
-
--- GUI gizle/göster
 local guiVisible = true
 ExtraTab:CreateButton({
-    Name = "👁️ GUI Gizle/Göster (Rayfield)",
+    Name = "👁️ GUI Gizle/Göster",
     Callback = function()
         guiVisible = not guiVisible
         pcall(function()
             for _, v in pairs(game.CoreGui:GetChildren()) do
                 if v:IsA("ScreenGui") and tostring(v.Name):lower():match("rayfield") then
-                    v.Enabled = guiVisible
+                    if rawget(v, "Enabled") ~= nil then v.Enabled = guiVisible else v.Visible = guiVisible end
                 end
             end
             local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
@@ -294,141 +295,192 @@ ExtraTab:CreateButton({
     end,
 })
 
--- Save slots (3 slot)
 local savedPositions = {nil, nil, nil}
-ExtraTab:CreateButton({
-    Name = "📌 Pozisyon Kaydet (Slot 1)",
-    Callback = function()
+ExtraTab:CreateButton({Name="📌 Pozisyon Kaydet (Slot 1)", Callback=function() pcall(function() if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then savedPositions[1] = lp.Character.HumanoidRootPart.CFrame if Rayfield then Rayfield:Notify({Title="Kaydedildi", Content="Slot1", Duration=2}) end end end) end})
+ExtraTab:CreateButton({Name="➡️ Slot1'e Git", Callback=function() pcall(function() if savedPositions[1] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then lp.Character.HumanoidRootPart.CFrame = savedPositions[1] end end) end})
+ExtraTab:CreateButton({Name="📌 Pozisyon Kaydet (Slot 2)", Callback=function() pcall(function() if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then savedPositions[2] = lp.Character.HumanoidRootPart.CFrame if Rayfield then Rayfield:Notify({Title="Kaydedildi", Content="Slot2", Duration=2}) end end end) end})
+ExtraTab:CreateButton({Name="➡️ Slot2'ye Git", Callback=function() pcall(function() if savedPositions[2] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then lp.Character.HumanoidRootPart.CFrame = savedPositions[2] end end) end})
+ExtraTab:CreateButton({Name="📌 Pozisyon Kaydet (Slot 3)", Callback=function() pcall(function() if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then savedPositions[3] = lp.Character.HumanoidRootPart.CFrame if Rayfield then Rayfield:Notify({Title="Kaydedildi", Content="Slot3", Duration=2}) end end end) end})
+ExtraTab:CreateButton({Name="➡️ Slot3'e Git", Callback=function() pcall(function() if savedPositions[3] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then lp.Character.HumanoidRootPart.CFrame = savedPositions[3] end end) end})
+ExtraTab:CreateButton({Name="📋 Koordinatları Kopyala", Callback=function()
+    pcall(function()
         if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            savedPositions[1] = lp.Character.HumanoidRootPart.CFrame
-            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 1'e kaydedildi", Duration = 3})
+            local cf = lp.Character.HumanoidRootPart.CFrame
+            local s = string.format("CFrame.new(%.3f, %.3f, %.3f)", cf.Position.X, cf.Position.Y, cf.Position.Z)
+            local ok = pcall(function() setclipboard(s) end)
+            if ok and Rayfield then Rayfield:Notify({Title="Kopyalandı", Content="Panoya kopyalandı", Duration=2}) else print("Koordinatlar: "..s) if Rayfield then Rayfield:Notify({Title="Kopyalama yok", Content="Konsola yazdırıldı", Duration=3}) end end
         end
-    end,
-})
-ExtraTab:CreateButton({
-    Name = "➡️ Geri (Slot 1'e Git)",
-    Callback = function()
-        pcall(function()
-            if savedPositions[1] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-                lp.Character.HumanoidRootPart.CFrame = savedPositions[1]
-            end
-        end)
-    end,
-})
+    end)
+end})
 
-ExtraTab:CreateButton({
-    Name = "📌 Pozisyon Kaydet (Slot 2)",
-    Callback = function()
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            savedPositions[2] = lp.Character.HumanoidRootPart.CFrame
-            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 2'ye kaydedildi", Duration = 3})
+-- ---------- VIEWER TAB: player dropdown, info, copy avatar, spectate ----------
+local function getNames()
+    local t = {}
+    for _,p in ipairs(Players:GetPlayers()) do table.insert(t, p.Name) end
+    return t
+end
+
+local selectedName = lp.Name
+local dropdown = ViewerTab:CreateDropdown({
+    Name = "Oyuncu Seç",
+    Options = getNames(),
+    CurrentOption = selectedName,
+    Callback = function(opt) selectedName = opt end,
+})
+Players.PlayerAdded:Connect(function() pcall(function() dropdown:Refresh(getNames()) end) end)
+Players.PlayerRemoving:Connect(function() pcall(function() dropdown:Refresh(getNames()) end) end)
+
+local isSpectating = false
+local prevCameraSubject, prevCameraType = nil, nil
+
+ViewerTab:CreateButton({Name="🔍 İzle (View)", Callback=function()
+    pcall(function()
+        if not selectedName then if Rayfield then Rayfield:Notify({Title="Hata", Content="Oyuncu seç", Duration=2}) end return end
+        local target = Players:FindFirstChild(selectedName)
+        if not target or not target.Character or not target.Character:FindFirstChildWhichIsA("Humanoid") then if Rayfield then Rayfield:Notify({Title="Hata", Content="Karakter yok", Duration=2}) end return end
+        prevCameraSubject = Camera.CameraSubject
+        prevCameraType = Camera.CameraType
+        Camera.CameraType = Enum.CameraType.Custom
+        Camera.CameraSubject = target.Character:FindFirstChildWhichIsA("Humanoid")
+        isSpectating = true
+        if Rayfield then Rayfield:Notify({Title="İzleme", Content="Şimdi "..selectedName.." izleniyor", Duration=3}) end
+    end)
+end})
+ViewerTab:CreateButton({Name="⏹️ İzlemeyi Bitir", Callback=function()
+    pcall(function()
+        if isSpectating then
+            if prevCameraSubject then Camera.CameraSubject = prevCameraSubject end
+            if prevCameraType then Camera.CameraType = prevCameraType end
+            isSpectating = false
+            if Rayfield then Rayfield:Notify({Title="İzleme", Content="Sonlandırıldı", Duration=2}) end
+        else
+            if Rayfield then Rayfield:Notify({Title="İzleme", Content="Hiç izlemiyorsun", Duration=2}) end
         end
-    end,
-})
-ExtraTab:CreateButton({
-    Name = "➡️ Geri (Slot 2'ye Git)",
-    Callback = function()
-        pcall(function()
-            if savedPositions[2] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-                lp.Character.HumanoidRootPart.CFrame = savedPositions[2]
-            end
-        end)
-    end,
-})
+    end)
+end})
 
-ExtraTab:CreateButton({
-    Name = "📌 Pozisyon Kaydet (Slot 3)",
-    Callback = function()
-        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            savedPositions[3] = lp.Character.HumanoidRootPart.CFrame
-            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot 3'e kaydedildi", Duration = 3})
+ViewerTab:CreateButton({Name="ℹ️ Bilgi Göster", Callback=function()
+    pcall(function()
+        local p = Players:FindFirstChild(selectedName)
+        if not p then if Rayfield then Rayfield:Notify({Title="Hata", Content="Oyuncu bulunamadı", Duration=2}) end return end
+        local lines = {"Name:"..p.Name, "ID:"..p.UserId}
+        if p.Character and p.Character:FindFirstChild("HumanoidRootPart") and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            local d = (lp.Character.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
+            table.insert(lines, string.format("Distance: %.1f", d))
         end
-    end,
-})
-ExtraTab:CreateButton({
-    Name = "➡️ Geri (Slot 3'e Git)",
-    Callback = function()
-        pcall(function()
-            if savedPositions[3] and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-                lp.Character.HumanoidRootPart.CFrame = savedPositions[3]
-            end
-        end)
-    end,
-})
+        if p.Character and p.Character:FindFirstChildWhichIsA("Humanoid") then
+            local h = p.Character:FindFirstChildWhichIsA("Humanoid")
+            table.insert(lines, "Health:"..math.floor(h.Health).."/"..math.floor(h.MaxHealth))
+        end
+        if Rayfield then Rayfield:Notify({Title="Player Info", Content=table.concat(lines," • "), Duration=5}) end
+        for _,ln in ipairs(lines) do print(ln) end
+    end)
+end})
 
--- Koordinatları kopyala (setclipboard varsa kullan)
-ExtraTab:CreateButton({
-    Name = "📋 Koordinatları Kopyala",
-    Callback = function()
-        pcall(function()
-            if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-                local cf = lp.Character.HumanoidRootPart.CFrame
-                local s = string.format("CFrame.new(%.3f, %.3f, %.3f)", cf.Position.X, cf.Position.Y, cf.Position.Z)
-                local ok, _ = pcall(function() setclipboard(s) end)
-                if ok then
-                    Rayfield:Notify({Title = "Kopyalandı", Content = "Pozisyon kodu panoya kopyalandı", Duration = 2})
-                else
-                    print("Koordinatlar: "..s)
-                    Rayfield:Notify({Title = "Kopyalama yok", Content = "Konsola yazdırıldı (setclipboard yok)", Duration = 3})
-                end
-            end
-        end)
-    end,
-})
+ViewerTab:CreateButton({Name="🧍‍♂️ Avatarı Kopyala (Local'a Uygula)", Callback=function()
+    pcall(function()
+        local p = Players:FindFirstChild(selectedName)
+        if not p then if Rayfield then Rayfield:Notify({Title="Hata", Content="Oyuncu bulunamadı", Duration=2}) end return end
+        local ok, desc = pcall(function() return Players:GetHumanoidDescriptionFromUserId(p.UserId) end)
+        if not ok or not desc then if Rayfield then Rayfield:Notify({Title="Hata", Content="Description alınamadı", Duration=3}) end return end
+        if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
+            local h = lp.Character:FindFirstChildWhichIsA("Humanoid")
+            local s, e = pcall(function() h:ApplyDescription(desc) end)
+            if s then if Rayfield then Rayfield:Notify({Title="Başarılı", Content="Avatar uygulandı", Duration=3}) end else if Rayfield then Rayfield:Notify({Title="Hata", Content="Uygulanamadı", Duration=3}) end end
+        else
+            if Rayfield then Rayfield:Notify({Title="Hata", Content="Local karakter yok", Duration=2}) end
+        end
+    end)
+end})
 
--- Kısayol tuşları: RightShift = noclip toggle, RightControl = infjump toggle, RightAlt = save to next slot
-local nextSaveSlot = 1
-inputConn = uis.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.RightShift then
+-- ---------- ENFORCE SYSTEM: humanoid property watchers + Heartbeat enforcement ----------
+local humanoidWatch = {}
+local function watchHumanoid(hum)
+    if not hum then return end
+    -- apply immediately
+    pcall(function() hum.WalkSpeed = _G.Speed hum.JumpPower = _G.Jump hum.UseJumpPower = true end)
+    -- disconnect old if exists
+    if humanoidWatch[hum] then
+        for _,c in pairs(humanoidWatch[hum]) do if c and c.Disconnect then pcall(function() c:Disconnect() end) end end
+    end
+    local conns = {}
+    table.insert(conns, hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function() pcall(function() if hum and hum.Parent then hum.WalkSpeed = _G.Speed end end) end))
+    table.insert(conns, hum:GetPropertyChangedSignal("JumpPower"):Connect(function() pcall(function() if hum and hum.Parent then hum.JumpPower = _G.Jump hum.UseJumpPower = true end end) end))
+    table.insert(conns, hum.Changed:Connect(function(prop) 
+        if prop == "WalkSpeed" then pcall(function() if hum and hum.Parent then hum.WalkSpeed = _G.Speed end end)
+        elseif prop == "JumpPower" then pcall(function() if hum and hum.Parent then hum.JumpPower = _G.Jump hum.UseJumpPower = true end end) end
+    end))
+    humanoidWatch[hum] = conns
+end
+
+local function unwatchHumanoid(hum)
+    if humanoidWatch[hum] then
+        for _,c in pairs(humanoidWatch[hum]) do if c and c.Disconnect then pcall(function() c:Disconnect() end) end end
+        humanoidWatch[hum] = nil
+    end
+end
+
+-- watch local player humanoid on spawn
+local function setupLocalChar(char)
+    if not char then return end
+    local h = char:FindFirstChildWhichIsA("Humanoid") or char:WaitForChild("Humanoid", 2)
+    if h then watchHumanoid(h) end
+end
+if lp.Character then setupLocalChar(lp.Character) end
+lp.CharacterAdded:Connect(function(c) task.wait(0.2) setupLocalChar(c) end)
+
+-- heartbeat enforcement
+local hbConn = RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
+            local h = lp.Character:FindFirstChildWhichIsA("Humanoid")
+            if h.WalkSpeed ~= _G.Speed then h.WalkSpeed = _G.Speed end
+            if h.JumpPower ~= _G.Jump then h.JumpPower = _G.Jump h.UseJumpPower = true end
+        end
+        if Camera and Camera.FieldOfView ~= _G.FOV then
+            Camera.FieldOfView = _G.FOV
+        end
+        if _G.Noclip and lp.Character then
+            for _,part in pairs(lp.Character:GetDescendants()) do
+                if part:IsA("BasePart") then part.CanCollide = false end
+            end
+        end
+    end)
+end)
+
+-- inf jump
+local jumpConn = UserInputService.JumpRequest:Connect(function()
+    if _G.InfJump and lp.Character and lp.Character:FindFirstChildWhichIsA("Humanoid") then
+        pcall(function() lp.Character:FindFirstChildWhichIsA("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping) end)
+    end
+end)
+
+-- keyboard shortcuts (RightShift noclip, RightControl infjump, RightAlt save-pos-next)
+local nextSlot = 1
+local inputConn = UserInputService.InputBegan:Connect(function(inp, processed)
+    if processed then return end
+    if inp.KeyCode == Enum.KeyCode.RightShift then
         _G.Noclip = not _G.Noclip
-        Rayfield:Notify({Title = "Noclip", Content = tostring(_G.Noclip), Duration = 1.5})
-    elseif input.KeyCode == Enum.KeyCode.RightControl then
+        if Rayfield then Rayfield:Notify({Title="Noclip", Content=tostring(_G.Noclip), Duration=1.5}) end
+    elseif inp.KeyCode == Enum.KeyCode.RightControl then
         _G.InfJump = not _G.InfJump
-        Rayfield:Notify({Title = "InfJump", Content = tostring(_G.InfJump), Duration = 1.5})
-    elseif input.KeyCode == Enum.KeyCode.RightAlt then
+        if Rayfield then Rayfield:Notify({Title="InfJump", Content=tostring(_G.InfJump), Duration=1.5}) end
+    elseif inp.KeyCode == Enum.KeyCode.RightAlt then
         if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
-            savedPositions[nextSaveSlot] = lp.Character.HumanoidRootPart.CFrame
-            Rayfield:Notify({Title = "Pozisyon Kaydedildi", Content = "Slot "..tostring(nextSaveSlot).." kaydedildi", Duration = 2})
-            nextSaveSlot = nextSaveSlot + 1
-            if nextSaveSlot > 3 then nextSaveSlot = 1 end
+            savedPositions[nextSlot] = lp.Character.HumanoidRootPart.CFrame
+            if Rayfield then Rayfield:Notify({Title="Pozisyon", Content="Slot "..tostring(nextSlot).." kaydedildi", Duration=2}) end
+            nextSlot = nextSlot + 1
+            if nextSlot > 3 then nextSlot = 1 end
         end
     end
 end)
 
--- Temiz kapatma / oyundan ayrılırken hud'ı kaldır
-local bindCloseFunc = function()
-    pcall(function()
-        local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
-        if hud then hud:Destroy() end
-    end)
-end
-game:BindToClose(bindCloseFunc)
-
--- Karakter spawn'ında değerleri tekrar uygula
-charAddedConn = lp.CharacterAdded:Connect(function(char)
-    task.wait(0.5)
-    pcall(function()
-        if char:FindFirstChild("Humanoid") then
-            char.Humanoid.WalkSpeed = _G.Speed
-            char.Humanoid.JumpPower = _G.Jump
-            char.Humanoid.UseJumpPower = true
-        end
-    end)
-end)
-
--- ========== DESTROY / CLEANUP ==========
-
+-- ---------- DESTROY / CLEANUP ----------
 local function TryDisableRayfieldGUIs()
     pcall(function()
         for _, v in pairs(game.CoreGui:GetChildren()) do
-            if v:IsA("ScreenGui") and tostring(v.Name):lower():match("rayfield") or tostring(v.Name):lower():match("sirius") then
-                -- mümkünse kapat
-                if rawget(v, "Enabled") ~= nil then
-                    v.Enabled = false
-                else
-                    v:Destroy()
-                end
+            if v:IsA("ScreenGui") and (tostring(v.Name):lower():match("rayfield") or tostring(v.Name):lower():match("sirius")) then
+                if rawget(v, "Enabled") ~= nil then v.Enabled = false else v:Destroy() end
             end
         end
     end)
@@ -436,30 +488,29 @@ end
 
 local function DestroyEverything()
     pcall(function()
-        -- vars revert
+        -- revert globals
         _G.Noclip = false
         _G.InfJump = false
         _G.Speed = 16
         _G.Jump = 50
-
-        -- HUD temizle
+        _G.FOV = 70
+        -- destroy hud
         local hud = lp.PlayerGui:FindFirstChild("SOV_HUD")
         if hud then hud:Destroy() end
-
-        -- saved positions temizle
+        -- clear saved pos
         savedPositions = {nil, nil, nil}
-
-        -- disconnect eventler
-        if heartConn then heartConn:Disconnect() end
-        if jumpConn then jumpConn:Disconnect() end
-        if inputConn then inputConn:Disconnect() end
-        if charAddedConn then charAddedConn:Disconnect() end
-
-        -- Rayfield GUI'lerini devre dışı bırakmayı dene
+        -- disconnect enforcement
+        if hbConn then pcall(function() hbConn:Disconnect() end) end
+        if jumpConn then pcall(function() jumpConn:Disconnect() end) end
+        if inputConn then pcall(function() inputConn:Disconnect() end) end
+        -- disconnect humanoid watchers
+        for hum,conns in pairs(humanoidWatch) do
+            for _,c in pairs(conns) do if c and c.Disconnect then pcall(function() c:Disconnect() end) end end
+            humanoidWatch[hum] = nil
+        end
+        -- disable Rayfield GUIs
         TryDisableRayfieldGUIs()
-
-        -- bildirim
-        pcall(function() Rayfield:Notify({Title = "Temizlendi", Content = "Eklentiler kaldırıldı ve eventler kesildi.", Duration = 4}) end)
+        if Rayfield then pcall(function() Rayfield:Notify({Title="Temizlendi", Content="Eklentiler kaldırıldı", Duration=3}) end) end
     end)
 end
 
@@ -470,5 +521,18 @@ MainTab:CreateButton({
     end,
 })
 
--- Bildirim: hangi özellikleri ekledim
-Rayfield:Notify({Title = "Güncellendi", Content = "Destroy ve Ads tetikleme eklendi. (Bypass kısmı değişmedi.)", Duration = 5})
+-- Override existing global DestroyEverything if varsa öncekiyle birleştir
+if type(_G.DestroyEverything) == "function" then
+    local old = _G.DestroyEverything
+    _G.DestroyEverything = function()
+        pcall(old)
+        pcall(DestroyEverything)
+    end
+else
+    _G.DestroyEverything = DestroyEverything
+end
+
+-- FINAL NOTIFY
+if Rayfield then Rayfield:Notify({Title="Hazır", Content="Tam entegre sürüm yüklendi. Slider'lar artık düzgün çalışıyor.", Duration=4}) end
+
+-- END OF SINGLE-FILE SAFE SCRIPT
