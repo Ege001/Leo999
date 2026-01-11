@@ -1,115 +1,130 @@
 --[[
-    👑 SOVEREIGN V41 | ULTIMATE GOD-MODE
+    👑 SOVEREIGN V42 | APEX EDITION
     OWNER: EgeKazak_Real1
-    DECOMPILED KNOWLEDGE INTEGRATED 
+    LOG: Decompiled Data (ShowGamepass/Gamepass) Integrated
 ]]
 
--- 🌀 PRO LOADING EFFECT
+-- 🌀 1. PRO LOADING SCREEN
 local function StartLoading()
     local sg = Instance.new("ScreenGui", game.CoreGui)
     local frame = Instance.new("Frame", sg)
     frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(2, 2, 5)
+    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
     
     local txt = Instance.new("TextLabel", frame)
     txt.Size = UDim2.new(0, 600, 0, 100)
     txt.Position = UDim2.new(0.5, -300, 0.4, 0)
-    txt.Text = "SOVEREIGN FINAL V41\nEge İçin AI Sistemler Yükleniyor..."
+    txt.Text = "SOVEREIGN APEX V42\nEge İçin VIP Sistemler Kırılıyor..."
     txt.TextColor3 = Color3.fromRGB(0, 170, 255)
     txt.Font = Enum.Font.GothamBold
-    txt.TextSize = 40
+    txt.TextSize = 35
     txt.BackgroundTransparency = 1
     
-    local barBG = Instance.new("Frame", frame)
-    barBG.Size = UDim2.new(0, 450, 0, 6)
-    barBG.Position = UDim2.new(0.5, -225, 0.6, 0)
-    barBG.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-    
-    local bar = Instance.new("Frame", barBG)
-    bar.Size = UDim2.new(0, 0, 1, 0)
-    bar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-    bar:TweenSize(UDim2.new(1, 0, 1, 0), "Out", "Quint", 3)
-    
-    task.wait(3.5)
+    task.wait(3)
     sg:Destroy()
 end
 StartLoading()
 
--- 👑 ANA SCRIPT BAŞLANGICI
+-- 👑 2. ANA MOTOR VE MODÜL SIZMASI (VIP & ADS BYPASS)
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local lp = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
 
-local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V41 | FINAL EDITION",
-   LoadingTitle = "EgeKazak_Real1 Özel Sürüm",
-   LoadingSubtitle = "Decompiled Data Active",
-   Theme = "DarkBlue",
-   ConfigurationSaving = { Enabled = true, FolderName = "SovereignFinal" }
-})
-
--- DEĞİŞKENLER & HOOKLAR
-_G.SpeedValue = 16
-_G.Noclip = false
-
--- 🛠 VIP & GAMEPASS BYPASS (Based on your txt files) 
+-- Gönderdiğin dosyalardaki mantığı kandırıyoruz
 pcall(function()
-    local GamepassModule = require(rs.Modules.Client.UI.ShowGamepass) -- [cite: 15]
-    local oldIsOwned = GamepassModule.IsOwned
-    GamepassModule.IsOwned = function(self, id)
-        return true -- Tüm gamepassleri 'sahip' olarak göster 
-    end
+    local sgp = require(rs.Modules.Client.UI.ShowGamepass)
+    local gpc = require(rs.Modules.Client.Data.Gamepass)
+    
+    -- VIP Eşya Kontrolünü Kır
+    sgp.IsOwned = function() return true end
+    
+    -- Reklam (Ads) Sistemini Kır
+    gpc.CanPlayerViewAdvertisements = function() return true end
+    gpc.GetAdvertisementsEnabled = function() return true end
 end)
 
--- --- [1. ANA PANEL: ADS & CMDR] ---
+local Window = Rayfield:CreateWindow({
+   Name = "👑 SOVEREIGN V42 | APEX",
+   LoadingTitle = "Hoş Geldin Owner Ege",
+   LoadingSubtitle = "Full System Unlocked",
+   Theme = "DarkBlue",
+   ConfigurationSaving = { Enabled = true, FolderName = "SovereignApex" }
+})
+
+-- DEĞİŞKENLER
+_G.Speed = 16
+_G.Jump = 50
+_G.InfJump = false
+_G.Noclip = false
+_G.Fly = false
+_G.Gravity = workspace.Gravity
+
+-- --- [1. ANA PANEL: ADS & CMDR & ADMIN] ---
 local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
-MainTab:CreateSection("Admin & Menü Sistemleri")
 
 MainTab:CreateButton({
-   Name = "⌨️ CMDR ADMIN PANELİNİ TETİKLE",
+   Name = "📢 REKLAM & SPONSOR MENÜSÜNÜ ZORLA",
+   Callback = function()
+       pcall(function()
+           local handler = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
+           if handler then
+               local adStore = handler:FindFirstChild("AdStore", true)
+               if adStore then 
+                   adStore.Visible = true 
+                   adStore.Position = UDim2.new(0.5, 0, 0.5, 0)
+               end
+           end
+           Rayfield:Notify({Title = "ADS", Content = "Reklam sistemi tetiklendi!", Duration = 3})
+       end)
+   end,
+})
+
+MainTab:CreateButton({
+   Name = "⌨️ CMDR ADMIN PANELİNİ AÇ",
    Callback = function()
        pcall(function()
            local Cmdr = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
-           Cmdr:SetActivationKeys({Enum.KeyCode.F2, Enum.KeyCode.Quote})
            Cmdr:Show()
-           Rayfield:Notify({Title = "CMDR", Content = "Panel Açıldı! (F2 veya ' tuşu)", Duration = 5})
+           Rayfield:Notify({Title = "CMDR", Content = "Admin Paneli Aktif! (F2/Quote)", Duration = 3})
        end)
    end,
 })
 
-MainTab:CreateButton({
-   Name = "📢 REKLAM (ADS) MENÜSÜNÜ GETİR",
-   Callback = function()
-       pcall(function()
-           -- Gamepass.txt mantığına göre tetikleme [cite: 22]
-           local AdModule = require(rs.Modules.Client.Data.Gamepass) -- [cite: 21]
-           AdModule.CanPlayerViewAdvertisements = function() return true end -- [cite: 22]
-           
-           local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
-           if gui then
-               local ads = gui:FindFirstChild("AdStore", true)
-               if ads then ads.Visible = true end
-           end
-       end)
-   end,
+-- --- [2. FİZİK & HAREKET (SPEED, JUMP, FLY...)] ---
+local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
+
+MoveTab:CreateSlider({
+   Name = "Hız (Speed)", Range = {16, 500}, CurrentValue = 16,
+   Callback = function(v) _G.Speed = v end,
 })
 
-MainTab:CreateButton({
-   Name = "🔴 SCRIPT'İ TAMAMEN SİL (Destroy)",
-   Callback = function()
-       _G.SpeedValue = 16
-       _G.Noclip = false
-       Rayfield:Destroy()
-   end,
+MoveTab:CreateSlider({
+   Name = "Zıplama (Jump)", Range = {50, 500}, CurrentValue = 50,
+   Callback = function(v) _G.Jump = v end,
 })
 
--- --- [2. IŞINLANMA: YENİ KONUMLARIN] ---
+MoveTab:CreateSlider({
+   Name = "Yerçekimi (Gravity)", Range = {0, 196}, CurrentValue = 196,
+   Callback = function(v) workspace.Gravity = v end,
+})
+
+MoveTab:CreateToggle({
+   Name = "Sonsuz Zıplama (Inf Jump)",
+   Callback = function(v) _G.InfJump = v end,
+})
+
+MoveTab:CreateToggle({
+   Name = "Duvar Geçme (Noclip)",
+   Callback = function(v) _G.Noclip = v end,
+})
+
+-- --- [3. IŞINLANMA (GÜNCEL NOKTALARIN)] ---
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
-TPTab:CreateSection("Tam Koordinatlı Mekanlar")
 
 TPTab:CreateButton({
-    Name = "💰 BANKA (YENİ GÜNCEL KONUM)",
+    Name = "💰 BANKA (YENİ KONUM)",
     Callback = function()
         lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
     end,
@@ -122,65 +137,43 @@ TPTab:CreateButton({
     end,
 })
 
--- --- [3. MONEY GUN & TOOL MASTER] ---
-local ToolTab = Window:CreateTab("📦 Eşya Fabrikası", 4483362458)
-ToolTab:CreateSection("VIP Eşyaları Getir")
+-- --- [4. EŞYA SİSTEMİ: MONEY GUN] ---
+local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
 
-local function GetMoneyGun()
-    pcall(function()
-        -- [cite: 24] ItemRemote üzerinden VIP MoneyGun tetikleme
-        local remote = rs:FindFirstChild("ItemRemote", true) or rs:FindFirstChild("GiveItem", true)
-        if remote then
-            remote:FireServer("MoneyGun")
-        end
-        
-        -- Replica içinden zorla çekme denemesi [cite: 17, 18]
-        local tool = rs:FindFirstChild("MoneyGun", true)
-        if tool then
-            tool:Clone().Parent = lp.Backpack
-            Rayfield:Notify({Title = "AI", Content = "MoneyGun Envantere Eklendi!", Duration = 3})
-        end
-    end)
-end
-
-ToolTab:CreateButton({Name = "💵 MONEY GUN (VİP) AL", Callback = function() GetMoneyGun() end})
-ToolTab:CreateButton({Name = "🔑 KEYCARD AL", Callback = function() 
-    local t = rs:FindFirstChild("KeyCard", true); if t then t:Clone().Parent = lp.Backpack end
-end})
-
--- --- [4. OYUNCU MODLARI & SPEED FIX] ---
-local PlayerTab = Window:CreateTab("👤 Oyuncu", 4483362458)
-
-PlayerTab:CreateSlider({
-   Name = "Speed (Hız) - Anti Reset",
-   Range = {16, 500},
-   CurrentValue = 16,
-   Callback = function(v) _G.SpeedValue = v end,
-})
-
--- Kesintisiz Hız Döngüsü (Oyun hızı düşüremez)
-runService.Heartbeat:Connect(function()
-    if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-        lp.Character.Humanoid.WalkSpeed = _G.SpeedValue
-    end
-end)
-
-PlayerTab:CreateToggle({
-   Name = "Noclip (Duvar Geç)",
-   Callback = function(v)
-       _G.Noclip = v
-       runService.Stepped:Connect(function()
-           if _G.Noclip and lp.Character then
-               for _, p in pairs(lp.Character:GetDescendants()) do
-                   if p:IsA("BasePart") then p.CanCollide = false end
-               end
-           end
+ToolTab:CreateButton({
+   Name = "💵 MONEY GUN (VIP) GETİR",
+   Callback = function()
+       pcall(function()
+           local remote = rs:FindFirstChild("ItemRemote", true)
+           if remote then remote:FireServer("MoneyGun") end
+           local tool = rs:FindFirstChild("MoneyGun", true)
+           if tool then tool:Clone().Parent = lp.Backpack end
        end)
    end,
 })
 
--- --- [AYARLAR] ---
+-- --- [ DÖNGÜSEL SİSTEMLER (TICK) ] ---
+runService.Heartbeat:Connect(function()
+    if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+        lp.Character.Humanoid.WalkSpeed = _G.Speed
+        lp.Character.Humanoid.JumpPower = _G.Jump
+    end
+    
+    if _G.Noclip and lp.Character then
+        for _, part in pairs(lp.Character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+end)
+
+uis.JumpRequest:Connect(function()
+    if _G.InfJump and lp.Character then
+        lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+-- --- [ AYARLAR ] ---
 local SettingsTab = Window:CreateTab("⚙️ Ayarlar", 4483362458)
-SettingsTab:CreateParagraph({Title = "Sovereign V41", Content = "EgeKazak_Real1 Özel Decompiled Sürüm"})
+SettingsTab:CreateButton({Name = "🔴 SCRIPT'İ YOK ET (Destroy)", Callback = function() Rayfield:Destroy() end})tent = "EgeKazak_Real1 Özel Decompiled Sürüm"})
 
 Rayfield:LoadConfiguration()
