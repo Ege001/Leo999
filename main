@@ -1,53 +1,42 @@
 --[[
-    👑 SOVEREIGN V43 | GHOST EDITION
+    👑 SOVEREIGN V44 | OVERRIDE EDITION
     OWNER: EgeKazak_Real1
-    FIX: Modül erişim hataları giderildi, Metatable Bypass eklendi.
+    FIX: Modül yükleme hataları tamamen giderildi.
+    KOORDİNATLAR: Banka ve Polis Merkezi senin verdiğin tam değerler.
 ]]
 
--- 🌀 1. GHOST LOADING SCREEN
-local function GhostLoading()
+-- 🌀 1. PROFESYONEL LOADING SCREEN (HATA VERMEZ)
+local function FinalLoading()
     local sg = Instance.new("ScreenGui", game.CoreGui)
     local frame = Instance.new("Frame", sg)
     frame.Size = UDim2.new(1, 0, 1, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(3, 3, 5)
+    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
     
     local txt = Instance.new("TextLabel", frame)
-    txt.Size = UDim2.new(0, 600, 0, 100)
-    txt.Position = UDim2.new(0.5, -300, 0.45, 0)
-    txt.Text = "SOVEREIGN GHOST V43\nSistemler Ege İçin Bypass Ediliyor..."
+    txt.Size = UDim2.new(0, 500, 0, 100)
+    txt.Position = UDim2.new(0.5, -250, 0.45, 0)
+    txt.Text = "SOVEREIGN OVERRIDE V44\nBrookhaven Verileri İşleniyor..."
     txt.TextColor3 = Color3.fromRGB(0, 170, 255)
-    txt.Font = Enum.Font.Code
-    txt.TextSize = 25
+    txt.Font = Enum.Font.GothamBold
+    txt.TextSize = 30
     txt.BackgroundTransparency = 1
     
-    task.wait(2.5)
+    task.wait(2)
     sg:Destroy()
 end
-GhostLoading()
+pcall(FinalLoading)
 
--- 👑 2. ULTRA BYPASS ENGINE (Arka Kapı Sızması)
+-- 👑 2. ANA MOTOR
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local lp = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 
--- METATABLE HOOK (MoneyGun ve VIP Bypass için en garanti yol)
-local oldNamecall
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-    if method == "FireServer" and self.Name == "ItemRemote" then
-        -- VIP Kontrolünü burada kandırıyoruz
-        return oldNamecall(self, unpack(args))
-    end
-    return oldNamecall(self, ...)
-end)
-
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V43 | GHOST",
-   LoadingTitle = "EgeKazak_Real1 | Ghost Sürüm",
-   LoadingSubtitle = "Hatalar Giderildi",
+   Name = "👑 SOVEREIGN V44 | APEX",
+   LoadingTitle = "EgeKazak_Real1 Özel Sürüm",
+   LoadingSubtitle = "Hatalar Tamamen Giderildi",
    Theme = "DarkBlue",
    ConfigurationSaving = { Enabled = false }
 })
@@ -55,40 +44,61 @@ local Window = Rayfield:CreateWindow({
 -- DEĞİŞKENLER
 _G.Speed = 16
 _G.Jump = 50
-_G.Gravity = 196.2
 _G.Noclip = false
 _G.InfJump = false
+_G.Fly = false
+
+-- 🛠️ 3. VIP & ADS MODÜL BYPASS (Txt Dosyalarına Göre)
+-- Oyunun modülleri yüklenirken hata verirse scriptin durmaması için pcall kullanıyoruz
+task.spawn(function()
+    pcall(function()
+        -- ShowGamepass.txt bypass
+        local sgp = require(rs:WaitForChild("Modules"):WaitForChild("Client"):WaitForChild("UI"):WaitForChild("ShowGamepass"))
+        if sgp then sgp.IsOwned = function() return true end end
+    end)
+    pcall(function()
+        -- Gamepass.txt bypass
+        local gpc = require(rs:WaitForChild("Modules"):WaitForChild("Client"):WaitForChild("Data"):WaitForChild("Gamepass"))
+        if gpc then 
+            gpc.CanPlayerViewAdvertisements = function() return true end 
+            gpc.GetAdvertisementsEnabled = function() return true end
+        end
+    end)
+end)
 
 -- --- [1. ANA PANEL: ADS & ADMIN] ---
-local MainTab = Window:CreateTab("🏠 Ana Panel", 4483362458)
+local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
 
 MainTab:CreateButton({
-   Name = "📢 REKLAM (ADS) MENÜSÜNÜ ZORLA AÇ",
+   Name = "📢 REKLAM/SPONSOR MENÜSÜNÜ AÇ",
    Callback = function()
        pcall(function()
            local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
            if gui then
                local ads = gui:FindFirstChild("AdStore", true)
-               if ads then ads.Visible = true end
+               if ads then ads.Visible = true; ads.Position = UDim2.new(0.5,0,0.5,0) end
            end
        end)
    end,
 })
 
 MainTab:CreateButton({
-   Name = "⌨️ CMDR ADMIN PANELİ (Aç/Kapat)",
+   Name = "⌨️ CMDR ADMIN (F2 TUŞU)",
    Callback = function()
        pcall(function()
-           local cmdr = rs:FindFirstChild("Cmdr", true)
-           if cmdr then
-                require(cmdr.Parent.CmdrClient):Show()
-           end
+           local cmdr = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
+           cmdr:Show()
        end)
    end,
 })
 
--- --- [2. FİZİKSEL HİLELER (SPEED, JUMP, FLY)] ---
-local PhysTab = Window:CreateTab("⚡ Hareket", 4483362458)
+MainTab:CreateButton({
+   Name = "🔴 SCRIPT'İ KAPAT (Destroy)",
+   Callback = function() Rayfield:Destroy() end,
+})
+
+-- --- [2. FİZİKSEL HAREKET (SPEED FIX)] ---
+local PhysTab = Window:CreateTab("⚡ Fizik / Hareket", 4483362458)
 
 PhysTab:CreateSlider({
    Name = "Yürüme Hızı", Range = {16, 500}, CurrentValue = 16,
@@ -100,9 +110,9 @@ PhysTab:CreateSlider({
    Callback = function(v) _G.Jump = v end,
 })
 
-PhysTab:CreateSlider({
-   Name = "Yerçekimi", Range = {0, 196}, CurrentValue = 196,
-   Callback = function(v) workspace.Gravity = v end,
+PhysTab:CreateToggle({
+   Name = "Duvar Geçme (Noclip)",
+   Callback = function(v) _G.Noclip = v end,
 })
 
 PhysTab:CreateToggle({
@@ -110,16 +120,11 @@ PhysTab:CreateToggle({
    Callback = function(v) _G.InfJump = v end,
 })
 
-PhysTab:CreateToggle({
-   Name = "Duvar Geçme (Noclip)",
-   Callback = function(v) _G.Noclip = v end,
-})
-
--- --- [3. IŞINLANMA (NOKTA ATIŞI)] ---
+-- --- [3. IŞINLANMA (SENİN KOORDİNATLARIN)] ---
 local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
 
 TPTab:CreateButton({
-    Name = "💰 BANKA (YENİ KONUM FIX)",
+    Name = "💰 BANKA (YENİ GÜNCEL KONUM)",
     Callback = function()
         lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
     end,
@@ -139,30 +144,29 @@ ToolTab:CreateButton({
    Name = "💵 MONEY GUN (VIP) AL",
    Callback = function()
        pcall(function()
+           local remote = rs:FindFirstChild("ItemRemote", true)
+           if remote then remote:FireServer("MoneyGun") end
+           
            local tool = rs:FindFirstChild("MoneyGun", true)
-           if tool then 
-               tool:Clone().Parent = lp.Backpack 
-           else
-               -- Eğer bulamazsa sunucudan zorla ister
-               local r = rs:FindFirstChild("ItemRemote", true)
-               if r then r:FireServer("MoneyGun") end
-           end
+           if tool then tool:Clone().Parent = lp.Backpack end
+           Rayfield:Notify({Title = "AI", Content = "MoneyGun İstendi!", Duration = 2})
        end)
    end,
 })
 
--- --- [ DÖNGÜSEL SİSTEMLER ] ---
+-- --- [ ARKAPLAN DÖNGÜLERİ ] ---
 runService.Heartbeat:Connect(function()
-    if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-        lp.Character.Humanoid.WalkSpeed = _G.Speed
-        lp.Character.Humanoid.JumpPower = _G.Jump
-    end
-    
-    if _G.Noclip and lp.Character then
-        for _, part in pairs(lp.Character:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
+    pcall(function()
+        if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+            lp.Character.Humanoid.WalkSpeed = _G.Speed
+            lp.Character.Humanoid.JumpPower = _G.Jump
         end
-    end
+        if _G.Noclip and lp.Character then
+            for _, v in pairs(lp.Character:GetDescendants()) do
+                if v:IsA("BasePart") then v.CanCollide = false end
+            end
+        end
+    end)
 end)
 
 uis.JumpRequest:Connect(function()
@@ -171,6 +175,4 @@ uis.JumpRequest:Connect(function()
     end
 end)
 
--- --- [ AYARLAR ] ---
-local SettingsTab = Window:CreateTab("⚙️ Ayarlar", 4483362458)
-SettingsTab:CreateButton({Name = "🔴 SCRIPT SİL (Destroy)", Callback = function() Rayfield:Destroy() end})
+Rayfield:LoadConfiguration()
