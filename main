@@ -1,137 +1,165 @@
 --[[
-👑 SOVEREIGN V48 | GOD-MODE FULL EDITION
-SAHİBİ: EgeKazak_Real1
-- Hız & Zıplama 1000 Limit (Sürekli Sabitleme)
-- Cmdr Admin Bypass (F2 & ' Tuşları Aktif)
-- Ads & Sponsor Menü Zorlama (Dosya Tabanlı Fix)
-- VIP Sahipliği Manipülasyonu
+    👑 SOVEREIGN V46 | APEX ULTIMATE
+    OWNER: EgeKazak_Real1
+    LOG: Decompiled Data (ShowGamepass/Gamepass) sızması tamamlandı.
 ]]
 
+-- 🌀 GÜVENLİ LOADING SCREEN
+local function SafeLoading()
+    local sg = Instance.new("ScreenGui", game.CoreGui)
+    local frame = Instance.new("Frame", sg)
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(5, 5, 10)
+    
+    local txt = Instance.new("TextLabel", frame)
+    txt.Size = UDim2.new(0, 500, 0, 100)
+    txt.Position = UDim2.new(0.5, -250, 0.45, 0)
+    txt.Text = "SOVEREIGN APEX V46\nSistemler Zorlanıyor..."
+    txt.TextColor3 = Color3.fromRGB(0, 170, 255)
+    txt.Font = Enum.Font.GothamBold
+    txt.TextSize = 30
+    txt.BackgroundTransparency = 1
+    
+    task.wait(2)
+    sg:Destroy()
+end
+pcall(SafeLoading)
+
+-- 👑 ANA MOTOR
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local lp = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 
--- Ayarlar
-_G.WalkSpeed = 16
-_G.JumpPower = 50
-_G.Noclip = false
-_G.InfJump = false
-_G.Gravity = 196.2
-
--- 🛠️ [CMDR ADMIN BYPASS]
-task.spawn(function()
+-- 🛠️ VIP & ADS MODÜL BYPASS (ShowGamepass.txt ve Gamepass.txt Verileri)
 pcall(function()
-local CmdrClient = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
-CmdrClient:SetActivationKeys({Enum.KeyCode.F2, Enum.KeyCode.Quote})
-if CmdrClient.IsAdmin then
-CmdrClient.IsAdmin = function() return true end
-end
-if CmdrClient.Dispatcher then
-CmdrClient.Dispatcher.PermissionLevel = 10
-end
+    -- VIP Eşya Kontrolünü Kır 
+    local sgp = require(rs.Modules.Client.UI.ShowGamepass)
+    sgp.IsOwned = function() return true end
+    sgp.IsPlayerOwned = function() return true end
+    
+    -- Reklam (Ads) Sistemini Kır [cite: 40, 42]
+    local gpc = require(rs.Modules.Client.Data.Gamepass)
+    gpc.CanPlayerViewAdvertisements = function() return true end
 end)
-end)
-
--- 🛠️ [REKLAM TETİKLEYİCİ]
-local function ForceAds()
-pcall(function()
-local GamepassModule = require(rs.Modules.Client.Data.Gamepass)
-if GamepassModule.OnAdvertisementsEnabled then GamepassModule.OnAdvertisementsEnabled:Fire() end
-local mainGui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
-if mainGui then
-local adStore = mainGui:FindFirstChild("AdStore", true)
-if adStore then
-adStore.Visible = true
-adStore.Position = UDim2.new(0.5, 0, 0.5, 0)
-end
-end
-end)
-end
 
 local Window = Rayfield:CreateWindow({
-Name = "👑 SOVEREIGN V48 | GOD-MODE",
-LoadingTitle = "EgeKazak_Real1 Executive",
-LoadingSubtitle = "Hız & Admin Kilitleri Kırıldı",
-Theme = "DarkBlue",
-ConfigurationSaving = { Enabled = false }
+   Name = "👑 SOVEREIGN V46 | APEX",
+   LoadingTitle = "EgeKazak_Real1 Özel Sürüm",
+   LoadingSubtitle = "1000 Limit Unlocked",
+   Theme = "DarkBlue",
+   ConfigurationSaving = { Enabled = false }
 })
 
-local MainTab = Window:CreateTab("🏠 Ana Panel", 4483362458)
+-- DEĞİŞKENLER
+_G.Speed = 16
+_G.Jump = 50
+_G.Noclip = false
+_G.InfJump = false
 
-MainTab:CreateButton({
-Name = "📢 REKLAM SİSTEMİNİ TETİKLE",
-Callback = function() ForceAds() end,
-})
-
-MainTab:CreateButton({
-Name = "⌨️ CMDR PANELİNİ AÇ (F2)",
-Callback = function() pcall(function() require(rs.Packages.CmdrClient):Show() end) end,
-})
-
+-- --- [1. HAREKET (SPEED & JUMP FIX)] ---
 local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
 
 MoveTab:CreateSlider({
-Name = "Hız (WalkSpeed)", Range = {16, 1000}, CurrentValue = 16,
-Callback = function(v) _G.WalkSpeed = v end,
+   Name = "Hız (WalkSpeed)",
+   Range = {16, 1000}, -- İstediğin 1000 sınırı eklendi
+   CurrentValue = 16,
+   Callback = function(v) _G.Speed = v end,
 })
 
 MoveTab:CreateSlider({
-Name = "Zıplama (JumpPower)", Range = {50, 1000}, CurrentValue = 50,
-Callback = function(v) _G.JumpPower = v end,
+   Name = "Zıplama (JumpPower)",
+   Range = {50, 1000}, -- İstediğin 1000 sınırı eklendi
+   CurrentValue = 50,
+   Callback = function(v) _G.Jump = v end,
 })
 
 MoveTab:CreateToggle({
-Name = "Noclip", Callback = function(v) _G.Noclip = v end,
+   Name = "Noclip (Duvar Geç)",
+   Callback = function(v) _G.Noclip = v end,
 })
 
 MoveTab:CreateToggle({
-Name = "Sonsuz Zıplama", Callback = function(v) _G.InfJump = v end,
+   Name = "Sonsuz Zıplama",
+   Callback = function(v) _G.InfJump = v end,
 })
 
-local WorldTab = Window:CreateTab("🌍 Işınlanma", 4483362458)
+-- --- [2. ANA PANEL: ADS & ADMIN] ---
+local MainTab = Window:CreateTab("🏠 Ana Kontrol", 4483362458)
 
-WorldTab:CreateButton({
-Name = "💰 BANKA (GÜNCEL KONUM)",
-Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194) end,
+MainTab:CreateButton({
+   Name = "📢 REKLAM MENÜSÜNÜ ZORLA AÇ",
+   Callback = function()
+       pcall(function()
+           local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
+           local ads = gui and gui:FindFirstChild("AdStore", true)
+           if ads then ads.Visible = true end
+       end)
+   end,
 })
 
-WorldTab:CreateButton({
-Name = "🏢 POLİS MERKEZİ",
-Callback = function() lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404) end,
+MainTab:CreateButton({
+   Name = "⌨️ CMDR ADMIN PANELİ (F2)",
+   Callback = function()
+       pcall(function()
+           local cmdr = require(rs:WaitForChild("Packages"):WaitForChild("CmdrClient"))
+           cmdr:Show()
+       end)
+   end,
 })
 
--- 🛠️ [SÜREKLİ DÖNGÜ VE KORUMA]
+-- --- [3. IŞINLANMA (GÜNCEL KONUMLAR)] ---
+local TPTab = Window:CreateTab("✈️ Işınlanma", 4483362458)
+
+TPTab:CreateButton({
+    Name = "💰 BANKA (YENİ KONUM FIX)",
+    Callback = function()
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-10.7334747, 15.4523478, 275.049194)
+    end,
+})
+
+TPTab:CreateButton({
+    Name = "🏢 POLİS MERKEZİ",
+    Callback = function()
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(-119.57766, 2.72700167, 12.2390404)
+    end,
+})
+
+-- --- [4. EŞYA SİSTEMİ: MONEY GUN] ---
+local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
+
+ToolTab:CreateButton({
+   Name = "💵 MONEY GUN (VIP) AL",
+   Callback = function()
+       pcall(function()
+           local remote = rs:FindFirstChild("ItemRemote", true)
+           if remote then remote:FireServer("MoneyGun") end
+           local tool = rs:FindFirstChild("MoneyGun", true)
+           if tool then tool:Clone().Parent = lp.Backpack end
+       end)
+   end,
+})
+
+-- --- [ DÖNGÜSEL SİSTEMLER - KESİN ÇÖZÜM ] ---
 runService.Heartbeat:Connect(function()
-pcall(function()
-local hum = lp.Character.Humanoid
-hum.WalkSpeed = _G.WalkSpeed
-hum.JumpPower = _G.JumpPower
-hum.UseJumpPower = true
-workspace.Gravity = _G.Gravity
-
-    if _G.Noclip then
-        for _, part in pairs(lp.Character:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
+    pcall(function()
+        if lp.Character and lp.Character:FindFirstChild("Humanoid") then
+            -- Oyunun değerleri 16/50'ye çekmesini engellemek için sürekli zorla
+            lp.Character.Humanoid.WalkSpeed = _G.Speed
+            lp.Character.Humanoid.JumpPower = _G.Jump
+            lp.Character.Humanoid.UseJumpPower = true
         end
-    end
-end)
-
-
-end)
-
-lp.CharacterAdded:Connect(function(char)
-local hum = char:WaitForChild("Humanoid")
-hum:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
-if hum.WalkSpeed ~= _G.WalkSpeed then hum.WalkSpeed = _G.WalkSpeed end
-end)
+        if _G.Noclip and lp.Character then
+            for _, v in pairs(lp.Character:GetDescendants()) do
+                if v:IsA("BasePart") then v.CanCollide = false end
+            end
+        end
+    end)
 end)
 
 uis.JumpRequest:Connect(function()
-if _G.InfJump and lp.Character then
-lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-end
+    if _G.InfJump and lp.Character then
+        lp.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
 end)
-
-Rayfield:LoadConfiguration()
