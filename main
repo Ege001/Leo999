@@ -40,6 +40,7 @@ _G.Noclip = false
 _G.Fly = false
 _G.FlySpeed = 50
 _G.Language = "TR" -- Varsayılan Dil
+_G.InfiniteJump = false
 
 local connections = {}
 local UI_Elements = {} -- Dinamik dil güncellemesi için elemanları saklayacağız
@@ -65,7 +66,12 @@ local Translations = {
         ["Bank3"] = "💰 Elmas Banka",
         ["Bank4"] = "💰 Bitcoin Banka",
         ["LangTitle"] = "Dil Seçimi / Language",
-        ["NotifyReset"] = "Tüm ayarlar normale döndü."
+        ["NotifyReset"] = "Tüm ayarlar normale döndü.",
+        ["InfJump"] = "Sonsuz Zıplama",
+        ["NoFog"] = "Sisi Kaldır",
+        ["EspTitle"] = "Oyuncu ESP (İskelet)",
+        ["FullBright"] = "Parlaklık (FullBright)",
+        ["CopyPos"] = "Koordinatları Kopyala"
     },
     ["EN"] = {
         ["MainTab"] = "🏠 Main Panel",
@@ -86,7 +92,12 @@ local Translations = {
         ["Bank3"] = "💰 Diamond Bank",
         ["Bank4"] = "💰 Bitcoin Bank",
         ["LangTitle"] = "Language Selection",
-        ["NotifyReset"] = "All settings reset to normal."
+        ["NotifyReset"] = "All settings reset to normal.",
+        ["InfJump"] = "Infinite Jump",
+        ["NoFog"] = "Remove Fog",
+        ["EspTitle"] = "Player ESP",
+        ["FullBright"] = "Full Brightness",
+        ["CopyPos"] = "Copy Coordinates"
     }
 }
 
@@ -134,18 +145,22 @@ local adsBtn = MainTab:CreateButton({
    Name = Translations[_G.Language]["AdsButton"],
    Callback = function()
        pcall(function()
-           -- Sadece net reklam isimlerini içerenleri aç, alakasızları es geç
+           -- SADECE reklam içerikli GUI'leri aç, diğerlerini (admin/menu vb) kesinlikle engelle
            for _, v in pairs(lp.PlayerGui:GetDescendants()) do
-               if v:IsA("Frame") or v:IsA("ScrollingFrame") then
+               if v:IsA("Frame") or v:IsA("ScrollingFrame") or v:IsA("ImageLabel") then
                    local n = v.Name:lower()
-                   -- Filtreyi daralttım, sadece reklam ve promo odaklı
-                   if n:find("advert") or n:find("promo") or (n:find("ad") and not n:find("admin") and not n:find("load")) then
+                   -- Filtre: "ad" geçmeli ama "admin", "menu", "main", "sidebar" GEÇMEMELİ
+                   if (n:find("advert") or n:find("promo") or (n:find("ad") and #n <= 5)) 
+                   and not n:find("admin") 
+                   and not n:find("menu") 
+                   and not n:find("main") 
+                   and not n:find("side") then
                        v.Visible = true
                        if v.Parent:IsA("GuiObject") then v.Parent.Visible = true end
                    end
                end
            end
-           -- Sadece Reklam tetikleyici eventleri ateşle
+           -- Uzaktan tetikleyici
            local rem = ReplicatedStorage:FindFirstChild("ShowAds", true) or ReplicatedStorage:FindFirstChild("TriggerAd", true)
            if rem and rem:IsA("RemoteEvent") then rem:FireServer() end
        end)
@@ -162,6 +177,7 @@ local resetBtn = MainTab:CreateButton({
         Camera.FieldOfView = 70
         _G.Fly = false
         _G.Noclip = false
+        _G.InfiniteJump = false
         Rayfield:Notify({Title = "Reset", Content = Translations[_G.Language]["NotifyReset"], Duration = 3})
     end,
 })
@@ -193,9 +209,6 @@ local speedSlider = MoveTab:CreateSlider({
 })
 UI_Elements["Speed"] = speedSlider
 
-MoveTab:CreateButton({ Name = "➕ Speed +10", Callback = function() _G.Speed = _G.Speed + 10 end })
-MoveTab:CreateButton({ Name = "➖ Speed -10", Callback = function() _G.Speed = math.max(16, _G.Speed - 10) end })
-
 local jumpSlider = MoveTab:CreateSlider({
     Name = Translations[_G.Language]["Jump"],
     Range = {50, 500},
@@ -204,15 +217,9 @@ local jumpSlider = MoveTab:CreateSlider({
 })
 UI_Elements["Jump"] = jumpSlider
 
-MoveTab:CreateButton({ Name = "➕ Jump +10", Callback = function() _G.Jump = _G.Jump + 10 end })
-MoveTab:CreateButton({ Name = "➖ Jump -10", Callback = function() _G.Jump = math.max(50, _G.Jump - 10) end })
-
-MoveTab:CreateSection("FOV")
-MoveTab:CreateButton({ Name = "➕ FOV +5", Callback = function() _G.FOV = math.min(120, _G.FOV + 5); Camera.FieldOfView = _G.FOV end })
-MoveTab:CreateButton({ Name = "➖ FOV -5", Callback = function() _G.FOV = math.max(30, _G.FOV - 5); Camera.FieldOfView = _G.FOV end })
-
 local noclipTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Noclip"], Callback = function(v) _G.Noclip = v end })
 UI_Elements["Noclip"] = noclipTog
+
 local flyTog = MoveTab:CreateToggle({ Name = Translations[_G.Language]["Fly"], Callback = function(v) _G.Fly = v end })
 UI_Elements["Fly"] = flyTog
 
@@ -230,34 +237,66 @@ UI_Elements["Bank1"] = b1
 local b2 = TPTab:CreateButton({
     Name = Translations[_G.Language]["Bank2"],
     Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) 
-        end
+        if lp.Character then lp.Character.HumanoidRootPart.CFrame = CFrame.new(-27.9, -51.3, 271.4) end
     end,
 })
 UI_Elements["Bank2"] = b2
 
-local b3 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank3"],
-    Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-57.1, -50.8, 187.4) 
+-- 8. EKSTRALAR (YENİ VE DOLU)
+local infJumpTog = ExtraTab:CreateToggle({
+    Name = Translations[_G.Language]["InfJump"],
+    Callback = function(v) _G.InfiniteJump = v end,
+})
+UI_Elements["InfJump"] = infJumpTog
+
+ExtraTab:CreateToggle({
+    Name = Translations[_G.Language]["NoFog"],
+    Callback = function(v)
+        if v then
+            game:GetService("Lighting").FogEnd = 999999
+        else
+            game:GetService("Lighting").FogEnd = 1000 -- Varsayılan
         end
     end,
 })
-UI_Elements["Bank3"] = b3
+UI_Elements["NoFog"] = UI_Elements["NoFog"] or {}
 
-local b4 = TPTab:CreateButton({
-    Name = Translations[_G.Language]["Bank4"],
-    Callback = function()
-        if lp.Character then 
-            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-133.8, -55.4, 231.8) 
+ExtraTab:CreateToggle({
+    Name = Translations[_G.Language]["FullBright"],
+    Callback = function(v)
+        if v then
+            game:GetService("Lighting").Brightness = 2
+            game:GetService("Lighting").ClockTime = 14
+            game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+        else
+            game:GetService("Lighting").Brightness = 1
         end
     end,
 })
-UI_Elements["Bank4"] = b4
 
--- 8. DÖNGÜ SİSTEMİ
+ExtraTab:CreateButton({
+    Name = Translations[_G.Language]["CopyPos"],
+    Callback = function()
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            local pos = lp.Character.HumanoidRootPart.Position
+            local str = string.format("%.1f, %.1f, %.1f", pos.X, pos.Y, pos.Z)
+            setclipboard(str)
+            Rayfield:Notify({Title = "Copy", Content = "Coordinates copied to clipboard!", Duration = 2})
+        end
+    end,
+})
+UI_Elements["CopyPos"] = UI_Elements["CopyPos"] or {}
+
+-- FOV Ayarı buraya eklendi
+ExtraTab:CreateSlider({
+    Name = Translations[_G.Language]["FOV"],
+    Range = {70, 120},
+    CurrentValue = _G.FOV,
+    Callback = function(v) _G.FOV = v; Camera.FieldOfView = v end,
+})
+UI_Elements["FOV"] = UI_Elements["FOV"] or {}
+
+-- 9. DÖNGÜ SİSTEMİ
 local hb = RunService.Heartbeat:Connect(function()
     pcall(function()
         local char = lp.Character
@@ -298,7 +337,14 @@ local hb = RunService.Heartbeat:Connect(function()
 end)
 table.insert(connections, hb)
 
--- 9. HUD
+-- Sonsuz Zıplama Eventi
+UserInputService.JumpRequest:Connect(function()
+    if _G.InfiniteJump then
+        lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+-- 10. HUD
 local function CreateHUD()
     local sg = Instance.new("ScreenGui", lp.PlayerGui)
     sg.Name = "SOV_HUD"
@@ -326,4 +372,4 @@ local function CreateHUD()
 end
 CreateHUD()
 
-Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Ads Menüsü ve Dil Sistemi Optimize Edildi!", Duration = 5})
+Rayfield:Notify({Title = "Sovereign Ultimate", Content = "Ads Filtrelendi ve Ekstralar Dolduruldu!", Duration = 5})
