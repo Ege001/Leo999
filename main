@@ -1,35 +1,38 @@
--- Hexagon UI Library Entegrasyonu
+-- Sovereign Elite UI Loader
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local lp = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
 local rs = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
-local camera = workspace.CurrentCamera
 
+-- PENCERE AYARLARI (Fotoğraftaki gibi tarz menü)
 local Window = Rayfield:CreateWindow({
-   Name = "⬢ HEXAGON HUB | OWNER: EgeKazak_Real1",
-   LoadingTitle = "Hexagon Core Sistemleri Başlatılıyor...",
-   LoadingSubtitle = "By Gemini AI - Final Revision",
-   ConfigurationSaving = { Enabled = true, FolderName = "HexagonCore" }
+   Name = "👑 SOVEREIGN ELITE | V31",
+   LoadingTitle = "Sistemler Başlatılıyor...",
+   LoadingSubtitle = "EgeKazak_Real1 İçin Optimize Edildi",
+   ConfigurationSaving = { Enabled = true, FolderName = "SovereignElite" },
+   Theme = "DarkBlue" -- Neon ve şık görünüm
 })
 
 -- DEĞİŞKENLER
-local flying, noclip = false, false
+local flying, noclip, infJump = false, false, false
 local flySpeed, viewTarget = 50, nil
 
--- --- [SEKMELER] ---
+-- --- [KATEGORİLER] ---
 local MainTab = Window:CreateTab("🏠 Ana Panel", 4483362458)
 local PlayerTab = Window:CreateTab("👤 Oyuncu", 4483362458)
-local VisualTab = Window:CreateTab("🌈 Görsel", 4483362458)
-local ToolTab = Window:CreateTab("📦 Eşyalar", 4483362458)
-local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
+local MovementTab = Window:CreateTab("⚡ Hareket", 4483362458)
+local VisualTab = Window:CreateTab("🌈 Görsel (RGB)", 4483362458)
+local ToolTab = Window:CreateTab("📦 Eşya Seçici", 4483362458)
 
--- --- [ANA PANEL: PLAYERSBAG & BYPASS] ---
+-- --- [1. ANA PANEL: PLAYERSBAG GOD MODE] ---
+MainTab:CreateSection("Sistem Kontrolü")
+
 MainTab:CreateButton({
-   Name = "🔓 SİSTEMİ ÇÖZ (PlayersBag & Data Bypass)",
+   Name = "🔓 PLAYERSBAG UNLOCK (Tüm Yetkiler)",
    Callback = function()
        pcall(function()
-           -- PlayersBag içindeki tüm yetki klasörlerini zorla aktif eder
            local pb = lp:FindFirstChild("PlayersBag")
            if pb then
                for _, v in pairs(pb:GetDescendants()) do
@@ -37,21 +40,13 @@ MainTab:CreateButton({
                    elseif v:IsA("NumberValue") or v:IsA("IntValue") then v.Value = 1 end
                end
            end
-           -- Brookhaven'ın iç kontrol değişkenlerini kandırma
-           for _, v in pairs(getgc(true)) do
-               if type(v) == "table" and rawget(v, "AllPassesFetched") ~= nil then
-                   v.AllPassesFetched = true
-                   v.Premium = true
-                   v.VIP = true
-               end
-           end
-           Rayfield:Notify({Title = "SİSTEM", Content = "Veritabanı başarıyla override edildi!", Duration = 5})
+           Rayfield:Notify({Title = "SİSTEM", Content = "EgeKazak_Real1: Tüm veriler TRUE yapıldı!", Duration = 5})
        end)
    end,
 })
 
 MainTab:CreateButton({
-   Name = "📢 Ads/Sponsor Menüsünü Aç",
+   Name = "📢 Ads Menüsünü Zorla Aç",
    Callback = function()
        pcall(function()
            local gui = lp.PlayerGui:FindFirstChild("MainGUIHandler", true)
@@ -61,9 +56,11 @@ MainTab:CreateButton({
    end,
 })
 
--- --- [OYUNCU: VIEW & COPY] ---
+-- --- [2. OYUNCU: VIEW & AVATAR COPY] ---
+PlayerTab:CreateSection("Oyuncu Etkileşimi")
+
 PlayerTab:CreateInput({
-   Name = "Oyuncu Adı", PlaceholderText = "İsim yaz...",
+   Name = "Oyuncu Ara", PlaceholderText = "İsim...",
    Callback = function(t)
        for _, p in pairs(game.Players:GetPlayers()) do
            if p.Name:lower():find(t:lower()) then viewTarget = p end
@@ -72,33 +69,71 @@ PlayerTab:CreateInput({
 })
 
 PlayerTab:CreateToggle({
-   Name = "View (Kamerayı Odakla)", CurrentValue = false,
+   Name = "View Player (İzle)", CurrentValue = false,
    Callback = function(v)
        camera.CameraSubject = (v and viewTarget) and viewTarget.Character.Humanoid or lp.Character.Humanoid
    end,
 })
 
 PlayerTab:CreateButton({
-   Name = "Avatar Kopyala (Copy Appearance)",
+   Name = "Avatar Kopyala (Copy)",
    Callback = function()
        if viewTarget then lp.CharacterAppearanceId = viewTarget.UserId; lp.Character:BreakJoints() end
    end,
 })
 
--- --- [GÖRSEL: RGB & RAINBOW] ---
+-- --- [3. HAREKET: FLY / NOCLIP / INF JUMP] ---
+MovementTab:CreateSection("Fizik Ayarları")
+
+MovementTab:CreateSlider({
+   Name = "Yürüme Hızı (WalkSpeed)", Range = {16, 500}, CurrentValue = 16,
+   Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end,
+})
+
+MovementTab:CreateSlider({
+   Name = "Zıplama Gücü (JumpPower)", Range = {50, 500}, CurrentValue = 50,
+   Callback = function(v) lp.Character.Humanoid.JumpPower = v end,
+})
+
+MovementTab:CreateToggle({
+   Name = "Noclip (Duvar Geçme)", CurrentValue = false,
+   Callback = function(v)
+       noclip = v
+       runService.Stepped:Connect(function()
+           if noclip and lp.Character then
+               for _, p in pairs(lp.Character:GetDescendants()) do
+                   if p:IsA("BasePart") then p.CanCollide = false end
+               end
+           end
+       end)
+   end,
+})
+
+MovementTab:CreateToggle({
+   Name = "Infinite Jump (Sınırsız Zıplama)", CurrentValue = false,
+   Callback = function(v) infJump = v end,
+})
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if infJump then lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") end
+end)
+
+-- --- [4. GÖRSEL: RGB & RAINBOW HOUSES] ---
+VisualTab:CreateSection("Efektler")
+
 VisualTab:CreateToggle({
    Name = "RGB Araçlar & Rainbow Evler", CurrentValue = false,
    Callback = function(v)
-       _G.HexVisual = v
+       _G.EliteVisual = v
        spawn(function()
-           while _G.HexVisual do
+           while _G.EliteVisual do
                local c = Color3.fromHSV(tick() % 5 / 5, 1, 1)
                for _, car in pairs(workspace.Vehicles:GetChildren()) do
                    if car:FindFirstChild("Body") then car.Body.Color = c end
                end
                for _, h in pairs(workspace.Houses:GetChildren()) do
-                   local colorPart = h:FindFirstChild("HouseColor", true)
-                   if colorPart then colorPart.Color = c end
+                   local cp = h:FindFirstChild("HouseColor", true)
+                   if cp then cp.Color = c end
                end
                task.wait(0.1)
            end
@@ -106,135 +141,21 @@ VisualTab:CreateToggle({
    end,
 })
 
--- --- [EŞYALAR: BROWSER] ---
+-- --- [5. EŞYA SEÇİCİ: VIEW TOOLS] ---
+ToolTab:CreateSection("Envanter")
+
 local tools = {}
 for _, t in pairs(rs:GetDescendants()) do if t:IsA("Tool") then table.insert(tools, t.Name) end end
 ToolTab:CreateDropdown({
-   Name = "Eşya Seç ve Al", Options = tools,
+   Name = "Eşya Seç", Options = tools,
    Callback = function(o)
-       local tool = rs:FindFirstChild(o, true)
-       if tool then tool:Clone().Parent = lp.Backpack end
+       local t = rs:FindFirstChild(o, true)
+       if t then t:Clone().Parent = lp.Backpack end
    end,
 })
 
--- --- [HAREKET: FLY & SPEED] ---
-MoveTab:CreateToggle({
-   Name = "Uçma (Fly)", CurrentValue = false,
-   Callback = function(v)
-       flying = v
-       local root = lp.Character:WaitForChild("HumanoidRootPart")
-       if flying then
-           local bg = Instance.new("BodyGyro", root); bg.P = 9e4; bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-           local bv = Instance.new("BodyVelocity", root); bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
-           spawn(function()
-               while flying do
-                   runService.RenderStepped:Wait()
-                   local mv = require(lp.PlayerScripts:WaitForChild("PlayerModule")):GetControls():GetMoveVector()
-                   bv.Velocity = (camera.CFrame.LookVector * -mv.Z + camera.CFrame.RightVector * mv.X) * flySpeed
-                   bg.CFrame = camera.CFrame
-               end
-               bg:Destroy(); bv:Destroy()
-           end)
-       end
-   end,
-})
-
-MoveTab:CreateSlider({
-   Name = "Hız Ayarı", Range = {16, 500},
-   Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end,
-})
-
--- --- [AYARLAR & KAPAT] ---
+-- --- [AYARLAR] ---
 local SettingsTab = Window:CreateTab("⚙️ Ayarlar", 4483362458)
-SettingsTab:CreateButton({
-   Name = "🔴 SCRIPT'İ TAMAMEN KAPAT",
-   Callback = function() Rayfield:Destroy() end,
-})   Callback = function(Option)
-       local tool = rs:FindFirstChild(Option, true)
-       if tool then tool:Clone().Parent = lp.Backpack end
-   end,
-})
-
--- --- PLAYER: VIEW & COPY AVATAR ---
-PlayerTab:CreateInput({
-   Name = "Oyuncu Ara (İsim)", PlaceholderText = "Ege...",
-   Callback = function(Text)
-       for _, p in pairs(game.Players:GetPlayers()) do
-           if p.Name:lower():find(Text:lower()) then viewTarget = p end
-       end
-   end,
-})
-PlayerTab:CreateToggle({
-   Name = "View (İzle)", CurrentValue = false,
-   Callback = function(v) camera.CameraSubject = (v and viewTarget) and viewTarget.Character.Humanoid or lp.Character.Humanoid end,
-})
-PlayerTab:CreateButton({
-   Name = "Avatar Kopyala (Copy Avatar)",
-   Callback = function() if viewTarget then lp.CharacterAppearanceId = viewTarget.UserId; lp.Character:BreakJoints() end end,
-})
-
--- --- VEHICLE: RGB & TURBO ---
-VehicleTab:CreateToggle({
-   Name = "Araç Turbo & RGB Mod", CurrentValue = false,
-   Callback = function(Value)
-      _G.CarMod = Value
-      spawn(function()
-         while _G.CarMod do
-            for _, v in pairs(workspace.Vehicles:GetChildren()) do
-                local seat = v:FindFirstChildWhichIsA("VehicleSeat", true)
-                if seat and seat.Occupant and seat.Occupant.Parent == lp.Character then
-                    seat.MaxSpeed, seat.Torque = 500, 50000
-                    if v:FindFirstChild("Body") then v.Body.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1) end
-                end
-            end
-            task.wait(0.1)
-         end
-      end)
-   end,
-})
-
--- --- WORLD: RAINBOW HOUSES ---
-WorldTab:CreateToggle({
-   Name = "Rainbow Evler (Gökkuşağı)", CurrentValue = false,
-   Callback = function(v)
-       rainbowHouses = v
-       spawn(function()
-           while rainbowHouses do
-               for _, house in pairs(workspace.Houses:GetChildren()) do
-                   for _, part in pairs(house:GetDescendants()) do
-                       if part:IsA("BasePart") and part.Name == "HouseColor" then
-                           part.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-                       end
-                   end
-               end
-               task.wait(0.1)
-           end
-       end)
-   end,
-})
-
--- --- MOVEMENT: FLY / NOCLIP ---
-MoveTab:CreateToggle({Name = "Fly (Uçma)", Callback = function(v) flying = v end})
-MoveTab:CreateSlider({Name = "Hız", Range = {16, 500}, Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end})
-MoveTab:CreateToggle({
-    Name = "Noclip (Duvar Geçme)",
-    Callback = function(v)
-        noclip = v
-        runService.Stepped:Connect(function()
-            if noclip and lp.Character then
-                for _, part in pairs(lp.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then part.CanCollide = false end
-                end
-            end
-        end)
-    end,
-})
-
--- --- SETTINGS: LANGUAGE & DESTROY ---
-SettingsTab:CreateDropdown({
-   Name = "Dil Seçimi (Language)", Options = {"Türkçe", "English", "Deutsch", "Español"},
-   Callback = function(s) Rayfield:Notify({Title = "Sistem", Content = "Dil: " .. s}) end,
-})
 SettingsTab:CreateButton({
    Name = "🔴 SCRIPT DESTROY (TAMAMEN KAPAT)",
    Callback = function() Rayfield:Destroy() end,
