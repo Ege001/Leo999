@@ -1,10 +1,10 @@
 --[[ 
-    👑 SOVEREIGN V46 | BROOKHAVEN ADS & DASHBOARD EDITION
+    👑 SOVEREIGN V46 | BROOKHAVEN ULTIMATE EDITION
     OWNER: EgeKazak_Real1
-    STATUS: FULL INTEGRATED + ADS MENU BYPASS
+    STATUS: FULL STABLE & ALL FEATURES ENABLED
 ]]
 
--- 1. BAŞLATICI VE GÜVENLİK
+-- 1. BAŞLATICI VE ANA DEĞİŞKENLER
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -12,145 +12,134 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local lp = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
--- EKRAN HUD (ANA SAYAÇ & DURUM)
-local function CreateHUD()
-    if game.CoreGui:FindFirstChild("SOV_HUD") then game.CoreGui.SOV_HUD:Destroy() end
-    local sg = Instance.new("ScreenGui", game.CoreGui)
-    sg.Name = "SOV_HUD"
-    
-    local frame = Instance.new("Frame", sg)
-    frame.Size = UDim2.new(0, 200, 0, 80)
-    frame.Position = UDim2.new(0.02, 0, 0.8, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-    frame.BorderSizePixel = 2
-    
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, 0, 0, 25)
-    title.Text = "SOVEREIGN DASHBOARD"
-    title.TextColor3 = Color3.fromRGB(0, 170, 255)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    
-    local stats = Instance.new("TextLabel", frame)
-    stats.Name = "StatLabel"
-    stats.Size = UDim2.new(1, 0, 1, -25)
-    stats.Position = UDim2.new(0, 0, 0, 25)
-    stats.Text = "Hız: 16\nSunucu: " .. #Players:GetPlayers()
-    stats.TextColor3 = Color3.fromRGB(255, 255, 255)
-    stats.BackgroundTransparency = 1
-    stats.TextSize = 14
+-- Güvenli Global Değerler
+getgenv().Speed = 16
+getgenv().Jump = 50
+getgenv().Noclip = false
+getgenv().InfJump = false
+getgenv().AdsMessage = "SOVEREIGN V46"
 
-    task.spawn(function()
-        while task.wait(0.5) do
-            if lp.Character and lp.Character:FindFirstChild("Humanoid") then
-                stats.Text = "Hız: " .. math.floor(lp.Character.Humanoid.WalkSpeed) .. "\nSunucu: " .. #Players:GetPlayers() .. " Kişi"
-            end
-        end
-    end)
-end
-pcall(CreateHUD)
-
--- 2. UI KÜTÜPHANESİ
+-- 2. RAYFIELD UI KÜTÜPHANESİ (FIXED LOAD)
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- GLOBAL AYARLAR
-_G.Speed = 16
-_G.Jump = 50
-_G.Noclip = false
-_G.AdsMessage = "SOVEREIGN V46 ON TOP!"
-
+-- 3. ANA PENCERE
 local Window = Rayfield:CreateWindow({
-   Name = "👑 SOVEREIGN V46 | BROOKHAVEN ADS",
+   Name = "👑 SOVEREIGN V46 | BROOKHAVEN",
    LoadingTitle = "EgeKazak_Real1 Dashboard",
-   LoadingSubtitle = "Ads Menu & Trigger Systems",
+   LoadingSubtitle = "Full Entegre & Ads System",
    Theme = "DarkBlue",
    ConfigurationSaving = { Enabled = false }
 })
 
 -- SEKMELER
-local DashTab = Window:CreateTab("📊 Ana Panel", 4483362458)
-local AdsTab = Window:CreateTab("📢 Ads Menu", 4483362458)
-local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
+local DashTab = Window:CreateTab("📊 Dashboard", 4483362458)
+local AdsTab = Window:CreateTab("📢 Ads & Panolar", 4483362458)
+local ItemTab = Window:CreateTab("📦 Eşyalar", 4483362458)
 local TPTab = Window:CreateTab("✈️ Konumlar", 4483362458)
+local MoveTab = Window:CreateTab("⚡ Hareket", 4483362458)
 
--- 3. ANA PANEL (DASHBOARD) ÖZELLİKLERİ
-DashTab:CreateSection("Sunucu Bilgileri")
+-- 4. DASHBOARD (ANA SAYFA ÖZELLİKLERİ)
+DashTab:CreateSection("Sunucu Durumu")
 DashTab:CreateLabel("Kullanıcı: " .. lp.Name)
-DashTab:CreateLabel("Hesap Yaşı: " .. lp.AccountAge .. " Gün")
+DashTab:CreateLabel("ID: " .. lp.UserId)
 
 DashTab:CreateButton({
-    Name = "🛠️ Tüm Menüleri Tetikle (Trigger All)",
+    Name = "🛠️ Tüm Eventleri Tetikle (Trigger All)",
     Callback = function()
-        -- Oyundaki tüm etkileşimli eventleri tetiklemeye çalışır
         for _,v in pairs(game:GetDescendants()) do
-            if v:IsA("RemoteEvent") and (v.Name:find("Click") or v.Name:find("Trigger")) then
+            if v:IsA("RemoteEvent") and (v.Name:lower():find("click") or v.Name:lower():find("trigger")) then
                 v:FireServer()
             end
         end
-        Rayfield:Notify({Title="Tetiklendi", Content="Tüm RemoteEvent'ler zorlandı!", Duration=3})
+        Rayfield:Notify({Title="Başarılı", Content="Tüm RemoteEvent'ler zorlandı!", Duration=3})
     end
 })
 
--- 4. ADS MENU (REKLAM PANOSU) MANİPÜLASYONU
-AdsTab:CreateSection("Pano Ayarları")
+DashTab:CreateButton({
+    Name = "🏠 Başlangıca Işınlan (Spawn)",
+    Callback = function()
+        if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
+            lp.Character.HumanoidRootPart.CFrame = CFrame.new(-160, 3, 20)
+        end
+    end
+})
+
+-- 5. ADS MENU & PANO MANİPÜLASYONU
+AdsTab:CreateSection("Reklam Pano Kontrolü")
 
 AdsTab:CreateInput({
-   Name = "Pano Yazısı Değiştir",
+   Name = "Pano Metni",
    PlaceholderText = "Yazı yazın...",
-   RemoveTextAfterFocusLost = false,
-   Callback = function(Text)
-       _G.AdsMessage = Text
-   end,
+   Callback = function(val) getgenv().AdsMessage = val end,
 })
 
 AdsTab:CreateButton({
-   Name = "📢 Tüm Reklamları Güncelle",
+   Name = "📢 Reklamı Yayınla (Update Ads)",
    Callback = function()
        pcall(function()
-           -- Brookhaven Pano Eventi (Ads Remote)
-           local remote = ReplicatedStorage:FindFirstChild("UpdateAds", true) or ReplicatedStorage:FindFirstChild("AdsRemote", true)
-           if remote then
-               remote:FireServer(_G.AdsMessage)
+           -- Brookhaven'ın farklı Remote isimlerini tarar
+           local adsRemote = ReplicatedStorage:FindFirstChild("UpdateAds", true) 
+               or ReplicatedStorage:FindFirstChild("AdsRemote", true)
+               or ReplicatedStorage:FindFirstChild("AdsEvent", true)
+           
+           if adsRemote then
+               adsRemote:FireServer(getgenv().AdsMessage)
+               Rayfield:Notify({Title="Ads", Content="Panolar güncellendi!", Duration=3})
            else
-               Rayfield:Notify({Title="Hata", Content="Ads Remote bulunamadı!", Duration=3})
+               Rayfield:Notify({Title="Hata", Content="Pano sistemi bulunamadı!", Duration=3})
            end
        end)
    end,
 })
 
-AdsTab:CreateButton({
-    Name = "🚫 Reklamları Temizle",
+-- 6. EŞYA SİSTEMİ (BROOKHAVEN SPECIAL)
+ItemTab:CreateSection("Tool & Envanter")
+
+ItemTab:CreateButton({
+    Name = "💵 Money Gun (Para Silahı)",
     Callback = function()
-        local remote = ReplicatedStorage:FindFirstChild("UpdateAds", true)
-        if remote then remote:FireServer("") end
+        pcall(function()
+            local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true)
+            if remote then remote:FireServer("MoneyGun") end
+        end)
     end
 })
 
--- 5. HAREKET KONTROLLERİ
-MoveTab:CreateSlider({
-   Name = "Yürüme Hızı",
-   Range = {16, 500},
-   CurrentValue = 16,
-   Callback = function(v) _G.Speed = v end,
+ItemTab:CreateButton({
+    Name = "🔑 Tüm Anahtarlar (Keys)",
+    Callback = function()
+        local keys = {"HouseKey", "CarKey", "SafeKey", "KeyCard"}
+        local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true)
+        if remote then
+            for _, k in pairs(keys) do remote:FireServer(k) end
+        end
+    end
 })
 
-MoveTab:CreateToggle({
-   Name = "Noclip (Duvar Geçme)",
-   Callback = function(v) _G.Noclip = v end,
+ItemTab:CreateButton({
+    Name = "🛡️ Polis Ekipmanları",
+    Callback = function()
+        local remote = ReplicatedStorage:FindFirstChild("ItemRemote", true)
+        if remote then 
+            remote:FireServer("Handcuffs")
+            remote:FireServer("Taser")
+        end
+    end
 })
 
--- 6. BROOKHAVEN KONUMLAR (FULL)
-local locs = {
-    ["💰 Banka Kasası"] = CFrame.new(-10.7, 15.4, 275.0),
-    ["🚓 Polis Hücresi"] = CFrame.new(-130.5, 3.0, 20.5),
-    ["🏠 Gizli Göl Evi"] = CFrame.new(-485.6, 23.5, 680.9),
-    ["🚢 Lüks Yat"] = CFrame.new(-380.1, 15.2, -420.5),
-    ["🏥 Hastane Gizli Oda"] = CFrame.new(-165.2, 20.5, 50.3)
+-- 7. KONUMLAR (IŞINLANMA)
+local locations = {
+    ["Banka Kasası"] = CFrame.new(-10, 15, 275),
+    ["Polis Karakolu"] = CFrame.new(-120, 3, 12),
+    ["Gizli Göl Evi"] = CFrame.new(-485, 23, 680),
+    ["Yat (Havuzlu)"] = CFrame.new(-380, 15, -420),
+    ["Hastane"] = CFrame.new(-150, 3, 50),
+    ["Uçak Pist"] = CFrame.new(-250, 20, -300)
 }
 
-for name, cf in pairs(locs) do
+for name, cf in pairs(locations) do
     TPTab:CreateButton({
-        Name = name,
+        Name = "✈️ " .. name,
         Callback = function()
             if lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") then
                 lp.Character.HumanoidRootPart.CFrame = cf
@@ -159,25 +148,58 @@ for name, cf in pairs(locs) do
     })
 end
 
--- 7. SİSTEM DÖNGÜSÜ
+-- 8. HAREKET KONTROLLERİ
+MoveTab:CreateSlider({
+   Name = "Yürüme Hızı",
+   Range = {16, 500},
+   CurrentValue = 16,
+   Callback = function(v) getgenv().Speed = v end,
+})
+
+MoveTab:CreateSlider({
+   Name = "Zıplama Gücü",
+   Range = {50, 500},
+   CurrentValue = 50,
+   Callback = function(v) getgenv().Jump = v end,
+})
+
+MoveTab:CreateToggle({
+   Name = "Noclip (Duvar Geçme)",
+   Callback = function(v) getgenv().Noclip = v end,
+})
+
+MoveTab:CreateToggle({
+   Name = "Sonsuz Zıplama",
+   Callback = function(v) getgenv().InfJump = v end,
+})
+
+-- 9. SİSTEM DÖNGÜSÜ (BACKEND)
 RunService.Heartbeat:Connect(function()
     pcall(function()
         if lp.Character and lp.Character:FindFirstChildOfClass("Humanoid") then
-            local h = lp.Character:FindFirstChildOfClass("Humanoid")
-            h.WalkSpeed = _G.Speed
-            h.JumpPower = _G.Jump
-            h.UseJumpPower = true
-        end
-        if _G.Noclip and lp.Character then
-            for _,part in pairs(lp.Character:GetDescendants()) do
-                if part:IsA("BasePart") then part.CanCollide = false end
+            local hum = lp.Character:FindFirstChildOfClass("Humanoid")
+            hum.WalkSpeed = getgenv().Speed
+            hum.JumpPower = getgenv().Jump
+            hum.UseJumpPower = true
+            
+            if getgenv().Noclip then
+                for _, part in pairs(lp.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanCollide = false end
+                end
             end
         end
     end)
 end)
 
+UserInputService.JumpRequest:Connect(function()
+    if getgenv().InfJump and lp.Character and lp.Character:FindFirstChildOfClass("Humanoid") then
+        lp.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+-- BİTİŞ BİLDİRİMİ
 Rayfield:Notify({
-    Title = "Sovereign ADS Edition",
-    Content = "Tüm Dashboard ve Reklam sistemleri aktif!",
+    Title = "Sovereign V46 Yüklendi",
+    Content = "EgeKazak_Real1 - Keyifli Oyunlar!",
     Duration = 5
 })
