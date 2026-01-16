@@ -514,7 +514,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Title = "Emote v2",
-    Desc = "Emotes FREE",
+    Desc = "Emote'lar FREE",
     Callback = function()
        loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))()
     end
@@ -599,8 +599,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Title = "Emotes fe",
-    Desc = "Emotes fe :)",
+    Title = "Emote'lar fe",
+    Desc = "Emote'lar fe :)",
     Locked = false,
     Callback = function()
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AFEM-Max-Open-Alpha-50210"))()
@@ -757,7 +757,7 @@ Tab:AddButton({
                     local humanoid = character:FindFirstChildOfClass("Humanoid")
                     local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
                     if animator then
-                        local anim = Instance.new("Animation")
+                        local anim = Instance.new("Animasyon")
                         anim.AnimationId = "rbxassetid://2410679501"
                         local track = animator:LoadAnimation(anim)
                         track:Play()
@@ -1032,7 +1032,7 @@ local function setStalkerState(isStalking)
                 pcall(function() part.LocalTransparencyModifier = transparencyValue end) 
             end
             pcall(function() part.CanCollide = canCollideValue end) 
-        elseif part:IsA("Shirt") or part:IsA("Pants") then
+        elseif part:IsA("Gömlek") or part:IsA("Pantolonlar") then
             pcall(function() part.Transparency = transparencyValue end)
         end
     end
@@ -1545,7 +1545,7 @@ FunTab:AddTextBox({
 FunTab:AddSection("Skins")
 
 FunTab:AddButton({
-    Name = "Apply Stalker Skin",
+    Name = "Uygula Stalker Skin",
     Callback = function()
         local args = {
             [1] = "Really black"
@@ -1729,7 +1729,7 @@ TabNuke:AddToggle({
                     
                     task.wait(0.3)
                     
-                    local newAnim = Instance.new("Animation")
+                    local newAnim = Instance.new("Animasyon")
                     newAnim.AnimationId = "rbxassetid://70883871260184"
                     
                     skyboxTrack = humanoid:LoadAnimation(newAnim)
@@ -1738,7 +1738,7 @@ TabNuke:AddToggle({
                     
                     task.wait(0.5)
                     
-                    local plankAnim = Instance.new("Animation")
+                    local plankAnim = Instance.new("Animasyon")
                     plankAnim.AnimationId = "rbxassetid://3695333486"
                     rigidTrack = humanoid:LoadAnimation(plankAnim)
                     rigidTrack.Priority = Enum.AnimationPriority.Movement
@@ -1846,7 +1846,7 @@ TabNuke:AddToggle({
                     
                     task.wait(0.3)
                     
-                    local newAnim = Instance.new("Animation")
+                    local newAnim = Instance.new("Animasyon")
                     newAnim.AnimationId = "rbxassetid://70883871260184"
                     
                     nukeFlashTrack = humanoid:LoadAnimation(newAnim)
@@ -1858,7 +1858,7 @@ TabNuke:AddToggle({
                     
                     task.wait(0.3)
                     
-                    local plankAnim = Instance.new("Animation")
+                    local plankAnim = Instance.new("Animasyon")
                     plankAnim.AnimationId = "rbxassetid://3695333486"
                     flashRigidTrack = humanoid:LoadAnimation(plankAnim)
                     flashRigidTrack.Priority = Enum.AnimationPriority.Movement
@@ -2039,7 +2039,7 @@ TabNuke:AddToggle({
                     
                     task.wait(0.3)
                     
-                    local newAnim = Instance.new("Animation")
+                    local newAnim = Instance.new("Animasyon")
                     newAnim.AnimationId = "rbxassetid://70883871260184"
                     
                     _G.CurrentTrack = humanoid:LoadAnimation(newAnim)
@@ -2049,7 +2049,7 @@ TabNuke:AddToggle({
                     task.wait(0.5)
                     
                     local PlankingId = "rbxassetid://3695333486"
-                    local plankAnim = Instance.new("Animation")
+                    local plankAnim = Instance.new("Animasyon")
                     plankAnim.AnimationId = PlankingId
                     _G.RigidTrack = humanoid:LoadAnimation(plankAnim)
                     _G.RigidTrack.Priority = Enum.AnimationPriority.Movement
@@ -2583,7 +2583,7 @@ spawn(function()
     _G.hubCarregando = false
 end)
 
-local Tab = Window:MakeTab({"Avatar", "rbxassetid://10734952036"})
+local Tab = Window:MakeTab({"Karakter", "rbxassetid://10734952036"})
 
 Tab:AddSection({ Name = "Copiar Skin" })
 
@@ -2671,7 +2671,7 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Copiar Avatar",
+    Name = "Copiar Karakter",
     Callback = function()
         if not Target then return end
 
@@ -2749,7 +2749,7 @@ Tab:AddButton({
                     end
                 end
 
-                local SkinColor = TPlayer.Character:FindFirstChild("Body Colors")
+                local SkinColor = TPlayer.Character:FindFirstChild("Vücut Colors")
                 if SkinColor then
                     Remotes.ChangeBodyColor:FireServer(tostring(SkinColor.HeadColor))
                     task.wait(0.3)
@@ -3265,7 +3265,7 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-    Name = "Giant Avatar",
+    Name = "Giant Karakter",
     Description = "",
     Default = false,
     Flag = "custom_body_v2_toggle",
@@ -3444,8 +3444,8 @@ Tab:AddDropdown({
                 local args = {avatars[selected]}
                 ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
                 StarterGui:SetCore("SendNotification", {
-                    Title = "Avatar",
-                    Text = "Avatar " .. selected .. " equipado!",
+                    Title = "Karakter",
+                    Text = "Karakter" .. selected .. " equipado!",
                     Duration = 3
                 })
             end)
@@ -3453,16 +3453,16 @@ Tab:AddDropdown({
     end
 })
 
-Tab:AddSection({"Avatar Editor"})
+Tab:AddSection({"Avatar Düzenleyicisi"})
 
 Tab:AddParagraph({
-    Title = "Aviso: Vai resetar seu avatar",
+    Title = "Aviso: Vai resetar seu karakter",
     Content = "Os avatares abaixo irão substituir completamente seu personagem atual."
 })
 
 Tab:AddButton({
     Name = "Mini REPO",
-    Description = "Avatar mini personalizado",
+    Description = "Karakter mini personalizado",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3479,7 +3479,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Mini REPO equipado!",
                 Duration = 3
             })
@@ -3489,7 +3489,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Name = "Mini Garanhão",
-    Description = "Avatar mini garanhão",
+    Description = "Karakter mini garanhão",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3506,7 +3506,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Mini Garanhão equipado!",
                 Duration = 3
             })
@@ -3516,7 +3516,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Name = "Stick",
-    Description = "Avatar estilo palito",
+    Description = "Karakter estilo palito",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3533,7 +3533,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Stick equipado!",
                 Duration = 3
             })
@@ -3543,7 +3543,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Name = "Chunky-Bug",
-    Description = "Avatar estilo bug",
+    Description = "Karakter estilo bug",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3560,7 +3560,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Chunky-Bug equipado!",
                 Duration = 3
             })
@@ -3570,7 +3570,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Name = "Cursed-Spider",
-    Description = "Avatar aranha amaldiçoada",
+    Description = "Karakter aranha amaldiçoada",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3587,7 +3587,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Cursed-Spider equipado!",
                 Duration = 3
             })
@@ -3597,7 +3597,7 @@ Tab:AddButton({
 
 Tab:AddButton({
     Name = "Possessed-Horror",
-    Description = "Avatar horror possuído",
+    Description = "Karakter horror possuído",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3614,7 +3614,7 @@ Tab:AddButton({
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
-                Title = "Avatar",
+                Title = "Karakter",
                 Text = "Possessed-Horror equipado!",
                 Duration = 3
             })
@@ -4244,7 +4244,7 @@ end
 
 print("Barco PirateFree gerado!")
 
-local Seat = PCar:FindFirstChild("Body") and PCar.Body:FindFirstChild("VehicleSeat")
+local Seat = PCar:FindFirstChild("Vücut") and PCar.Body:FindFirstChild("VehicleSeat")
 if not Seat then
     warn("Seat não encontrado")
     return
