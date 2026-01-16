@@ -1,5 +1,5 @@
 local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
@@ -13,7 +13,7 @@ ScreenGui.Name = "LyraHubLoading"
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
-local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+local Sound = Instance.new("Sound")
 Sound.SoundId = "rbxassetid://1848354536"
 Sound.Volume = 1
 Sound.Looped = true
@@ -95,13 +95,13 @@ for i=1,20 do
 	end)
 end
 
--- ==================== TITULO ====================
+--==================== TITULO ====================
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.7,0,0.12,0)
 Title.Position = UDim2.new(0.5,0,0.1,0)
 Title.AnchorPoint = Vector2.new(0.5,0)
 Title.BackgroundTransparency = 1
-Title.Text = "Lyra Hub" -- ORIJINAL: "LYRA HUB"
+Title.Text = "LYRA HUB"
 Title.Font = Enum.Font.GothamBlack
 Title.TextScaled = true
 Title.TextColor3 = ROXO_PRINCIPAL
@@ -214,7 +214,7 @@ Window:AddMinimizeButton({
     },
 })
 
-local infoTab = Window:MakeTab({ "Informaçoes", "Bilgiler" -- ORIJINAL: "Bilgiler" }) -- ORIJINAL: ORIJINAL: "info" })
+local infoTab = Window:MakeTab({ "Informaçoes", "info" })
 
 infoTab:AddDiscordInvite({
     Name = "Lyra Hub",
@@ -223,7 +223,7 @@ infoTab:AddDiscordInvite({
     Invite = "https://discord.gg/YcM2DzZ4TM",
 })
 
-infoTab:AddSection({ "informaçoes do Script" -- ORIJINAL: "informaçoes do Script" }) -- ORIJINAL: ORIJINAL: "informaçoes do script" })
+infoTab:AddSection({ "informaçoes do script" })
 infoTab:AddParagraph({ "Roblox Dos Donos: Apenas_eu362/murilo_12303" })
 infoTab:AddParagraph({ "você esta usando:", "Lyra Hub" })
 
@@ -265,7 +265,7 @@ local function getCurrentDate()
     return os.date("%d/%m/%Y", currentTime)
 end
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
 local welcomeBlock = createInfoBlock(infoTab, "Seja Bem Vindo Ao Lyra Hub Hoje E Dia: ", getCurrentDate())
@@ -274,7 +274,7 @@ infoTab:AddParagraph({"Seu ID: " .. tostring(localPlayer.UserId or 0)})
 
 local gameBlock    = createInfoBlock(infoTab, "Seu Jogo: ", "Carregando...")
 local timerBlock   = createInfoBlock(infoTab, "Tempo De Uso Do Script: ", "00:00:00")
-local fpsBlock     = createInfoBlock(infoTab, "Seu FPS: " -- ORIJINAL: "Seu FPS: ", "FPS: 0") -- ORIJINAL: ORIJINAL: "Seu Fps: ", "FPS: 0")
+local fpsBlock     = createInfoBlock(infoTab, "Seu Fps: ", "FPS: 0")
 local playersBlock = createInfoBlock(infoTab, "Quantidade De Pessoas No Server: ", tostring(#Players:GetPlayers()))
 
 local RunService = game:GetService("RunService")
@@ -306,7 +306,7 @@ task.spawn(function()
         local m = math.floor((e%3600)/60)
         local s = math.floor(e%60)
         setBlockText(timerBlock, "Tempo De Uso Do Script: ", string.format("%02d:%02d:%02d", h, m, s))
-        setBlockText(fpsBlock, "Seu FPS: " -- ORIJINAL: "Seu FPS: ", "FPS:" -- ORIJINAL: "FPS: " .. tostring(currentFPS)) -- ORIJINAL: ORIJINAL: "Seu Fps: ", "FPS:" -- ORIJINAL: "FPS: " .. tostring(currentFPS))
+        setBlockText(fpsBlock, "Seu Fps: ", "FPS: " .. tostring(currentFPS))
         setBlockText(playersBlock, "Quantidade De Pessoas No Server: ", tostring(#Players:GetPlayers()))
         setBlockText(gameBlock, "Seu Jogo: ", getCurrentGameName())
     end
@@ -320,7 +320,7 @@ Players.PlayerRemoving:Connect(refreshPlayers)
 
 infoTab:AddParagraph({"Seu Executor: " .. identifyexecutor()})
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
@@ -339,7 +339,7 @@ end)
 
 local RE = ReplicatedStorage:WaitForChild("RE")
 
-local Tab = Window:MakeTab({"Fe Scriptler" -- ORIJINAL: "Fe Scripts", "rbxassetid://121106070017957"})
+local Tab = Window:MakeTab({"Fe Scripts", "rbxassetid://121106070017957"})
 
 Tab:AddButton({
     Name = "Naruto",
@@ -424,7 +424,7 @@ Tab:AddButton({
     Desc = "FE VR",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local player = Players.LocalPlayer
 
         local noobArms = {84451219120140, 72292903231768}
@@ -668,7 +668,7 @@ Tab:AddButton({
             end
         end)
 
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local LocalPlayer = Players.LocalPlayer
 
@@ -694,7 +694,7 @@ Tab:AddButton({
             end
             
             for _, decal in ipairs(part:GetChildren()) do
-                if decal:IsA("Desen/Decal" -- ORIJINAL: "Desen/Decal") then -- ORIJINAL: ORIJINAL: "Decal") then
+                if decal:IsA("Decal") then
                     for _, textureId in ipairs(spawnToolTextures) do
                         if decal.Texture == textureId then
                             return true
@@ -703,7 +703,7 @@ Tab:AddButton({
                 end
             end
             
-            if part.Name == "Blok com Fisica" -- ORIJINAL: "Blok com Fisica" then -- ORIJINAL: ORIJINAL: "Bloco com Fisica" then
+            if part.Name == "Bloco com Fisica" then
                 return true
             end
             
@@ -766,20 +766,20 @@ Tab:AddButton({
                     local targetBlock = getTargetBlock(mouse)
                     if targetBlock then
                         targetBlock:Destroy()
-                        createNotification("ðŸ—‘ï¸ Blok Deletado" -- ORIJINAL: "ðŸ—‘ï¸ Blok Deletado", "Blok spawnado removido com sucesso!" -- ORIJINAL: "Blok spawnado removido com sucesso!") -- ORIJINAL: ORIJINAL: "ðŸ—‘ï¸ Bloco Deletado", "Blok spawnado removido com sucesso!" -- ORIJINAL: "Bloco spawnado removido com sucesso!")
+                        createNotification("ðŸ—‘ï¸ Bloco Deletado", "Bloco spawnado removido com sucesso!")
                     else
-                        createNotification("ðŸ’¡ Bilgiler" -- ORIJINAL: "ðŸ’¡ Bilgiler", "Clique em um Blok spawnado para deletÃ¡-lo!" -- ORIJINAL: "Clique em um Blok spawnado para deletÃ¡-lo!") -- ORIJINAL: ORIJINAL: "ðŸ’¡ Info", "Clique em um Blok spawnado para deletÃ¡-lo!" -- ORIJINAL: "Clique em um bloco spawnado para deletÃ¡-lo!")
+                        createNotification("ðŸ’¡ Info", "Clique em um bloco spawnado para deletÃ¡-lo!")
                     end
                 end)
 
-                createNotification("Kazma Ekip Edildi" -- ORIJINAL: "Kazma equipada", "Clique em blocos spawnados para deletÃ¡-los!") -- ORIJINAL: ORIJINAL: "Picareta equipada", "Clique em blocos spawnados para deletÃ¡-los!")
+                createNotification("Picareta equipada", "Clique em blocos spawnados para deletÃ¡-los!")
             end
         end)
 
         deleteTool.Unequipped:Connect(function()
             local args = {12780809235}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
-            createNotification("Kazma Guardada" -- ORIJINAL: "Kazma Guardada", "Tool desequipado! Visual restaurado.") -- ORIJINAL: ORIJINAL: "Picareta Guardada", "Tool desequipado! Visual restaurado.")
+            createNotification("Picareta Guardada", "Tool desequipado! Visual restaurado.")
         end)
 
         deleteTool.Parent = LocalPlayer.Backpack
@@ -800,7 +800,7 @@ Tab:AddButton({
             handle.Parent = tool
 
             for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-                local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+                local decal = Instance.new("Decal")
                 decal.Texture = imageId
                 decal.Face = face
                 decal.Parent = handle
@@ -817,11 +817,11 @@ Tab:AddButton({
                 part.Parent = workspace
                 if hasPhysics then
                     part.CanCollide = true
-                    part.Name = "Blok com FÃ­sica" -- ORIJINAL: "Blok com FÃ­sica" -- ORIJINAL: ORIJINAL: "Bloco com FÃ­sica"
+                    part.Name = "Bloco com FÃ­sica"
                 end
                 
                 for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-                    local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+                    local decal = Instance.new("Decal")
                     decal.Texture = imageId
                     decal.Face = face
                     decal.Parent = part
@@ -845,7 +845,7 @@ Tab:AddButton({
             handle.Parent = tool
 
             for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-                local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+                local decal = Instance.new("Decal")
                 decal.Texture = sideImage
                 decal.Face = face
                 decal.Parent = handle
@@ -862,7 +862,7 @@ Tab:AddButton({
                 part.Parent = workspace
                 
                 for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-                    local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+                    local decal = Instance.new("Decal")
                     if face == Enum.NormalId.Top then
                         decal.Texture = topImage
                     else
@@ -905,7 +905,7 @@ Tab:AddButton({
         local transparentImage = "rbxassetid://14934219909"
 
         for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-            local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+            local decal = Instance.new("Decal")
             decal.Texture = transparentImage
             decal.Face = face
             decal.Parent = transparentHandle
@@ -924,7 +924,7 @@ Tab:AddButton({
             part.Parent = workspace
 
             for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
-                local decal = Instance.new("Desen/Decal" -- ORIJINAL: "Desen/Decal") -- ORIJINAL: ORIJINAL: "Decal")
+                local decal = Instance.new("Decal")
                 decal.Texture = transparentImage
                 decal.Face = face
                 decal.Parent = part
@@ -935,12 +935,12 @@ Tab:AddButton({
     end
 })
 
-Tab:AddParagraph({ "os Scriptler FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" -- ORIJINAL: "os Scriptler FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" }) -- ORIJINAL: ORIJINAL: "os scripts FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" })
+Tab:AddParagraph({ "os scripts FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" })
 
 local FunTab = Window:MakeTab({"Fun", "rbxassetid://105212753583689"})
 
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local Camera = Workspace.CurrentCamera 
@@ -1027,7 +1027,7 @@ local function setStalkerState(isStalking)
     local canCollideValue = not isStalking         
 
     for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") or part:IsA("Desen/Decal" -- ORIJINAL: "Desen/Decal") or part:IsA("SpecialMesh") then -- ORIJINAL: ORIJINAL: "Decal") or part:IsA("SpecialMesh") then
+        if part:IsA("BasePart") or part:IsA("Decal") or part:IsA("SpecialMesh") then
             if part.Name ~= "HumanoidRootPart" then 
                 pcall(function() part.LocalTransparencyModifier = transparencyValue end) 
             end
@@ -1303,7 +1303,7 @@ local function toggleClickTP()
         local mouse = LocalPlayer:GetMouse()
         local tool = Instance.new("Tool")
         tool.RequiresHandle = false
-        tool.Name = "Tp tool(Tak to Click TP)" -- ORIJINAL: "Tp tool(Tak to Click TP)" -- ORIJINAL: ORIJINAL: "Tp tool(Equip to Click TP)"
+        tool.Name = "Tp tool(Equip to Click TP)"
 
         tool.Activated:Connect(function()
             waitForCharacter()
@@ -1423,17 +1423,17 @@ Players.PlayerRemoving:Connect(function(pl)
 end)
 
 FunTab:AddButton({
-    Name = "Atualizar Oyuncu List" -- ORIJINAL: "Atualizar Oyuncu List", -- ORIJINAL: ORIJINAL: "Atualizar Player List",
+    Name = "Atualizar Player List",
     Callback = function()
         UpdateDropdownManual()
     end
 })
 
 
-FunTab:AddSection("Oyuncu Controls" -- ORIJINAL: "Oyuncu Controls") -- ORIJINAL: ORIJINAL: "Player Controls")
+FunTab:AddSection("Player Controls")
 
 local viewToggle = FunTab:AddToggle({
-    Name = "View Oyuncu" -- ORIJINAL: "View Oyuncu", -- ORIJINAL: ORIJINAL: "View Player",
+    Name = "View Player",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1449,7 +1449,7 @@ local viewToggle = FunTab:AddToggle({
 })
 
 local stalkToggle = FunTab:AddToggle({
-    Name = "Stalk Oyuncu" -- ORIJINAL: "Stalk Oyuncu", -- ORIJINAL: ORIJINAL: "Stalk Player",
+    Name = "Stalk Player",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1465,14 +1465,14 @@ local stalkToggle = FunTab:AddToggle({
 })
 
 FunTab:AddButton({
-    Name = "Stalk Random Oyuncu" -- ORIJINAL: "Stalk Random Oyuncu", -- ORIJINAL: ORIJINAL: "Stalk Random Player",
+    Name = "Stalk Random Player",
     Callback = function()
         startRandomStalk()
     end
 })
 
 FunTab:AddButton({
-    Name = "Durdur All Modes" -- ORIJINAL: "Durdur All Modes", -- ORIJINAL: ORIJINAL: "Stop All Modes",
+    Name = "Stop All Modes",
     Callback = function()
         stopStalk()
         stopView()
@@ -1491,7 +1491,7 @@ FunTab:AddButton({
 })
 
 
-FunTab:AddSection("Ayarlar" -- ORIJINAL: "Ayarlar") -- ORIJINAL: ORIJINAL: "Settings")
+FunTab:AddSection("Settings")
 
 FunTab:AddTextBox({
     Name = "FOV Angle",
@@ -1545,7 +1545,7 @@ FunTab:AddTextBox({
 FunTab:AddSection("Skins")
 
 FunTab:AddButton({
-    Name = "Uygula Stalker Skin" -- ORIJINAL: "Uygula Stalker Skin", -- ORIJINAL: ORIJINAL: "Apply Stalker Skin",
+    Name = "Apply Stalker Skin",
     Callback = function()
         local args = {
             [1] = "Really black"
@@ -2094,7 +2094,7 @@ TabNuke:AddToggle({
 })
 
 local PlayerTab = Window:MakeTab({
-    Title = "Oyuncu" -- ORIJINAL: "Oyuncu", -- ORIJINAL: ORIJINAL: "Player",
+    Title = "Player",
     Icon = "rbxassetid://17132521951"
 })
 
@@ -2131,7 +2131,7 @@ PlayerTab:AddSlider({
 })
 
 PlayerTab:AddButton({
-    Name = "Reset Oyuncu Stats" -- ORIJINAL: "Reset Oyuncu Stats", -- ORIJINAL: ORIJINAL: "Reset Player Stats",
+    Name = "Reset Player Stats",
     Callback = function()
         humanoid.WalkSpeed = 16
         humanoid.JumpPower = 50
@@ -2298,9 +2298,9 @@ RGBTab:AddToggle({
     end
 })
 
-local CarTab = Window:MakeTab({"Veiculo", "Araç" -- ORIJINAL: "Araç"}) -- ORIJINAL: ORIJINAL: "car"})
+local CarTab = Window:MakeTab({"Veiculo", "car"})
 
-CarTab:AddSection("Desen/Decal Pneu" -- ORIJINAL: "Desen/Decal Pneu") -- ORIJINAL: ORIJINAL: "Decal Pneu")
+CarTab:AddSection("Decal Pneu")
 
 local CurrentDecal = ""
 local CurrentVehicleUUID = nil
@@ -2334,7 +2334,7 @@ local function ApplyDecal(decalId)
                     ["MaxSpeed"] = 25,
                     ["DriftStrength"] = 1,
                 },
-                ["Owner"] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer, -- ORIJINAL: ORIJINAL: "Players").LocalPlayer,
+                ["Owner"] = game:GetService("Players").LocalPlayer,
             }
         )
     end)
@@ -2347,8 +2347,8 @@ game:GetService("ReplicatedStorage").Remotes.PlayerSpawnedVehicle.OnClientEvent:
 end)
 
 CarTab:AddTextBox({
-    Name = "Desen/Decal" -- ORIJINAL: "Desen/Decal", -- ORIJINAL: ORIJINAL: "Decal",
-    Description = "ID do Desen/Decal" -- ORIJINAL: "ID do Desen/Decal", -- ORIJINAL: ORIJINAL: "ID do decal",
+    Name = "Decal",
+    Description = "ID do decal",
     Default = "",
     PlaceholderText = "Lyra",
     ClearText = false,
@@ -2363,7 +2363,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "Uygula" -- ORIJINAL: "Uygula", -- ORIJINAL: ORIJINAL: "Aplicar",
+    Name = "Aplicar",
     Callback = function()
         if CurrentDecal and CurrentDecal:len() > 0 then
             ApplyDecal(CurrentDecal)
@@ -2441,7 +2441,7 @@ CarTab:AddToggle({
     end
 })
 
-CarTab:AddSection({ "Speed Araç & Turbo" -- ORIJINAL: "Speed Araç & Turbo" }) -- ORIJINAL: ORIJINAL: "Speed Car & Turbo" })
+CarTab:AddSection({ "Speed Car & Turbo" })
 
 local speedValue = 200
 local turboValue = 11.3
@@ -2525,7 +2525,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "Uygula Velocidade" -- ORIJINAL: "Uygula Velocidade", -- ORIJINAL: ORIJINAL: "Aplicar Velocidade",
+    Name = "Aplicar Velocidade",
     Description = "Aplica a velocidade em todos os carros",
     Callback = function()
         applyToAllCars("MaxSpeed", speedValue)
@@ -2533,17 +2533,17 @@ CarTab:AddButton({
 })
 
 CarTab:AddButton({
-    Name = "Uygula Turbo" -- ORIJINAL: "Uygula Turbo", -- ORIJINAL: ORIJINAL: "Aplicar Turbo",
+    Name = "Aplicar Turbo",
     Description = "Aplica o turbo em todos os carros",
     Callback = function()
         applyToAllCars("Turbo", turboValue)
     end
 })
 
-local RGBSection = CarTab:AddSection({"Araç RGB" -- ORIJINAL: "Araç RGB"}) -- ORIJINAL: ORIJINAL: "Car RGB"})
+local RGBSection = CarTab:AddSection({"Car RGB"})
 
 CarTab:AddToggle({
-    Name = "Araç RGB" -- ORIJINAL: "Araç RGB", -- ORIJINAL: ORIJINAL: "Car RGB",
+    Name = "Car RGB",
     Default = false,
     Callback = function(state)
         isColorChanging = state
@@ -2587,7 +2587,7 @@ local Tab = Window:MakeTab({"Avatar", "rbxassetid://10734952036"})
 
 Tab:AddSection({ Name = "Copiar Skin" })
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 
@@ -2645,7 +2645,7 @@ Players.PlayerRemoving:Connect(UpdateDropdown)
 
 
 Tab:AddButton({
-    Name = "Atualizar Oyuncu List" -- ORIJINAL: "Atualizar Oyuncu List", -- ORIJINAL: ORIJINAL: "Atualizar Player List",
+    Name = "Atualizar Player List",
     Callback = function()
         local tablePlayers = Players:GetPlayers()
         local newPlayers = {}
@@ -3071,7 +3071,7 @@ Tab:AddDropdown({
 
 
 Tab:AddButton({
-    Name = "Tak Fire Color" -- ORIJINAL: "Tak Fire Color", -- ORIJINAL: ORIJINAL: "Equip Fire Color",
+    Name = "Equip Fire Color",
     Callback = function()
         -- Tabela com as cores e seus respectivos IDs e códigos
         local fireColors = {
@@ -3114,7 +3114,7 @@ Tab:AddButton({
             -- Aplica o emmiter com a cor selecionada
             game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
             
-            print("Takıldı: " -- ORIJINAL: "Takıldı: " .. selectedColor .. " Fire") -- ORIJINAL: ORIJINAL: "Equipado: " .. selectedColor .. " Fire")
+            print("Equipado: " .. selectedColor .. " Fire")
         else
             warn("Erro: Cor não encontrada!")
         end
@@ -3172,7 +3172,7 @@ Tab:AddDropdown({
 
 
 Tab:AddButton({
-    Name = "Tak Smoke Color" -- ORIJINAL: "Tak Smoke Color", -- ORIJINAL: ORIJINAL: "Equip Smoke Color",
+    Name = "Equip Smoke Color",
     Callback = function()
         -- Tabela com as cores de smoke e seus respectivos IDs e códigos
         local smokeColors = {
@@ -3223,7 +3223,7 @@ Tab:AddButton({
             -- Aplica o emmiter com a cor de smoke selecionada
             game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
             
-            print("Takıldı: " -- ORIJINAL: "Takıldı: " .. selectedSmokeColor .. " Smoke") -- ORIJINAL: ORIJINAL: "Equipado: " .. selectedSmokeColor .. " Smoke")
+            print("Equipado: " .. selectedSmokeColor .. " Smoke")
         else
             warn("Erro: Cor de smoke não encontrada!")
         end
@@ -3445,7 +3445,7 @@ Tab:AddDropdown({
                 ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
                 StarterGui:SetCore("SendNotification", {
                     Title = "Avatar",
-                    Text = "Avatar" -- ORIJINAL: "Avatar " .. selected .. " Takıldı!" -- ORIJINAL: " Takıldı!", -- ORIJINAL: ORIJINAL: "Avatar " .. selected .. " Takıldı!" -- ORIJINAL: " equipado!",
+                    Text = "Avatar " .. selected .. " equipado!",
                     Duration = 3
                 })
             end)
@@ -3453,10 +3453,10 @@ Tab:AddDropdown({
     end
 })
 
-Tab:AddSection({"Avatar Düzenleyici" -- ORIJINAL: "Avatar Düzenleyici"}) -- ORIJINAL: ORIJINAL: "Avatar Editor"})
+Tab:AddSection({"Avatar Editor"})
 
 Tab:AddParagraph({
-    Title = "Aviso: Vai resetar seu Avatar" -- ORIJINAL: "Aviso: Vai resetar seu Avatar", -- ORIJINAL: ORIJINAL: "Aviso: Vai resetar seu avatar",
+    Title = "Aviso: Vai resetar seu avatar",
     Content = "Os avatares abaixo irão substituir completamente seu personagem atual."
 })
 
@@ -3480,7 +3480,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Mini REPO başarıyla giydirildi!" -- ORIJINAL: "Mini REPO Takıldı!", -- ORIJINAL: ORIJINAL: "Mini REPO equipado!",
+                Text = "Mini REPO equipado!",
                 Duration = 3
             })
         end)
@@ -3507,7 +3507,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Mini Garanhão Takıldı!" -- ORIJINAL: "Mini Garanhão Takıldı!", -- ORIJINAL: ORIJINAL: "Mini Garanhão equipado!",
+                Text = "Mini Garanhão equipado!",
                 Duration = 3
             })
         end)
@@ -3534,7 +3534,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Stick Takıldı!" -- ORIJINAL: "Stick Takıldı!", -- ORIJINAL: ORIJINAL: "Stick equipado!",
+                Text = "Stick equipado!",
                 Duration = 3
             })
         end)
@@ -3561,7 +3561,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Chunky-Bug Takıldı!" -- ORIJINAL: "Chunky-Bug Takıldı!", -- ORIJINAL: ORIJINAL: "Chunky-Bug equipado!",
+                Text = "Chunky-Bug equipado!",
                 Duration = 3
             })
         end)
@@ -3588,7 +3588,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Cursed-Spider Takıldı!" -- ORIJINAL: "Cursed-Spider Takıldı!", -- ORIJINAL: ORIJINAL: "Cursed-Spider equipado!",
+                Text = "Cursed-Spider equipado!",
                 Duration = 3
             })
         end)
@@ -3615,7 +3615,7 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Avatar",
-                Text = "Possessed-Horror Takıldı!" -- ORIJINAL: "Possessed-Horror Takıldı!", -- ORIJINAL: ORIJINAL: "Possessed-Horror equipado!",
+                Text = "Possessed-Horror equipado!",
                 Duration = 3
             })
         end)
@@ -3760,7 +3760,7 @@ Tab:AddButton({
 })
 
 
-local scriptsTab = Window:MakeTab({"Scriptler Troll" -- ORIJINAL: "Scripts Troll", "rbxassetid://6862780932"})
+local scriptsTab = Window:MakeTab({"Scripts Troll", "rbxassetid://6862780932"})
 
 scriptsTab:AddSection({ "Black Hole" })
 
@@ -3768,7 +3768,7 @@ scriptsTab:AddButton({
     Name = "Black Hole",
     Description = "",
     Callback = function()
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -3917,7 +3917,7 @@ toggleBlackHole()
 })
 
 scriptsTab:AddButton({
-    Name = "Puxar Parts Oyuncu" -- ORIJINAL: "Puxar Parts Oyuncu", -- ORIJINAL: ORIJINAL: "Puxar Parts Player",
+    Name = "Puxar Parts Player",
     Description = "",
     Callback = function()
         -- Gui to Lua
@@ -3934,7 +3934,7 @@ local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
 local Button = Instance.new("TextButton")
 local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
 
--- Properties:
+--Properties:
 
 Gui.Name = "Gui"
 Gui.Parent = gethui()
@@ -3958,7 +3958,7 @@ Box.BorderSizePixel = 0
 Box.Position = UDim2.new(0.0980926454, 0, 0.218712583, 0)
 Box.Size = UDim2.new(0.801089942, 0, 0.364963502, 0)
 Box.FontFace = Font.new("rbxasset://fonts/families/SourceSansSemibold.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-Box.PlaceholderText = "Oyuncu here" -- ORIJINAL: "Oyuncu here" -- ORIJINAL: ORIJINAL: "Player here"
+Box.PlaceholderText = "Player here"
 Box.Text = ""
 Box.TextColor3 = Color3.fromRGB(255, 255, 255)
 Box.TextScaled = true
@@ -3992,7 +3992,7 @@ Button.BorderSizePixel = 0
 Button.Position = UDim2.new(0.183284417, 0, 0.656760991, 0)
 Button.Size = UDim2.new(0.629427791, 0, 0.277372271, 0)
 Button.Font = Enum.Font.Nunito
-Button.Text = "Bring | Kapalı" -- ORIJINAL: "Bring | Kapalı" -- ORIJINAL: ORIJINAL: "Bring | Off"
+Button.Text = "Bring | Off"
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 Button.TextScaled = true
 Button.TextSize = 28.000
@@ -4001,9 +4001,9 @@ Button.TextWrapped = true
 UITextSizeConstraint_3.Parent = Button
 UITextSizeConstraint_3.MaxTextSize = 28
 
--- Scriptler: -- ORIJINAL: Scripts:
+-- Scripts:
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
@@ -4092,7 +4092,7 @@ local DescendantAddedConnection
 local function toggleBlackHole()
 	blackHoleActive = not blackHoleActive
 	if blackHoleActive then
-		Button.Text = "Bring Parts | Açık" -- ORIJINAL: "Bring Parts | Açık" -- ORIJINAL: ORIJINAL: "Bring Parts | On"
+		Button.Text = "Bring Parts | On"
 		for _, v in ipairs(Workspace:GetDescendants()) do
 			ForcePart(v)
 		end
@@ -4109,7 +4109,7 @@ local function toggleBlackHole()
 			end
 		end)
 	else
-		Button.Text = "Bring Parts | Kapalı" -- ORIJINAL: "Bring Parts | Kapalı" -- ORIJINAL: ORIJINAL: "Bring Parts | Off"
+		Button.Text = "Bring Parts | Off"
 		if DescendantAddedConnection then
 			DescendantAddedConnection:Disconnect()
 		end
@@ -4138,9 +4138,9 @@ local function VDOYZQL_fake_script() -- Box.Script
 			player = getPlayer(Box.Text)
 			if player then
 				Box.Text = player.Name
-				print("Oyuncu found:" -- ORIJINAL: "Oyuncu found:", Oyuncu.Name) -- ORIJINAL: ORIJINAL: "Player found:", player.Name)
+				print("Player found:", player.Name)
 			else
-				print("Oyuncu not found" -- ORIJINAL: "Oyuncu not found") -- ORIJINAL: ORIJINAL: "Player not found")
+				print("Player not found")
 			end
 		end
 	end)
@@ -4155,7 +4155,7 @@ local function JUBNQKI_fake_script() -- Button.Script
 			humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 			toggleBlackHole()
 		else
-			print("Oyuncu is not selected" -- ORIJINAL: "Oyuncu is not selected") -- ORIJINAL: ORIJINAL: "Player is not selected")
+			print("Player is not selected")
 		end
 	end)
 end
@@ -4212,7 +4212,7 @@ local function playAudio()
     for i = 1, 5 do
         RS.RE:FindFirstChild("1Gu1nSound1s"):FireServer(unpack(args))
 
-        local sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+        local sound = Instance.new("Sound")
         sound.SoundId = "rbxassetid://" .. tostring(selectedAudioID)
         sound.Parent = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
         if sound.Parent then
@@ -4233,7 +4233,7 @@ local function spawnBoat()
     task.wait(0.5)
     RS:WaitForChild("RE"):FindFirstChild("1Ca1r"):FireServer("PickingBoat", "PirateFree")
     task.wait(1)
-    return Vehicles:FindFirstChild(Player.Name .. "Araç" -- ORIJINAL: "Araç") -- ORIJINAL: ORIJINAL: "Car")
+    return Vehicles:FindFirstChild(Player.Name .. "Car")
 end
 
 local PCar = spawnBoat()
@@ -4353,7 +4353,7 @@ _G.ESPData = _G.ESPData or {
     connections = {}
 }
 
-local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 
@@ -4464,7 +4464,7 @@ local function createLineESP(player)
 end
 
 -- ===============================
--- Uygula ESP -- ORIJINAL: APLICAR ESP
+-- APLICAR ESP
 -- ===============================
 _G.applyCurrentESP = function()
     _G.clearAllESP()
@@ -4521,7 +4521,7 @@ end
 -- UI CALLBACKS
 -- ===============================
 scriptsTab:AddDropdown({
-    Name = "ESP Türü" -- ORIJINAL: "Tipo de ESP",
+    Name = "Tipo de ESP",
     Options = {"Nome + Idade","Corpo (Highlight)","Linhas"},
     Default = "Nome + Idade",
     Callback = function(v)
@@ -4542,7 +4542,7 @@ scriptsTab:AddDropdown({
 })
 
 scriptsTab:AddToggle({
-    Name = "ESP Aktif" -- ORIJINAL: "ESP Aktif", -- ORIJINAL: ORIJINAL: "ESP Ativado",
+    Name = "ESP Ativado",
     Default = false,
     Callback = function(v)
         _G.ESPData.espEnabled = v
@@ -4583,7 +4583,7 @@ scriptsTab:AddButton({
         local speed = Instance.new("TextLabel")
         local mine = Instance.new("TextButton")
         
-        -- Properties:
+        --Properties:
         
         main.Name = "main"
         main.Parent = game.CoreGui
@@ -4702,7 +4702,7 @@ scriptsTab:AddButton({
         
         speeds = 1
         
-        local speaker = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+        local speaker = game:GetService("Players").LocalPlayer
         
         local chr = game.Players.LocalPlayer.Character
         local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
@@ -4796,7 +4796,7 @@ scriptsTab:AddButton({
             if nowe == true then
                 plr.Character.Humanoid.PlatformStand = true
             end
-            while nowe == true or game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer.Character.Humanoid.Health == 0 do -- ORIJINAL: ORIJINAL: "Players").LocalPlayer.Character.Humanoid.Health == 0 do
+            while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
                 wait()
         
                 if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
@@ -4840,7 +4840,7 @@ scriptsTab:AddButton({
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-2,0)
         end)
         
-        game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer.CharacterAdded:Connect(function(char) -- ORIJINAL: ORIJINAL: "Players").LocalPlayer.CharacterAdded:Connect(function(char)
+        game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(char)
             wait(0.7)
             game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
             game.Players.LocalPlayer.Character.Animate.Disabled = false
@@ -4896,10 +4896,10 @@ scriptsTab:AddButton({
     end
 })
 
-scriptsTab:AddSection({ "Kaydet Server" -- ORIJINAL: "Kaydet Server" }) -- ORIJINAL: ORIJINAL: "Save Server" })
+scriptsTab:AddSection({ "Save Server" })
 
 scriptsTab:AddButton({
-    Name = "Kaydet Server" -- ORIJINAL: "Kaydet Server", -- ORIJINAL: ORIJINAL: "Save Server",
+    Name = "Save Server",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowsHubseila/Save-server/refs/heads/main/Main%20(4).txt"))()
     end
@@ -4916,7 +4916,7 @@ scriptsTab:AddButton({
 
 local Tab = Window:MakeTab({"Protection", "rbxassetid://11322093465"})
 
-local LocalPlayer = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+local LocalPlayer = game:GetService("Players").LocalPlayer
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 
@@ -4967,7 +4967,7 @@ local function AntiFlingLoop(name, getFolderFunc)
     end)
     return function(state)
         active = state
-        TeleportCarro:MostrarNotificacao(name.." "..(state and "Aktif!" -- ORIJINAL: "Aktif!" or "Kapalı!" -- ORIJINAL: "Kapalı!")) -- ORIJINAL: ORIJINAL: "ativado!" or "Kapalı!" -- ORIJINAL: "desativado!"))
+        TeleportCarro:MostrarNotificacao(name.." "..(state and "ativado!" or "desativado!"))
         if not state then
             for _, item in ipairs(backupTables[name]) do
                 local parentFolder = getFolderFunc()
@@ -5007,7 +5007,7 @@ Tab:AddToggle({
 
 Tab:AddToggle({
     Name = "Anti Canoe Fling",
-    Description = "Remove canoas de outros Oyuncular automaticamente (reaparecem ao desativar)" -- ORIJINAL: "Remove canoas de outros Oyuncular automaticamente (reaparecem ao desativar)", -- ORIJINAL: ORIJINAL: "Remove canoas de outros players automaticamente (reaparecem ao desativar)",
+    Description = "Remove canoas de outros players automaticamente (reaparecem ao desativar)",
     Default = false,
     Callback = AntiFlingLoop("Canoes", function()
         local workspaceCom = Workspace:FindFirstChild("WorkspaceCom")
@@ -5056,7 +5056,7 @@ Tab:AddToggle({
     Default = false,
     Callback = function(state)
         antiSitActive = state
-        TeleportCarro:MostrarNotificacao("Anti Sit "..(state and "Aktif!" -- ORIJINAL: "Aktif!" or "Kapalı!" -- ORIJINAL: "Kapalı!")) -- ORIJINAL: ORIJINAL: "ativado!" or "Kapalı!" -- ORIJINAL: "desativado!"))
+        TeleportCarro:MostrarNotificacao("Anti Sit "..(state and "ativado!" or "desativado!"))
         task.spawn(function()
             while antiSitActive and LocalPlayer.Character do
                 local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
@@ -5083,7 +5083,7 @@ Tab:AddToggle({
     Description = "Deduplicaçao automaticamente de ferramentas",
     Default = false,
     Callback = function(state)
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local dedupLock = {}
         local IGNORED_PLAYER
 
@@ -5215,11 +5215,11 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-    Name = "Anti Fling Blok" -- ORIJINAL: "Anti Fling Blok", -- ORIJINAL: ORIJINAL: "Anti Fling Bloco",
-    Description = "Remove O Blok Bugado" -- ORIJINAL: "Remove O Blok Bugado", -- ORIJINAL: ORIJINAL: "Remove O Bloco Bugado",
+    Name = "Anti Fling Bloco",
+    Description = "Remove O Bloco Bugado",
     Default = false,
     Callback = function(state)
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local player = Players.LocalPlayer
         
         if not _G.playerDoorData then 
@@ -5281,7 +5281,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Glider",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5295,7 +5295,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Cannon",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5309,7 +5309,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "GoldenBasketball",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5333,7 +5333,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "EggLauncher",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5347,7 +5347,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Scythe",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5361,7 +5361,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "UraniumRod",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5375,7 +5375,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Chainsaw",
-            [3] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer -- ORIJINAL: ORIJINAL: "Players").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5390,7 +5390,7 @@ Tab:AddButton({
     end
 })
 
-local MusicTab = Window:MakeTab({"Audio", "Müzik" -- ORIJINAL: "Müzik"}) -- ORIJINAL: ORIJINAL: "music"})
+local MusicTab = Window:MakeTab({"Audio", "music"})
 
 MusicTab:AddSection("Audio All")
 
@@ -5445,7 +5445,7 @@ local musicList = {
     ["Help Me"] = "4617513181",
     ["Demon Scream 1"] = "5832059740",
     ["Robot Pain"] = "7043924315",
-    ["Horror Ses 1" -- ORIJINAL: "Horror Ses 1"] = "4737106301", -- ORIJINAL: ORIJINAL: "Horror Sound 1"] = "4737106301",
+    ["Horror Sound 1"] = "4737106301",
     ["Ronaldo"] = "112094885967128",
     ["380 HZ"] = "6486261822",
     ["1 HZ"] = "128118682266898",
@@ -5471,8 +5471,8 @@ local musicList = {
     ["É o Menino de Papai é?"] = "117434960434893",
     ["Deita Aqui"] = "86126187308121",
     ["Slk, Não Compensa"] = "101242461910421",
-    ["Prowler Ses 1" -- ORIJINAL: "Prowler Ses 1"] = "8374059857", -- ORIJINAL: ORIJINAL: "Prowler Sound 1"] = "8374059857",
-    ["Prowler Ses 2" -- ORIJINAL: "Prowler Ses 2"] = "82132507008392", -- ORIJINAL: ORIJINAL: "Prowler Sound 2"] = "82132507008392",
+    ["Prowler Sound 1"] = "8374059857",
+    ["Prowler Sound 2"] = "82132507008392",
     ["Buhhhh (Minguado)"] = "83788010495185",
     ["Huggy Wuggy Jumpscare"] = "8051776431",
     ["Poppy Playtime Alarme"] = "75246199058473",
@@ -5483,7 +5483,7 @@ local musicList = {
     ["HAHAHAHA"] = "8496017782",
     ["Engole o Choro e Faz o L"] = "82364726700315",
     ["Coca Cola Espuma"] = "92175423082594",
-    ["Dbz Punch Ses" -- ORIJINAL: "Dbz Punch Ses"] = "441202925", -- ORIJINAL: ORIJINAL: "Dbz Punch Sound"] = "441202925",
+    ["Dbz Punch Sound"] = "441202925",
     ["Tá Travando"] = "112442884771932",
     ["Chavooo"] = "87096180148960",
     ["Rapaz ele tá sem Zap"] = "99782709356719",
@@ -5505,7 +5505,7 @@ local musicList = {
     ["Ah cala essa boca"] = "130313998778694",
     ["Devia ter uma lei"] = "116683015063357",
     ["Fui Tapeado"] = "130905328878700",
-    ["bell Ses" -- ORIJINAL: "bell Ses"] = "78781475442496", -- ORIJINAL: ORIJINAL: "bell sound"] = "78781475442496",
+    ["bell sound"] = "78781475442496",
     ["VOCÊ TA FUDIDO EU VO LHE PEGÁ"] = "100496102114196",
     ["danger alarm meme"] = "9068077052",
     ["mango screen"] = "15798534597",
@@ -5516,7 +5516,7 @@ local musicList = {
     ["EA E E AEEAE"] = "4159840042",
     ["Skibididadom dara BOOOM"] = "100835951102315",
     ["goofy laugh meme"] = "129392228554178",
-    ["i wanna Çalıştır away" -- ORIJINAL: "i wanna Çalıştır away"] = "125579008816192", -- ORIJINAL: ORIJINAL: "i wanna run away"] = "125579008816192",
+    ["i wanna run away"] = "125579008816192",
     ["ahhh! neko"] = "78225137918378",
     ["Fall meme"] = "18835374228",
     ["ultra fart meme"] = "130894250173559",
@@ -5555,7 +5555,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local audioID = selectedMusic
         
@@ -5578,7 +5578,7 @@ MusicTab:AddButton({
                     local hrp = character.HumanoidRootPart
                     
                     task.spawn(function()
-                        local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+                        local Sound = Instance.new("Sound")
                         Sound.SoundId = "rbxassetid://" .. audioID
                         Sound.Volume = 1
                         Sound.Looped = false
@@ -5772,7 +5772,7 @@ MusicTab:AddDropdown({
 
 local function UpdatePlayerDropdown()
     local playerOptions = {}
-    for _, player in pairs(game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular"):GetPlayers()) do -- ORIJINAL: ORIJINAL: "Players"):GetPlayers()) do
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         table.insert(playerOptions, player.Name)
     end
     
@@ -5798,24 +5798,24 @@ local function UpdateHouseDropdown()
 end
 
 local playerOptions = {}
-for _, player in pairs(game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular"):GetPlayers()) do -- ORIJINAL: ORIJINAL: "Players"):GetPlayers()) do
+for _, player in pairs(game:GetService("Players"):GetPlayers()) do
     table.insert(playerOptions, player.Name)
 end
 
 playerDropdown = MusicTab:AddDropdown({
-    Name = "Oyuncu" -- ORIJINAL: "Oyuncu", -- ORIJINAL: ORIJINAL: "Player",
+    Name = "Player",
     Options = playerOptions,
     Callback = function(selected)
         selectedPlayer = selected
     end
 })
 
-game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").PlayerAdded:Connect(function() -- ORIJINAL: ORIJINAL: "Players").PlayerAdded:Connect(function()
+game:GetService("Players").PlayerAdded:Connect(function()
     task.wait(0.5)
     UpdatePlayerDropdown()
 end)
 
-game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").PlayerRemoving:Connect(function() -- ORIJINAL: ORIJINAL: "Players").PlayerRemoving:Connect(function()
+game:GetService("Players").PlayerRemoving:Connect(function()
     task.wait(0.5)
     UpdatePlayerDropdown()
 end)
@@ -5885,7 +5885,7 @@ local function GetFinalAudioID()
 end
 
 MusicTab:AddButton({
-    Name = "Áudio Oyuncu" -- ORIJINAL: "Áudio Oyuncu", -- ORIJINAL: ORIJINAL: "Áudio Player",
+    Name = "Áudio Player",
     Callback = function()
         local finalAudioID = GetFinalAudioID()
         
@@ -5893,7 +5893,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local targetPlayer = Players:FindFirstChild(selectedPlayer)
         
@@ -5912,7 +5912,7 @@ MusicTab:AddButton({
                 
                 if GuinRemote then
                     task.spawn(function()
-                        local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+                        local Sound = Instance.new("Sound")
                         Sound.SoundId = "rbxassetid://" .. finalAudioID
                         Sound.Volume = 1
                         Sound.Looped = false
@@ -6019,7 +6019,7 @@ MusicTab:AddButton({
         
         if GuinRemote then
             task.spawn(function()
-                local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+                local Sound = Instance.new("Sound")
                 Sound.SoundId = "rbxassetid://" .. finalAudioID
                 Sound.Volume = 1
                 Sound.Looped = false
@@ -6034,7 +6034,7 @@ MusicTab:AddButton({
             task.spawn(function()
                 pcall(function()
                     firesignal(GuinRemote.OnClientEvent, table.unpack({
-                        [1] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer, -- ORIJINAL: ORIJINAL: "Players").LocalPlayer,
+                        [1] = game:GetService("Players").LocalPlayer,
                         [2] = buyHouse,
                         [3] = buyHouse,
                         [4] = Vector3.new(0, -1, 0),
@@ -6088,7 +6088,7 @@ MusicTab:AddButton({
 })
 
 MusicTab:AddButton({
-    Name = "Áudio All Oyuncu" -- ORIJINAL: "Áudio All Oyuncu", -- ORIJINAL: ORIJINAL: "Áudio All Player",
+    Name = "Áudio All Player",
     Callback = function()
         local finalAudioID = GetFinalAudioID()
         
@@ -6096,7 +6096,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular") -- ORIJINAL: ORIJINAL: "Players")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         
         local GunSoundEvent = ReplicatedStorage:FindFirstChild("1Gu1nSound1s", true)
@@ -6118,7 +6118,7 @@ MusicTab:AddButton({
                     local hrp = character.HumanoidRootPart
                     
                     task.spawn(function()
-                        local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+                        local Sound = Instance.new("Sound")
                         Sound.SoundId = "rbxassetid://" .. finalAudioID
                         Sound.Volume = 1
                         Sound.Looped = false
@@ -6222,7 +6222,7 @@ MusicTab:AddButton({
                     local buyHouse = house:FindFirstChild("BuyHouse")
                     if buyHouse then
                         task.spawn(function()
-                            local Sound = Instance.new("Ses" -- ORIJINAL: "Ses") -- ORIJINAL: ORIJINAL: "Sound")
+                            local Sound = Instance.new("Sound")
                             Sound.SoundId = "rbxassetid://" .. finalAudioID
                             Sound.Volume = 1
                             Sound.Looped = false
@@ -6237,7 +6237,7 @@ MusicTab:AddButton({
                         task.spawn(function()
                             pcall(function()
                                 firesignal(GuinRemote.OnClientEvent, table.unpack({
-                                    [1] = game:GetService("Oyuncular" -- ORIJINAL: "Oyuncular").LocalPlayer, -- ORIJINAL: ORIJINAL: "Players").LocalPlayer,
+                                    [1] = game:GetService("Players").LocalPlayer,
                                     [2] = buyHouse,
                                     [3] = buyHouse,
                                     [4] = Vector3.new(0, -1, 0),
