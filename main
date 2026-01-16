@@ -1,354 +1,3 @@
--- Auto-generated multilingual wrapper (eklenmiş dil desteği)
--- NOT: Bu dosya otomatik olarak oluşturuldu. Dil dosyasını güncellemek için Lang.strings içeriğini düzenleyin.
-
---[[
-LANGUAGE MODULE (Çok dilli çeviri desteği)
-Bu modül, oyundaki kullanıcıya görünen metinleri diller arasında değiştirmeyi sağlar.
-Kullanım:
-  1) Lang.Set("tr") ile dili seçin (ör: "tr", "en", "es", "pt", "fr", "de", ...)
-  2) Metinleri kod içinde doğrudan string yerine Lang.Get("KEY") ile kullanın.
-Örnek:
-  print(Lang.Get("WELCOME"))
-Not: Bu dosya otomatik üretildi. Yeni dil eklemek için Lang.strings tablosuna aynı KEY ile çeviriyi ekleyin.
-]]
-
-local Lang = {}
-Lang.current = "tr" -- Varsayılan: Türkçe (değiştirilebilir)
-
-Lang.available = {
-  "en","tr","es","pt","fr","de","ar","ru","zh","ja","ko","it","nl","pl","id","hi"
-}
-
-Lang.strings = {
-  en = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Welcome to Lyra Hub",
-    LOADING = "loading...",
-    YOUR_GAME = "Your game:",
-    USER = "User: ",
-    EQUIPPED = "equipped!",
-    SAVE_SERVER = "Save Server",
-    RESET_AVATAR_WARN = "Warning: Avatar will reset",
-    RESET_CHARACTER = "Reset Character",
-    SELECT_PLAYER = "Select Player",
-    UPDATE_PLAYER_LIST = "Update Player List",
-    STOP_ALL = "Stop all modes",
-    WALK_SPEED = "WalkSpeed",
-    JUMP_POWER = "JumpPower",
-    GRAVITY = "Gravity",
-    NAME = "Name",
-    DESCRIPTION = "Description",
-    SAVE_FOLDER = "SaveFolder",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Unknown Game",
-    ERROR = "error:",
-    CLICK_TO_DELETE = "click to delete spawned block"
-  },
-  tr = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Lyra Hub'a Hoş Geldiniz",
-    LOADING = "yükleniyor...",
-    YOUR_GAME = "Oyununuz:",
-    USER = "Kullanıcı: ",
-    EQUIPPED = "donatıldı!",
-    SAVE_SERVER = "Sunucuyu Kaydet",
-    RESET_AVATAR_WARN = "Uyarı: Avatarınız sıfırlanacak",
-    RESET_CHARACTER = "Karakteri Sıfırla",
-    SELECT_PLAYER = "Oyuncu Seç",
-    UPDATE_PLAYER_LIST = "Oyuncu Listesini Güncelle",
-    STOP_ALL = "Tüm Modları Durdur",
-    WALK_SPEED = "Yürüme Hızı",
-    JUMP_POWER = "Zıplama Gücü",
-    GRAVITY = "Yerçekimi",
-    NAME = "İsim",
-    DESCRIPTION = "Açıklama",
-    SAVE_FOLDER = "KaydetmeKlasörü",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Bilinmeyen Oyun",
-    ERROR = "hata:",
-    CLICK_TO_DELETE = "Spawn'lanan bloğu silmek için tıklayın"
-  },
-  es = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Bienvenido a Lyra Hub",
-    LOADING = "cargando...",
-    YOUR_GAME = "Tu juego:",
-    USER = "Usuario: ",
-    EQUIPPED = "equipado!",
-    SAVE_SERVER = "Guardar Servidor",
-    RESET_AVATAR_WARN = "Advertencia: El avatar se reiniciará",
-    RESET_CHARACTER = "Reiniciar Personaje",
-    SELECT_PLAYER = "Seleccionar Jugador",
-    UPDATE_PLAYER_LIST = "Actualizar Lista de Jugadores",
-    STOP_ALL = "Detener todos los modos",
-    WALK_SPEED = "Velocidad de Caminata",
-    JUMP_POWER = "Poder de Salto",
-    GRAVITY = "Gravedad",
-    NAME = "Nombre",
-    DESCRIPTION = "Descripción",
-    SAVE_FOLDER = "CarpetaDeGuardado",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Juego Desconocido",
-    ERROR = "error:",
-    CLICK_TO_DELETE = "haz clic para eliminar el bloque generado"
-  },
-  pt = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Bem-vindo ao Lyra Hub",
-    LOADING = "carregando...",
-    YOUR_GAME = "Seu jogo:",
-    USER = "Usuário: ",
-    EQUIPPED = "equipado!",
-    SAVE_SERVER = "Salvar Servidor",
-    RESET_AVATAR_WARN = "Aviso: Avatar será reiniciado",
-    RESET_CHARACTER = "Resetar Personagem",
-    SELECT_PLAYER = "Selecionar Jogador",
-    UPDATE_PLAYER_LIST = "Atualizar Lista de Jogadores",
-    STOP_ALL = "Parar todos os modos",
-    WALK_SPEED = "Velocidade de Caminhada",
-    JUMP_POWER = "Força de Pulo",
-    GRAVITY = "Gravidade",
-    NAME = "Nome",
-    DESCRIPTION = "Descrição",
-    SAVE_FOLDER = "PastaDeSalvar",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Jogo Desconhecido",
-    ERROR = "erro:",
-    CLICK_TO_DELETE = "clique para deletar o bloco spawnado"
-  },
-  fr = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Bienvenue sur Lyra Hub",
-    LOADING = "chargement...",
-    YOUR_GAME = "Votre jeu:",
-    USER = "Utilisateur: ",
-    EQUIPPED = "équipé!",
-    SAVE_SERVER = "Sauvegarder le serveur",
-    RESET_AVATAR_WARN = "Attention : L'avatar va être réinitialisé",
-    RESET_CHARACTER = "Réinitialiser le personnage",
-    SELECT_PLAYER = "Sélectionner un joueur",
-    UPDATE_PLAYER_LIST = "Mettre à jour la liste des joueurs",
-    STOP_ALL = "Arrêter tous les modes",
-    WALK_SPEED = "Vitesse de marche",
-    JUMP_POWER = "Puissance de saut",
-    GRAVITY = "Gravité",
-    NAME = "Nom",
-    DESCRIPTION = "Description",
-    SAVE_FOLDER = "DossierDeSauvegarde",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Jeu Inconnu",
-    ERROR = "erreur:",
-    CLICK_TO_DELETE = "cliquez pour supprimer le bloc spawné"
-  },
-  de = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Willkommen bei Lyra Hub",
-    LOADING = "wird geladen...",
-    YOUR_GAME = "Dein Spiel:",
-    USER = "Benutzer: ",
-    EQUIPPED = "ausgerüstet!",
-    SAVE_SERVER = "Server Speichern",
-    RESET_AVATAR_WARN = "Warnung: Avatar wird zurückgesetzt",
-    RESET_CHARACTER = "Charakter zurücksetzen",
-    SELECT_PLAYER = "Spieler auswählen",
-    UPDATE_PLAYER_LIST = "Spielerliste aktualisieren",
-    STOP_ALL = "Alle Modi stoppen",
-    WALK_SPEED = "Laufgeschwindigkeit",
-    JUMP_POWER = "Sprungkraft",
-    GRAVITY = "Schwerkraft",
-    NAME = "Name",
-    DESCRIPTION = "Beschreibung",
-    SAVE_FOLDER = "SpeicherOrdner",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Unbekanntes Spiel",
-    ERROR = "fehler:",
-    CLICK_TO_DELETE = "klicke, um generierten Block zu löschen"
-  },
-  ar = {
-    TITLE = "LYRA HUB",
-    WELCOME = "مرحبًا بك في Lyra Hub",
-    LOADING = "جار التحميل...",
-    YOUR_GAME = "لعبتك:",
-    USER = "المستخدم: ",
-    EQUIPPED = "مجهز!",
-    SAVE_SERVER = "حفظ الخادم",
-    RESET_AVATAR_WARN = "تحذير: سيتم إعادة تعيين الصورة الرمزية",
-    RESET_CHARACTER = "إعادة تعيين الشخصية",
-    SELECT_PLAYER = "اختر لاعبًا",
-    UPDATE_PLAYER_LIST = "تحديث قائمة اللاعبين",
-    STOP_ALL = "إيقاف جميع الأوضاع",
-    WALK_SPEED = "سرعة المشي",
-    JUMP_POWER = "قوة القفز",
-    GRAVITY = "الجاذبية",
-    NAME = "الاسم",
-    DESCRIPTION = "الوصف",
-    SAVE_FOLDER = "مجلد_الحفظ",
-    DISCORD = "ديسكورد",
-    UNKNOWN_GAME = "لعبة غير معروفة",
-    ERROR = "خطأ:",
-    CLICK_TO_DELETE = "انقر لحذف الكتلة المتولدة"
-  },
-  ru = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Добро пожаловать в Lyra Hub",
-    LOADING = "загрузка...",
-    YOUR_GAME = "Ваша игра:",
-    USER = "Пользователь: ",
-    EQUIPPED = "экипировано!",
-    SAVE_SERVER = "Сохранить сервер",
-    RESET_AVATAR_WARN = "Внимание: Аватар будет сброшен",
-    RESET_CHARACTER = "Сбросить персонажа",
-    SELECT_PLAYER = "Выбрать игрока",
-    UPDATE_PLAYER_LIST = "Обновить список игроков",
-    STOP_ALL = "Остановить все режимы",
-    WALK_SPEED = "Скорость ходьбы",
-    JUMP_POWER = "Сила прыжка",
-    GRAVITY = "Гравитация",
-    NAME = "Имя",
-    DESCRIPTION = "Описание",
-    SAVE_FOLDER = "ПапкаСохранения",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Неизвестная игра",
-    ERROR = "ошибка:",
-    CLICK_TO_DELETE = "нажмите, чтобы удалить созданный блок"
-  },
-  zh = {
-    TITLE = "LYRA HUB",
-    WELCOME = "欢迎来到 Lyra Hub",
-    LOADING = "加载中...",
-    YOUR_GAME = "你的游戏:",
-    USER = "用户: ",
-    EQUIPPED = "已装备!",
-    SAVE_SERVER = "保存服务器",
-    RESET_AVATAR_WARN = "警告：头像将重置",
-    RESET_CHARACTER = "重置角色",
-    SELECT_PLAYER = "选择玩家",
-    UPDATE_PLAYER_LIST = "更新玩家列表",
-    STOP_ALL = "停止所有模式",
-    WALK_SPEED = "行走速度",
-    JUMP_POWER = "跳跃力量",
-    GRAVITY = "重力",
-    NAME = "名称",
-    DESCRIPTION = "描述",
-    SAVE_FOLDER = "保存文件夹",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "未知游戏",
-    ERROR = "错误:",
-    CLICK_TO_DELETE = "点击删除生成的方块"
-  },
-  ja = { -- Japanese (short)
-    TITLE = "LYRA HUB",
-    WELCOME = "Lyra Hubへようこそ",
-    LOADING = "読み込み中...",
-    YOUR_GAME = "あなたのゲーム:",
-    USER = "ユーザー: ",
-    EQUIPPED = "装備済み!",
-    SAVE_SERVER = "サーバーを保存",
-    RESET_AVATAR_WARN = "警告: アバターがリセットされます",
-    RESET_CHARACTER = "キャラクターをリセット",
-    SELECT_PLAYER = "プレイヤーを選択",
-    UPDATE_PLAYER_LIST = "プレイヤーリストを更新",
-    STOP_ALL = "すべてのモードを停止",
-    WALK_SPEED = "移動速度",
-    JUMP_POWER = "ジャンプ力",
-    GRAVITY = "重力",
-    NAME = "名前",
-    DESCRIPTION = "説明",
-    SAVE_FOLDER = "保存フォルダ",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "不明なゲーム",
-    ERROR = "エラー:",
-    CLICK_TO_DELETE = "生成されたブロックを削除するにはクリック"
-  },
-  ko = { -- Korean (short)
-    TITLE = "LYRA HUB",
-    WELCOME = "Lyra Hub에 오신 것을 환영합니다",
-    LOADING = "로딩 중...",
-    YOUR_GAME = "당신의 게임:",
-    USER = "사용자: ",
-    EQUIPPED = "장착됨!",
-    SAVE_SERVER = "서버 저장",
-    RESET_AVATAR_WARN = "경고: 아바타가 초기화됩니다",
-    RESET_CHARACTER = "캐릭터 초기화",
-    SELECT_PLAYER = "플레이어 선택",
-    UPDATE_PLAYER_LIST = "플레이어 목록 업데이트",
-    STOP_ALL = "모든 모드 중지",
-    WALK_SPEED = "이동 속도",
-    JUMP_POWER = "점프력",
-    GRAVITY = "중력",
-    NAME = "이름",
-    DESCRIPTION = "설명",
-    SAVE_FOLDER = "저장 폴더",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "알 수 없는 게임",
-    ERROR = "오류:",
-    CLICK_TO_DELETE = "생성된 블록을 삭제하려면 클릭하세요"
-  },
-  it = {
-    TITLE = "LYRA HUB",
-    WELCOME = "Benvenuto su Lyra Hub",
-    LOADING = "caricamento...",
-    YOUR_GAME = "Il tuo gioco:",
-    USER = "Utente: ",
-    EQUIPPED = "equipaggiato!",
-    SAVE_SERVER = "Salva Server",
-    RESET_AVATAR_WARN = "Attenzione: L'avatar verrà reimpostato",
-    RESET_CHARACTER = "Reimposta personaggio",
-    SELECT_PLAYER = "Seleziona giocatore",
-    UPDATE_PLAYER_LIST = "Aggiorna la lista dei giocatori",
-    STOP_ALL = "Ferma tutte le modalità",
-    WALK_SPEED = "Velocità di camminata",
-    JUMP_POWER = "Potenza di salto",
-    GRAVITY = "Gravità",
-    NAME = "Nome",
-    DESCRIPTION = "Descrizione",
-    SAVE_FOLDER = "CartellaDiSalvataggio",
-    DISCORD = "Discord",
-    UNKNOWN_GAME = "Gioco Sconosciuto",
-    ERROR = "errore:",
-    CLICK_TO_DELETE = "clicca per cancellare il blocco spawnato"
-  },
-  nl = { TITLE = "LYRA HUB", WELCOME="Welkom bij Lyra Hub", LOADING="laden...", YOUR_GAME="Je spel:", USER="Gebruiker: ", EQUIPPED="uitgerust!", SAVE_SERVER="Server Opslaan", RESET_AVATAR_WARN="Waarschuwing: Avatar wordt gereset", RESET_CHARACTER="Reset personage", SELECT_PLAYER="Selecteer speler", UPDATE_PLAYER_LIST="Spelerslijst bijwerken", STOP_ALL="Stop alle modi", WALK_SPEED="Loopsnelheid", JUMP_POWER="Sprongkracht", GRAVITY="Zwaartekracht", NAME="Naam", DESCRIPTION="Beschrijving", SAVE_FOLDER="OpslagMap", DISCORD="Discord", UNKNOWN_GAME="Onbekend spel", ERROR="fout:", CLICK_TO_DELETE="klik om gegenereerd blok te verwijderen" },
-  pl = { TITLE="LYRA HUB", WELCOME="Witamy w Lyra Hub", LOADING="ładowanie...", YOUR_GAME="Twoja gra:", USER="Użytkownik: ", EQUIPPED="wyposażono!", SAVE_SERVER="Zapisz serwer", RESET_AVATAR_WARN="Uwaga: avatar zostanie zresetowany", RESET_CHARACTER="Zresetuj postać", SELECT_PLAYER="Wybierz gracza", UPDATE_PLAYER_LIST="Aktualizuj listę graczy", STOP_ALL="Zatrzymaj wszystkie tryby", WALK_SPEED="Prędkość chodzenia", JUMP_POWER="Siła skoku", GRAVITY="Grawitacja", NAME="Nazwa", DESCRIPTION="Opis", SAVE_FOLDER="FolderZapisów", DISCORD="Discord", UNKNOWN_GAME="Nieznana gra", ERROR="błąd:", CLICK_TO_DELETE="kliknij, aby usunąć wygenerowany blok" },
-  id = { TITLE="LYRA HUB", WELCOME="Selamat datang di Lyra Hub", LOADING="memuat...", YOUR_GAME="Permainanmu:", USER="Pengguna: ", EQUIPPED="terlengkapi!", SAVE_SERVER="Simpan Server", RESET_AVATAR_WARN="Peringatan: Avatar akan direset", RESET_CHARACTER="Reset Karakter", SELECT_PLAYER="Pilih Pemain", UPDATE_PLAYER_LIST="Perbarui Daftar Pemain", STOP_ALL="Hentikan semua mode", WALK_SPEED="Kecepatan Jalan", JUMP_POWER="Kekuatan Lompat", GRAVITY="Gravitasi", NAME="Nama", DESCRIPTION="Deskripsi", SAVE_FOLDER="FolderSimpan", DISCORD="Discord", UNKNOWN_GAME="Game Tidak Dikenal", ERROR="kesalahan:", CLICK_TO_DELETE="klik untuk menghapus blok spawn" },
-  hi = { TITLE="LYRA HUB", WELCOME="Lyra Hub में आपका स्वागत है", LOADING="लोड हो रहा है...", YOUR_GAME="आपका खेल:", USER="उपयोगकर्ता: ", EQUIPPED="सुसज्जित!", SAVE_SERVER="सर्वर सहेजें", RESET_AVATAR_WARN="चेतावनी: अवतार रीसेट हो जाएगा", RESET_CHARACTER="चरित्र रीसेट करें", SELECT_PLAYER="खिलाड़ी चुनें", UPDATE_PLAYER_LIST="खिलाड़ियों की सूची अपडेट करें", STOP_ALL="सभी मोड बंद करें", WALK_SPEED="चलने की गति", JUMP_POWER="जंप पावर", GRAVITY="गुरुत्वाकर्षण", NAME="नाम", DESCRIPTION="विवरण", SAVE_FOLDER="सहेजें_फ़ोल्डर", DISCORD="Discord", UNKNOWN_GAME="अज्ञात खेल", ERROR="त्रुटि:", CLICK_TO_DELETE="स्पॉन किए गए ब्लॉक को हटाने के लिए क्लिक करें" }
-}
-
--- Set language (string like "en", "tr", "es" ...)
-function Lang.Set(lang)
-  if type(lang) ~= "string" then return end
-  if not Lang.strings[lang] then return end
-  Lang.current = lang
-end
-
--- Get translated string by key
-function Lang.Get(key)
-  if not key then return "" end
-  local t = Lang.strings[Lang.current] or Lang.strings["en"] or {}
-  return t[key] or key
-end
-
-return Lang
--- LANGUAGE MODULE END
-
-
--- End of language module
-
--- Injected Lang convenience (for compatibility with existing code)
-local Lang = (function()
-  local _G_Lang = (function() return require(script:FindFirstChild('Lang') or nil) end)()
-  if _G_Lang then return _G_Lang end
-  -- fallback: use the internal Lang table defined above
-  return (function()
-    local dummy = {}
-    dummy.current = 'tr'
-    dummy.strings = {}
-    function dummy.Set() end
-    function dummy.Get(k) return k end
-    return dummy
-  end)()
-end)()
-
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -452,7 +101,7 @@ Title.Size = UDim2.new(0.7,0,0.12,0)
 Title.Position = UDim2.new(0.5,0,0.1,0)
 Title.AnchorPoint = Vector2.new(0.5,0)
 Title.BackgroundTransparency = 1
-Title.Text = Lang.Get("TITLE")
+Title.Text = "Lyra Hub"
 Title.Font = Enum.Font.GothamBlack
 Title.TextScaled = true
 Title.TextColor3 = ROXO_PRINCIPAL
@@ -568,7 +217,7 @@ Window:AddMinimizeButton({
 local infoTab = Window:MakeTab({ "bilgiler", "info" })
 
 infoTab:AddDiscordInvite({
-    Name = Lang.Get("TITLE"),
+    Name = "Lyra Hub",
     Description = "https://Discord.gg/YcM2DzZ4TM",
     Logo = "rbxassetid://71841836891247",
     Invite = "https://Discord.gg/YcM2DzZ4TM",
@@ -576,7 +225,7 @@ infoTab:AddDiscordInvite({
 
 infoTab:AddSection({ "script bilgileri" })
 infoTab:AddParagraph({ "Roblox Dos Donos: Apenas_eu362/murilo_12303" })
-infoTab:AddParagraph({ "você esta usando:", Lang.Get("TITLE") })
+infoTab:AddParagraph({ "você esta usando:", "Lyra Hub" })
 
 infoTab:AddSection({ "bilgiler" })
 
@@ -623,7 +272,7 @@ local welcomeBlock = createInfoBlock(infoTab, "Lyra Hub'a Hoş Geldiniz. Bugün 
 infoTab:AddParagraph({"Kullanıcı Adınız: " .. (localPlayer.Name or "Desconhecido")})
 infoTab:AddParagraph({"ID'niz: " .. tostring(localPlayer.UserId or 0)})
 
-local gameBlock    = createInfoBlock(infoTab, Lang.Get("YOUR_GAME"), "Carregando...")
+local gameBlock    = createInfoBlock(infoTab, "Oyununuz: ", "Carregando...")
 local timerBlock   = createInfoBlock(infoTab, "Script Kullanım Süresi: ", "00:00:00")
 local fpsBlock     = createInfoBlock(infoTab, "FPS'iniz: ", "FPS: 0")
 local playersBlock = createInfoBlock(infoTab, "Sunucudaki Kişi Sayısı: ", tostring(#Players:GetPlayers()))
@@ -644,7 +293,7 @@ local function getCurrentGameName()
     if success and gameInfo and gameInfo.Name then
         return gameInfo.Name
     else
-        return Lang.Get("UNKNOWN_GAME")
+        return "Bilinmeyen Oyun"
     end
 end
 
@@ -659,7 +308,7 @@ task.spawn(function()
         setBlockText(timerBlock, "Script Kullanım Süresi: ", string.format("%02d:%02d:%02d", h, m, s))
         setBlockText(fpsBlock, "FPS'iniz: ", "FPS: " .. tostring(currentFPS))
         setBlockText(playersBlock, "Sunucudaki Kişi Sayısı: ", tostring(#Players:GetPlayers()))
-        setBlockText(gameBlock, Lang.Get("YOUR_GAME"), getCurrentGameName())
+        setBlockText(gameBlock, "Oyununuz: ", getCurrentGameName())
     end
 end)
 
@@ -1705,7 +1354,7 @@ local function getPlayerList()
 end
 
 local killDropdown = FunTab:AddDropdown({
-    Name = Lang.Get("SELECT_PLAYER"),
+    Name = "Oyuncu Seç",
     Options = getPlayerList(),
     Default = "",
     Callback = function(value)
@@ -1774,7 +1423,7 @@ Players.PlayerRemoving:Connect(function(pl)
 end)
 
 FunTab:AddButton({
-    Name = Lang.Get("UPDATE_PLAYER_LIST"),
+    Name = "Oyuncu Listesini Güncelle",
     Callback = function()
         UpdateDropdownManual()
     end
@@ -1823,7 +1472,7 @@ FunTab:AddButton({
 })
 
 FunTab:AddButton({
-    Name = Lang.Get("STOP_ALL"),
+    Name = "Tüm Modları Durdur",
     Callback = function()
         stopStalk()
         stopView()
@@ -2452,7 +2101,7 @@ local PlayerTab = Window:MakeTab({
 PlayerTab:AddSection({ "Movimentos" })
 
 PlayerTab:AddSlider({
-    Name = Lang.Get("WALK_SPEED"),
+    Name = "Yürüme Hızı",
     Min = 16,
     Max = 500,
     Default = humanoid.WalkSpeed,
@@ -2462,7 +2111,7 @@ PlayerTab:AddSlider({
 })
 
 PlayerTab:AddSlider({
-    Name = Lang.Get("JUMP_POWER"),
+    Name = "Zıplama Gücü",
     Min = 50,
     Max = 500,
     Default = humanoid.JumpPower,
@@ -2472,7 +2121,7 @@ PlayerTab:AddSlider({
 })
 
 PlayerTab:AddSlider({
-    Name = Lang.Get("GRAVITY"),
+    Name = "Yerçekimi",
     Min = 10,
     Max = 500,
     Default = Workspace.Gravity,
@@ -2957,7 +2606,7 @@ local function getPlayerList()
 end
 
 local killDropdown = Tab:AddDropdown({
-    Name = Lang.Get("SELECT_PLAYER"),
+    Name = "Oyuncu Seç",
     Options = getPlayerList(),
     Default = "", -- Estado inicial vazio (mostra "..." ou equivalente)
     Callback = function(value)
@@ -2996,7 +2645,7 @@ Players.PlayerRemoving:Connect(UpdateDropdown)
 
 
 Tab:AddButton({
-    Name = Lang.Get("UPDATE_PLAYER_LIST"),
+    Name = "Oyuncu Listesini Güncelle",
     Callback = function()
         local tablePlayers = Players:GetPlayers()
         local newPlayers = {}
@@ -3365,7 +3014,7 @@ Tab:AddSection({ "Diğer:" })
 
 
 Tab:AddButton({
-    Name = Lang.Get("RESET_CHARACTER"),
+    Name = "Karakteri Sıfırla",
     Description = "Karakterin tamamı sıfırlanıyor",
     Callback = function()
         pcall(function()
@@ -3796,7 +3445,7 @@ Tab:AddDropdown({
                 ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
                 StarterGui:SetCore("SendNotification", {
                     Title = "Avatar",
-                    Text = "Avatar " .. selected .. Lang.Get("EQUIPPED"),
+                    Text = "Avatar " .. selected .. " equipado!",
                     Duration = 3
                 })
             end)
@@ -3807,7 +3456,7 @@ Tab:AddDropdown({
 Tab:AddSection({"Avatar Editor"})
 
 Tab:AddParagraph({
-    Title = Lang.Get("RESET_AVATAR_WARN"),
+    Title = "Uyarı: Avatarınız sıfırlanacak",
     Content = "Aşağıdaki Avatarlar mevcut karakterinizi tamamen değiştirecek."
 })
 
@@ -5247,10 +4896,10 @@ scriptsTab:AddButton({
     end
 })
 
-scriptsTab:AddSection({ Lang.Get("SAVE_SERVER") })
+scriptsTab:AddSection({ "Sunucuyu Kaydet" })
 
 scriptsTab:AddButton({
-    Name = Lang.Get("SAVE_SERVER"),
+    Name = "Sunucuyu Kaydet",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowsHubseila/Save-server/refs/heads/main/Main%20(4).txt"))()
     end
@@ -6049,7 +5698,7 @@ end
 LoadAudiosFromFile()
 
 MusicTab:AddTextBox({
-    Name = Lang.Get("NAME"),
+    Name = "İsim",
     Default = "",
     PlaceholderText = "Kystrypkry",
     ClearText = false,
