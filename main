@@ -195,7 +195,7 @@ task.wait(0.5)
 Sound:Stop()
 ScreenGui:Destroy()
 
-local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/kayrus99/refs/heads/main/kayrusLINDO"))()
+local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/kayrus99/refs/heads/ana/kayrusLINDO"))()
 
 local Window = redzlib:MakeWindow({
   Title = "LYRA HUB",
@@ -345,7 +345,7 @@ Tab:AddButton({
     Name = "Naruto",
     Desc = "Naruto FE.",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/main/Dboas"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/ana/Dboas"))()
     end
 })
 
@@ -353,7 +353,7 @@ Tab:AddButton({
     Name = "Batman",
     Description = "Batman FE.",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/main/Dboas89"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/ana/Dboas89"))()
     end
 })
 
@@ -361,7 +361,7 @@ Tab:AddButton({
     Name = "Sonic.Exe",
     Description = "Sonic.Exe FE.",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/main/Dboas86"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/ana/Dboas86"))()
     end
 })
 
@@ -370,7 +370,7 @@ Tab:AddButton({
     Desc = "Pânico FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/yyyyyyyface/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/yyyyyyyface/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -379,7 +379,7 @@ Tab:AddButton({
     Desc = "Morty FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/Mortyyyyyy/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/Mortyyyyyy/refs/heads/ana/Ana.txt"))()
      end
 })
 
@@ -388,7 +388,7 @@ Tab:AddButton({
     Desc = "Rick Sanchez FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/rick-Sanchez-/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/rick-Sanchez-/refs/heads/ana/Ana.txt"))()
   end
 })
 
@@ -397,7 +397,7 @@ Tab:AddButton({
     Desc = "Cowboy FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/wjsj/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/wjsj/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -406,7 +406,7 @@ Tab:AddButton({
     Desc = "Guest666 FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/swsw/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/swsw/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -415,7 +415,7 @@ Tab:AddButton({
     Desc = "carro no roblox kkj",
     Locked = false,
     Callback = function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/Carfling/refs/heads/main/Main.txt"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/Carfling/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -441,7 +441,7 @@ Tab:AddButton({
 
         task.delay(6, function()
             local success, err = pcall(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/Qwerty/refs/heads/main/qwerty45.lua"))()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/Qwerty/refs/heads/ana/qwerty45.lua"))()
             end)
         end)
     end
@@ -461,7 +461,7 @@ Tab:AddButton({
 	Desc = "Shadow FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Shadow/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Shadow/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -471,7 +471,7 @@ Tab:AddButton({
 	Desc = "Executa o Goner fe",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/GONER/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/GONER/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -481,7 +481,7 @@ Tab:AddButton({
 	Desc = "Noly FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/gubby/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/gubby/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -491,7 +491,7 @@ Tab:AddButton({
 	Desc = "Tubers FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/1222/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/1222/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -500,7 +500,7 @@ Tab:AddButton({
     Title = "mãozinha",
     Desc = "mãozinha FE",
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/slafiznotedio/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/slafiznotedio/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -508,7 +508,7 @@ Tab:AddButton({
     Title = "C00LKIDD",
     Desc = "C00LKIDD FE",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/xzzxsx/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/repositoryredzlib/xzzxsx/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -516,7 +516,7 @@ Tab:AddButton({
     Title = "Emote v2",
     Desc = "Emotes FREE",
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/ana/Delta%20mad%20stuffs"))()
     end
 })
 
@@ -526,7 +526,7 @@ Tab:AddButton({
 	Desc = "Herobrine FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/hEROBRINE/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/hEROBRINE/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -565,7 +565,7 @@ Tab:AddButton({
 	Description = "CARTOON CAT FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/cartoon-cat/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/cartoon-cat/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -575,7 +575,7 @@ Tab:AddButton({
 	Desc = "Ominitrix FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Ominitrix/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Ominitrix/refs/heads/ana/Ana.txt"))()
 		end)
 	end
 })
@@ -585,7 +585,7 @@ Tab:AddButton({
     Desc = "Ativa o Kamui (hubzin)",
     Locked = false,
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/kamui/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/kamui/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -594,7 +594,7 @@ Tab:AddButton({
     Desc = "Jerk FE",
     Locked = false,
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/yeahblxr/Scripts/refs/heads/main/Edge.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/yeahblxr/Scripts/refs/heads/ana/Edge.lua"))()
     end
 })
 
@@ -603,7 +603,7 @@ Tab:AddButton({
     Desc = "Emotes fe :)",
     Locked = false,
     Callback = function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AFEM-Max-Open-Alpha-50210"))()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-AFEM-Max-Aç-Alpha-50210"))()
     end
 })
 
@@ -612,7 +612,7 @@ Tab:AddButton({
     Desc = "Jeff The Killer FE",
     Locked = false,
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Jeff/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/267266273ffsfs/Jeff/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -768,7 +768,7 @@ Tab:AddButton({
                         targetBlock:Destroy()
                         createNotification("ðŸ—‘ï¸ Bloco Deletado", "Bloco spawnado removido com sucesso!")
                     else
-                        createNotification("ðŸ’¡ Info", "Clique em um bloco spawnado para deletÃ¡-lo!")
+                        createNotification("ðŸ’¡ Bilgi", "Clique em um bloco spawnado para deletÃ¡-lo!")
                     end
                 end)
 
@@ -1303,7 +1303,7 @@ local function toggleClickTP()
         local mouse = LocalPlayer:GetMouse()
         local tool = Instance.new("Tool")
         tool.RequiresHandle = false
-        tool.Name = "Tp tool(Equip to Click TP)"
+        tool.Name = "Tp tool(Equip to Tıkla TP)"
 
         tool.Activated:Connect(function()
             waitForCharacter()
@@ -1423,17 +1423,17 @@ Players.PlayerRemoving:Connect(function(pl)
 end)
 
 FunTab:AddButton({
-    Name = "Atualizar Player List",
+    Name = "Atualizar Oyuncu List",
     Callback = function()
         UpdateDropdownManual()
     end
 })
 
 
-FunTab:AddSection("Player Controls")
+FunTab:AddSection("Oyuncu Controls")
 
 local viewToggle = FunTab:AddToggle({
-    Name = "View Player",
+    Name = "Görüntüle Oyuncu",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1449,7 +1449,7 @@ local viewToggle = FunTab:AddToggle({
 })
 
 local stalkToggle = FunTab:AddToggle({
-    Name = "Stalk Player",
+    Name = "Stalk Oyuncu",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1465,7 +1465,7 @@ local stalkToggle = FunTab:AddToggle({
 })
 
 FunTab:AddButton({
-    Name = "Stalk Random Player",
+    Name = "Stalk Random Oyuncu",
     Callback = function()
         startRandomStalk()
     end
@@ -1481,17 +1481,17 @@ FunTab:AddButton({
     end
 })
 
-FunTab:AddSection("Teleport Tools")
+FunTab:AddSection("Işınlan Tools")
 
 FunTab:AddButton({
-    Name = "Toggle Click TP",
+    Name = "Aç/Kapat Tıkla TP",
     Callback = function()
         toggleClickTP()
     end
 })
 
 
-FunTab:AddSection("Settings")
+FunTab:AddSection("Ayarlar")
 
 FunTab:AddTextBox({
     Name = "FOV Angle",
@@ -2094,7 +2094,7 @@ TabNuke:AddToggle({
 })
 
 local PlayerTab = Window:MakeTab({
-    Title = "Player",
+    Title = "Oyuncu",
     Icon = "rbxassetid://17132521951"
 })
 
@@ -2131,7 +2131,7 @@ PlayerTab:AddSlider({
 })
 
 PlayerTab:AddButton({
-    Name = "Reset Player Stats",
+    Name = "Sıfırla Oyuncu Stats",
     Callback = function()
         humanoid.WalkSpeed = 16
         humanoid.JumpPower = 50
@@ -2153,7 +2153,7 @@ PlayerTab:AddToggle({
 })
 
 PlayerTab:AddSlider({
-    Name = "Spin Speed",
+    Name = "Spin Hız",
     Min = 1,
     Max = 1000,
     Default = spinSpeed,
@@ -2191,7 +2191,7 @@ end)
 local infJump = false
 
 PlayerTab:AddToggle({
-    Name = "Infinite Jump",
+    Name = "Infinite Zıplama",
     Default = false,
     Callback = function(v)
         infJump = v
@@ -2441,7 +2441,7 @@ CarTab:AddToggle({
     end
 })
 
-CarTab:AddSection({ "Speed Car & Turbo" })
+CarTab:AddSection({ "Hız Car & Turbo" })
 
 local speedValue = 200
 local turboValue = 11.3
@@ -2645,7 +2645,7 @@ Players.PlayerRemoving:Connect(UpdateDropdown)
 
 
 Tab:AddButton({
-    Name = "Atualizar Player List",
+    Name = "Atualizar Oyuncu List",
     Callback = function()
         local tablePlayers = Players:GetPlayers()
         local newPlayers = {}
@@ -3015,7 +3015,7 @@ Tab:AddSection({ "Outros:" })
 
 Tab:AddButton({
     Name = "Resetar Personagem",
-    Description = "Reset completo do personagem",
+    Description = "Sıfırla completo do personagem",
     Callback = function()
         pcall(function()
             game:GetService("ReplicatedStorage").Remotes.ResetCharacterAppearance:FireServer()
@@ -3031,7 +3031,7 @@ Tab:AddSection({ "FE:" })
 
 Tab:AddDropdown({
     Name = "Fire Colors",
-    Description = "Select the <font color='rgb(255, 100, 100)'>Fire Color</font>",
+    Description = "Seç the <font color='rgb(255, 100, 100)'>Fire Color</font>",
     Options = {"White", "Orange", "Green", "Blue", "Purple", "Black"},
     Default = "White",
     Flag = "fire_color_dropdown",
@@ -3124,7 +3124,7 @@ Tab:AddButton({
 
 Tab:AddDropdown({
     Name = "Smoke Colors",
-    Description = "Select the <font color='rgb(150, 150, 150)'>Smoke Color</font>",
+    Description = "Seç the <font color='rgb(150, 150, 150)'>Smoke Color</font>",
     Options = {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"},
     Default = "White",
     Flag = "smoke_color_dropdown",
@@ -3888,7 +3888,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
 end)
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miroeramaa/TurtleLib/main/TurtleUiLib.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miroeramaa/TurtleLib/ana/TurtleUiLib.lua"))()
 local window = library:Window("Projeto LKB")
 
 window:Slider("Radius Blackhole",1,100,10, function(Value)
@@ -3917,7 +3917,7 @@ toggleBlackHole()
 })
 
 scriptsTab:AddButton({
-    Name = "Puxar Parts Player",
+    Name = "Puxar Parts Oyuncu",
     Description = "",
     Callback = function()
         -- Gui to Lua
@@ -3940,7 +3940,7 @@ Gui.Name = "Gui"
 Gui.Parent = gethui()
 Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-Main.Name = "Main"
+Main.Name = "Ana"
 Main.Parent = Gui
 Main.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -3958,7 +3958,7 @@ Box.BorderSizePixel = 0
 Box.Position = UDim2.new(0.0980926454, 0, 0.218712583, 0)
 Box.Size = UDim2.new(0.801089942, 0, 0.364963502, 0)
 Box.FontFace = Font.new("rbxasset://fonts/families/SourceSansSemibold.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-Box.PlaceholderText = "Player here"
+Box.PlaceholderText = "Oyuncu here"
 Box.Text = ""
 Box.TextColor3 = Color3.fromRGB(255, 255, 255)
 Box.TextScaled = true
@@ -3984,7 +3984,7 @@ Label.TextWrapped = true
 UITextSizeConstraint_2.Parent = Label
 UITextSizeConstraint_2.MaxTextSize = 21
 
-Button.Name = "Button"
+Button.Name = "Buton"
 Button.Parent = Main
 Button.BackgroundColor3 = Color3.fromRGB(95, 95, 95)
 Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -3992,7 +3992,7 @@ Button.BorderSizePixel = 0
 Button.Position = UDim2.new(0.183284417, 0, 0.656760991, 0)
 Button.Size = UDim2.new(0.629427791, 0, 0.277372271, 0)
 Button.Font = Enum.Font.Nunito
-Button.Text = "Bring | Off"
+Button.Text = "Bring | Kapalı"
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 Button.TextScaled = true
 Button.TextSize = 28.000
@@ -4092,7 +4092,7 @@ local DescendantAddedConnection
 local function toggleBlackHole()
 	blackHoleActive = not blackHoleActive
 	if blackHoleActive then
-		Button.Text = "Bring Parts | On"
+		Button.Text = "Bring Parts | Açık"
 		for _, v in ipairs(Workspace:GetDescendants()) do
 			ForcePart(v)
 		end
@@ -4109,7 +4109,7 @@ local function toggleBlackHole()
 			end
 		end)
 	else
-		Button.Text = "Bring Parts | Off"
+		Button.Text = "Bring Parts | Kapalı"
 		if DescendantAddedConnection then
 			DescendantAddedConnection:Disconnect()
 		end
@@ -4138,15 +4138,15 @@ local function VDOYZQL_fake_script() -- Box.Script
 			player = getPlayer(Box.Text)
 			if player then
 				Box.Text = player.Name
-				print("Player found:", player.Name)
+				print("Oyuncu found:", player.Name)
 			else
-				print("Player not found")
+				print("Oyuncu not found")
 			end
 		end
 	end)
 end
 coroutine.wrap(VDOYZQL_fake_script)()
-local function JUBNQKI_fake_script() -- Button.Script 
+local function JUBNQKI_fake_script() -- Buton.Script 
 	local script = Instance.new('Script', Button)
 
 	script.Parent.MouseButton1Click:Connect(function()
@@ -4155,7 +4155,7 @@ local function JUBNQKI_fake_script() -- Button.Script
 			humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 			toggleBlackHole()
 		else
-			print("Player is not selected")
+			print("Oyuncu is not selected")
 		end
 	end)
 end
@@ -4168,7 +4168,7 @@ scriptsTab:AddSection({ "Glue & Invisible" })
 scriptsTab:AddButton({
     Name = "FE Invisible",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/TROLLLINUXKKK/Fe-invis-vel-/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/TROLLLINUXKKK/Fe-invis-vel-/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -4585,7 +4585,7 @@ scriptsTab:AddButton({
         
         --Properties:
         
-        main.Name = "main"
+        main.Name = "ana"
         main.Parent = game.CoreGui
         main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         
@@ -4709,7 +4709,7 @@ scriptsTab:AddButton({
         
         nowe = false
         
-        Frame.Active = true -- main = gui
+        Frame.Active = true -- ana = gui
         Frame.Draggable = true
         
         onof.MouseButton1Down:connect(function()
@@ -4901,7 +4901,7 @@ scriptsTab:AddSection({ "Save Server" })
 scriptsTab:AddButton({
     Name = "Save Server",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowsHubseila/Save-server/refs/heads/main/Main%20(4).txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowsHubseila/Save-server/refs/heads/ana/Ana%20(4).txt"))()
     end
 })
 
@@ -4910,7 +4910,7 @@ scriptsTab:AddSection({ "Drone Lyra" })
 scriptsTab:AddButton({
     Name = "Drone do Lyra",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/drone/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/drone/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -4983,7 +4983,7 @@ Tab:AddButton({
     Name = "AntiBug",
     Description = "Devs: cahh,Night",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/Antglitch/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -4991,7 +4991,7 @@ Tab:AddButton({
     Name = "Anti Som",
     Description = "anti som",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/antaudiosdefdps/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/antaudiosdefdps/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -5386,7 +5386,7 @@ Tab:AddButton({
     Title = "Telekiness V5",
     Locked = false,
     Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/fe-telekinessv5/refs/heads/main/Main.txt"))()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/fe-telekinessv5/refs/heads/ana/Ana.txt"))()
     end
 })
 
@@ -5803,7 +5803,7 @@ for _, player in pairs(game:GetService("Players"):GetPlayers()) do
 end
 
 playerDropdown = MusicTab:AddDropdown({
-    Name = "Player",
+    Name = "Oyuncu",
     Options = playerOptions,
     Callback = function(selected)
         selectedPlayer = selected
@@ -5885,7 +5885,7 @@ local function GetFinalAudioID()
 end
 
 MusicTab:AddButton({
-    Name = "Áudio Player",
+    Name = "Áudio Oyuncu",
     Callback = function()
         local finalAudioID = GetFinalAudioID()
         
@@ -6088,7 +6088,7 @@ MusicTab:AddButton({
 })
 
 MusicTab:AddButton({
-    Name = "Áudio All Player",
+    Name = "Áudio All Oyuncu",
     Callback = function()
         local finalAudioID = GetFinalAudioID()
         
