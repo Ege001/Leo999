@@ -5296,126 +5296,116 @@ Tab:AddButton({
         ScreenGui.ResetOnSpawn = false
         ScreenGui.Parent = PlayerGui
 
-        -- 2. Ana Panel
+        -- 2. Ana Panel (Boyut küçültüldü ve daha kompakt hale getirildi)
         local MainFrame = Instance.new("Frame")
-        MainFrame.Size = UDim2.new(0, 580, 0, 550) 
-        MainFrame.Position = UDim2.new(0.5, -290, 0.5, -275)
-        MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+        MainFrame.Size = UDim2.new(0, 520, 0, 480) 
+        MainFrame.Position = UDim2.new(0.5, -260, 0.5, -240)
+        MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         MainFrame.BorderSizePixel = 0
         MainFrame.Active = true
         MainFrame.Draggable = true
         MainFrame.Parent = ScreenGui
 
         local UICorner = Instance.new("UICorner")
-        UICorner.CornerRadius = UDim.new(0, 15)
+        UICorner.CornerRadius = UDim.new(0, 12)
         UICorner.Parent = MainFrame
 
         -- Sol Panel (VIP & Gamepass)
         local LeftFrame = Instance.new("ScrollingFrame")
-        LeftFrame.Size = UDim2.new(0.48, 0, 0.82, 0)
-        LeftFrame.Position = UDim2.new(0.02, 0, 0.15, 0)
+        LeftFrame.Size = UDim2.new(0.48, 0, 0.8, 0)
+        LeftFrame.Position = UDim2.new(0.02, 0, 0.16, 0)
         LeftFrame.BackgroundTransparency = 1
-        LeftFrame.ScrollBarThickness = 3
+        LeftFrame.ScrollBarThickness = 2
         LeftFrame.Parent = MainFrame
         
         local LeftLayout = Instance.new("UIListLayout")
         LeftLayout.Parent = LeftFrame
-        LeftLayout.Padding = UDim.new(0, 8)
+        LeftLayout.Padding = UDim.new(0, 6)
 
         -- Sağ Panel (Car Spawner)
         local RightFrame = Instance.new("ScrollingFrame")
-        RightFrame.Size = UDim2.new(0.45, 0, 0.82, 0)
-        RightFrame.Position = UDim2.new(0.53, 0, 0.15, 0)
-        RightFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-        RightFrame.ScrollBarThickness = 5
+        RightFrame.Size = UDim2.new(0.46, 0, 0.8, 0)
+        RightFrame.Position = UDim2.new(0.52, 0, 0.16, 0)
+        RightFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        RightFrame.ScrollBarThickness = 4
         RightFrame.Parent = MainFrame
         
-        Instance.new("UICorner", RightFrame).CornerRadius = UDim.new(0, 10)
+        Instance.new("UICorner", RightFrame).CornerRadius = UDim.new(0, 8)
         local RightLayout = Instance.new("UIListLayout")
         RightLayout.Parent = RightFrame
-        RightLayout.Padding = UDim.new(0, 5)
+        RightLayout.Padding = UDim.new(0, 4)
 
         -- BAŞLIKLAR
         local function createHeader(text, pos)
             local lbl = Instance.new("TextLabel")
-            lbl.Size = UDim2.new(0.45, 0, 0, 40)
+            lbl.Size = UDim2.new(0.45, 0, 0, 35)
             lbl.Position = pos
             lbl.Text = text
             lbl.TextColor3 = Color3.fromRGB(255, 215, 0)
             lbl.Font = Enum.Font.GothamBold
-            lbl.TextSize = 18
+            lbl.TextSize = 16
             lbl.BackgroundTransparency = 1
             lbl.Parent = MainFrame
         end
-        createHeader("PREMIUM & PASSES", UDim2.new(0.02, 0, 0.05, 0))
-        createHeader("VEHICLE SPAWNER", UDim2.new(0.53, 0, 0.05, 0))
+        createHeader("PREMIUM & PASSES", UDim2.new(0.02, 0, 0.04, 0))
+        createHeader("VEHICLE SPAWNER", UDim2.new(0.52, 0, 0.04, 0))
 
         -- Kapatma Butonu
         local CloseBtn = Instance.new("TextButton")
-        CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-        CloseBtn.Position = UDim2.new(1, -35, 0, 10)
+        CloseBtn.Size = UDim2.new(0, 28, 0, 28)
+        CloseBtn.Position = UDim2.new(1, -33, 0, 8)
         CloseBtn.Text = "X"
         CloseBtn.TextColor3 = Color3.new(1, 1, 1)
-        CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+        CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
         CloseBtn.Parent = MainFrame
         CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+        Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
 
         -- --- FONKSİYONLAR ---
 
         -- 1. TÜM GAMEPASSLERİ AKTİF ET (GetPasses Bypass)
         local AllPassBtn = Instance.new("TextButton")
-        AllPassBtn.Size = UDim2.new(0.95, 0, 0, 55)
-        AllPassBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 0)
+        AllPassBtn.Size = UDim2.new(0.96, 0, 0, 50)
+        AllPassBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
         AllPassBtn.Text = "TÜM GAMEPASS'LERİ AKTİF ET"
         AllPassBtn.TextColor3 = Color3.new(1, 1, 1)
         AllPassBtn.Font = Enum.Font.GothamBold
-        AllPassBtn.TextSize = 14
+        AllPassBtn.TextSize = 13
         AllPassBtn.Parent = LeftFrame
         Instance.new("UICorner", AllPassBtn)
 
         AllPassBtn.MouseButton1Click:Connect(function()
-            -- Bildirim
             game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Gamepass Controller",
-                Text = "Tüm paketler (VIP, Pack, Land) aktif ediliyor...",
-                Duration = 4
+                Title = "Gamepass Unlocker",
+                Text = "Tüm kilitler açılıyor...",
+                Duration = 3
             })
 
-            -- Decompiled dosyalardaki modül mantığını taklit et
             pcall(function()
                 local Modules = ReplicatedStorage:WaitForChild("Modules")
                 local Gamepasses = require(Modules.Shared.PlayerData.Gamepasses)
                 local UnlockableController = require(Modules.Client.PlayerData.UnlockableController)
                 
-                -- Tüm kilitli fonksiyonları "true" dönmeye zorla (Hooking simülasyonu)
-                if UnlockableController and UnlockableController.IsFeatureUnlocked then
-                    -- İstemci tarafında tüm özelliklerin açık olduğunu varsaymasını sağla
-                    -- Not: Bu sadece görsel ve UI etkileşimlerini açar.
-                    for passName, data in pairs(Gamepasses.All) do
-                        print("Bypassing: " .. passName)
+                -- Görsel kilitleri kaldırma döngüsü
+                for _, v in pairs(PlayerGui:GetDescendants()) do
+                    if v:IsA("ImageLabel") and (v.Image:find("lock") or v.Name:lower():find("lock")) then
+                        v.Visible = false
                     end
                 end
 
-                -- Brookhaven Remote tetikleme
+                -- Brookhaven Remote Tetikleme
                 local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes")
                 if remote then
                     remote:FindFirstChild("RemoteEvent"):FireServer("UnlockAllPasses", true)
                 end
             end)
-            
-            -- UI üzerindeki kilitli butonları aç
-            for _, v in pairs(PlayerGui:GetDescendants()) do
-                if v:IsA("ImageLabel") and (v.Image:find("lock") or v.Name:lower():find("lock")) then
-                    v.Visible = false
-                end
-            end
         end)
 
         -- 2. SÜRESİZ EV (Countdown Bypass)
         local HouseBtn = Instance.new("TextButton")
-        HouseBtn.Size = UDim2.new(0.95, 0, 0, 45)
-        HouseBtn.BackgroundColor3 = Color3.fromRGB(130, 0, 255)
-        HouseBtn.Text = "SÜRESİZ EV (NO COOLDOWN)"
+        HouseBtn.Size = UDim2.new(0.96, 0, 0, 42)
+        HouseBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 220)
+        HouseBtn.Text = "SÜRESİZ EV SİSTEMİ"
         HouseBtn.TextColor3 = Color3.new(1, 1, 1)
         HouseBtn.Font = Enum.Font.GothamBold
         HouseBtn.Parent = LeftFrame
@@ -5426,14 +5416,14 @@ Tab:AddButton({
                 local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes")
                 remote:FindFirstChild("RemoteEvent"):FireServer("UnlockFeature", "VIP_HOUSE_COOLDOWN")
             end)
-            game:GetService("StarterGui"):SetCore("SendNotification", {Title = "VIP House", Text = "Bekleme süresi kaldırıldı!", Duration = 2})
+            game:GetService("StarterGui"):SetCore("SendNotification", {Title = "VIP House", Text = "Süre kısıtlaması kaldırıldı!", Duration = 2})
         end)
 
-        -- 3. VIP RENKLER (Gold, Diamond, Rainbow)
+        -- 3. VIP RENKLER (Kompakt Butonlar)
         _G.VipMode = "None"
         local function addVipOpt(name, color, mode)
             local b = Instance.new("TextButton")
-            b.Size = UDim2.new(0.95, 0, 0, 40)
+            b.Size = UDim2.new(0.96, 0, 0, 38)
             b.BackgroundColor3 = color
             b.Text = name
             b.TextColor3 = Color3.new(1, 1, 1)
@@ -5443,15 +5433,15 @@ Tab:AddButton({
             b.MouseButton1Click:Connect(function() _G.VipMode = mode end)
         end
         addVipOpt("VIP GOLD", Color3.fromRGB(218, 165, 32), "Gold")
-        addVipOpt("VIP DIAMOND", Color3.fromRGB(0, 160, 255), "Diamond")
-        addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 200), "Rainbow")
+        addVipOpt("VIP DIAMOND", Color3.fromRGB(0, 140, 220), "Diamond")
+        addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
-        -- 4. ARAÇLAR (Car Spawner)
+        -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
         local vehicles = {"Cruiser", "Skateboard", "SportsCar", "SuperCar", "SUV", "Truck", "Limo", "PoliceCar", "Ambulance", "FireTruck", "Helicopter", "Tank"}
         for _, car in pairs(vehicles) do
             local cBtn = Instance.new("TextButton")
-            cBtn.Size = UDim2.new(0.95, 0, 0, 35)
-            cBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            cBtn.Size = UDim2.new(0.96, 0, 0, 32)
+            cBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
             cBtn.Text = car
             cBtn.TextColor3 = Color3.new(1, 1, 1)
             cBtn.Font = Enum.Font.Gotham
@@ -5465,9 +5455,9 @@ Tab:AddButton({
             end)
         end
 
-        -- DÖNGÜ: İSİM RENKLENDİRME
+        -- DÖNGÜ: İSİM RENKLENDİRME (VIP)
         spawn(function()
-            while ScreenGui.Parent do
+            while ScreenGui and ScreenGui.Parent do
                 local char = LocalPlayer.Character
                 if char then
                     for _, l in pairs(char:GetDescendants()) do
