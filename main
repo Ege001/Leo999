@@ -5542,9 +5542,6 @@ Tab:AddButton({
     end
 })
 
-
-
-
 Tab:AddButton({
     Title = "Planör",
     Locked = false,
