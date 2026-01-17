@@ -5297,8 +5297,8 @@ Tab:AddButton({
 
         -- 2. Ana Panel (Ads / Banner Tasarımı)
         local MainFrame = Instance.new("Frame")
-        MainFrame.Size = UDim2.new(0, 400, 0, 450)
-        MainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
+        MainFrame.Size = UDim2.new(0, 400, 0, 520) -- Boyut biraz artırıldı
+        MainFrame.Position = UDim2.new(0.5, -200, 0.5, -260)
         MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         MainFrame.BorderSizePixel = 0
         MainFrame.Active = true
@@ -5348,7 +5348,7 @@ Tab:AddButton({
         -- Buton Oluşturucu (VIP 1, 2, 3)
         local function createAdsBtn(text, subText, color, pos, mode)
             local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(0.9, 0, 0, 70)
+            btn.Size = UDim2.new(0.9, 0, 0, 65)
             btn.Position = pos
             btn.BackgroundColor3 = color
             btn.Text = ""
@@ -5362,7 +5362,7 @@ Tab:AddButton({
             mainTxt.Text = text
             mainTxt.TextColor3 = Color3.new(1, 1, 1)
             mainTxt.Font = Enum.Font.GothamBold
-            mainTxt.TextSize = 22
+            mainTxt.TextSize = 20
             mainTxt.BackgroundTransparency = 1
             mainTxt.Parent = btn
 
@@ -5372,7 +5372,7 @@ Tab:AddButton({
             subTxt.Text = subText
             subTxt.TextColor3 = Color3.new(0.9, 0.9, 0.9)
             subTxt.Font = Enum.Font.Gotham
-            subTxt.TextSize = 14
+            subTxt.TextSize = 13
             subTxt.BackgroundTransparency = 1
             subTxt.Parent = btn
 
@@ -5386,10 +5386,52 @@ Tab:AddButton({
             end)
         end
 
-        -- 3 Meşhur VIP Butonu
-        createAdsBtn("VIP GOLD", "Exclusive Gold Tag & Name", Color3.fromRGB(218, 165, 32), UDim2.new(0.05, 0, 0.3, 0), "Gold")
-        createAdsBtn("VIP DIAMOND", "Ultra Blue Shine Effects", Color3.fromRGB(0, 160, 255), UDim2.new(0.05, 0, 0.5, 0), "Diamond")
-        createAdsBtn("VIP RAINBOW", "Animated RGB Name Tag", Color3.fromRGB(120, 0, 200), UDim2.new(0.05, 0, 0.7, 0), "Rainbow")
+        -- VIP Butonları
+        createAdsBtn("VIP GOLD", "Exclusive Gold Tag & Name", Color3.fromRGB(218, 165, 32), UDim2.new(0.05, 0, 0.25, 0), "Gold")
+        createAdsBtn("VIP DIAMOND", "Ultra Blue Shine Effects", Color3.fromRGB(0, 160, 255), UDim2.new(0.05, 0, 0.40, 0), "Diamond")
+        createAdsBtn("VIP RAINBOW", "Animated RGB Name Tag", Color3.fromRGB(120, 0, 200), UDim2.new(0.05, 0, 0.55, 0), "Rainbow")
+
+        -- Zıplama Aygıtı (Super Jump Item) Butonu
+        local JumpBtn = Instance.new("TextButton")
+        JumpBtn.Size = UDim2.new(0.9, 0, 0, 65)
+        JumpBtn.Position = UDim2.new(0.05, 0, 0.70, 0)
+        JumpBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        JumpBtn.Text = "GET JUMP DEVICE (VIP)"
+        JumpBtn.TextColor3 = Color3.new(1, 1, 1)
+        JumpBtn.Font = Enum.Font.GothamBold
+        JumpBtn.TextSize = 18
+        JumpBtn.Parent = MainFrame
+
+        local JCorner = Instance.new("UICorner")
+        JCorner.Parent = JumpBtn
+
+        JumpBtn.MouseButton1Click:Connect(function()
+            -- 1. Görsel Bildirim
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Item Granted",
+                Text = "Zıplama aygıtı envantere eklendi!",
+                Duration = 3
+            })
+
+            -- 2. Zıplama Gücünü Artır (İstemci Tarafı)
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("Humanoid") then
+                char.Humanoid.JumpPower = 100 -- Normali 50'dir
+                char.Humanoid.UseJumpPower = true
+            end
+
+            -- 3. Brookhaven/RP Remote Tetikleme (FireServer Mantığı)
+            -- Bu kısım oyunun sunucusuna "ben item aldım" sinyali göndermeye çalışır.
+            pcall(function()
+                local remotes = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes") or game:GetService("ReplicatedStorage")
+                -- Brookhaven'da yaygın olan remote isimlerine tetikleme gönderir
+                if remotes:FindFirstChild("GiveItem") then
+                    remotes.GiveItem:FireServer("JumpDevice") 
+                elseif remotes:FindFirstChild("RemoteEvent") then
+                    remotes.RemoteEvent:FireServer("BuyVIPItem", "SuperSpring")
+                end
+            end)
+        end)
 
         -- 3. İsim Etiketi Güncelleyici
         spawn(function()
