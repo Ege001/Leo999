@@ -1,5 +1,5 @@
 local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
@@ -265,7 +265,7 @@ local function getCurrentDate()
     return os.date("%d/%m/%Y", currentTime)
 end
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
 local welcomeBlock = createInfoBlock(infoTab, "Lyra Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
@@ -318,9 +318,9 @@ end
 Players.PlayerAdded:Connect(refreshPlayers)
 Players.PlayerRemoving:Connect(refreshPlayers)
 
-infoTab:AddParagraph({"Seu Executor: " .. identifyexecutor()})
+infoTab:AddParagraph({"Seu Executor: " .. (pcall(identifyexecutor) and identifyexecutor()) or "Bilinmiyor"})
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
@@ -424,7 +424,7 @@ Tab:AddButton({
     Desc = "FE VR",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local player = Players.LocalPlayer
 
         local noobArms = {84451219120140, 72292903231768}
@@ -668,7 +668,7 @@ Tab:AddButton({
             end
         end)
 
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local LocalPlayer = Players.LocalPlayer
 
@@ -940,7 +940,7 @@ Tab:AddParagraph({ "os scripts FE foi patched,ent so a skin que e FE e o martelo
 local FunTab = Window:MakeTab({"Fun", "rbxassetid://105212753583689"})
 
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local Camera = Workspace.CurrentCamera 
@@ -2334,7 +2334,7 @@ local function ApplyDecal(decalId)
                     ["MaxSpeed"] = 25,
                     ["DriftStrength"] = 1,
                 },
-                ["Sahip"] = game:GetService("Oyuncular").LocalPlayer,
+                ["Sahip"] = game:GetService("Players").LocalPlayer,
             }
         )
     end)
@@ -2587,7 +2587,7 @@ local Tab = Window:MakeTab({"Karakter", "rbxassetid://10734952036"})
 
 Tab:AddSection({ Name = "Copiar Skin" })
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 
@@ -3768,7 +3768,7 @@ scriptsTab:AddButton({
     Name = "Black Hole",
     Description = "",
     Callback = function()
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
@@ -4003,7 +4003,7 @@ UITextSizeConstraint_3.MaxTextSize = 28
 
 -- Scripts:
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
@@ -4353,7 +4353,7 @@ _G.ESPData = _G.ESPData or {
     connections = {}
 }
 
-local Players = game:GetService("Oyuncular")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
 
@@ -4702,7 +4702,7 @@ scriptsTab:AddButton({
         
         speeds = 1
         
-        local speaker = game:GetService("Oyuncular").LocalPlayer
+        local speaker = game:GetService("Players").LocalPlayer
         
         local chr = game.Players.LocalPlayer.Character
         local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
@@ -4796,7 +4796,7 @@ scriptsTab:AddButton({
             if nowe == true then
                 plr.Character.Humanoid.PlatformStand = true
             end
-            while nowe == true or game:GetService("Oyuncular").LocalPlayer.Character.Humanoid.Health == 0 do
+            while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
                 wait()
         
                 if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
@@ -4840,7 +4840,7 @@ scriptsTab:AddButton({
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-2,0)
         end)
         
-        game:GetService("Oyuncular").LocalPlayer.CharacterAdded:Connect(function(char)
+        game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(char)
             wait(0.7)
             game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
             game.Players.LocalPlayer.Character.Animate.Disabled = false
@@ -4916,7 +4916,7 @@ scriptsTab:AddButton({
 
 local Tab = Window:MakeTab({"Koruma", "rbxassetid://11322093465"})
 
-local LocalPlayer = game:GetService("Oyuncular").LocalPlayer
+local LocalPlayer = game:GetService("Players").LocalPlayer
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 
@@ -5083,7 +5083,7 @@ Tab:AddToggle({
     Description = "Deduplicaçao automaticamente de ferramentas",
     Default = false,
     Callback = function(state)
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local dedupLock = {}
         local IGNORED_PLAYER
 
@@ -5219,7 +5219,7 @@ Tab:AddToggle({
     Description = "Remove O Bloco Bugado",
     Default = false,
     Callback = function(state)
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local player = Players.LocalPlayer
         
         if not _G.playerDoorData then 
@@ -5281,7 +5281,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Glider",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5295,7 +5295,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Cannon",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5309,7 +5309,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "GoldenBasketball",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5333,7 +5333,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "EggLauncher",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5347,7 +5347,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Scythe",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5361,7 +5361,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "UraniumRod",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5375,7 +5375,7 @@ Tab:AddButton({
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "Chainsaw",
-            [3] = game:GetService("Oyuncular").LocalPlayer
+            [3] = game:GetService("Players").LocalPlayer
         }
 
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
@@ -5555,7 +5555,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local audioID = selectedMusic
         
@@ -5772,7 +5772,7 @@ MusicTab:AddDropdown({
 
 local function UpdatePlayerDropdown()
     local playerOptions = {}
-    for _, player in pairs(game:GetService("Oyuncular"):GetPlayers()) do
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         table.insert(playerOptions, player.Name)
     end
     
@@ -5798,7 +5798,7 @@ local function UpdateHouseDropdown()
 end
 
 local playerOptions = {}
-for _, player in pairs(game:GetService("Oyuncular"):GetPlayers()) do
+for _, player in pairs(game:GetService("Players"):GetPlayers()) do
     table.insert(playerOptions, player.Name)
 end
 
@@ -5810,12 +5810,12 @@ playerDropdown = MusicTab:AddDropdown({
     end
 })
 
-game:GetService("Oyuncular").PlayerAdded:Connect(function()
+game:GetService("Players").PlayerAdded:Connect(function()
     task.wait(0.5)
     UpdatePlayerDropdown()
 end)
 
-game:GetService("Oyuncular").PlayerRemoving:Connect(function()
+game:GetService("Players").PlayerRemoving:Connect(function()
     task.wait(0.5)
     UpdatePlayerDropdown()
 end)
@@ -5893,7 +5893,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local targetPlayer = Players:FindFirstChild(selectedPlayer)
         
@@ -6034,7 +6034,7 @@ MusicTab:AddButton({
             task.spawn(function()
                 pcall(function()
                     firesignal(GuinRemote.OnClientEvent, table.unpack({
-                        [1] = game:GetService("Oyuncular").LocalPlayer,
+                        [1] = game:GetService("Players").LocalPlayer,
                         [2] = buyHouse,
                         [3] = buyHouse,
                         [4] = Vector3.new(0, -1, 0),
@@ -6096,7 +6096,7 @@ MusicTab:AddButton({
             return
         end
         
-        local Players = game:GetService("Oyuncular")
+        local Players = game:GetService("Players")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         
         local GunSoundEvent = ReplicatedStorage:FindFirstChild("1Gu1nSound1s", true)
@@ -6237,7 +6237,7 @@ MusicTab:AddButton({
                         task.spawn(function()
                             pcall(function()
                                 firesignal(GuinRemote.OnClientEvent, table.unpack({
-                                    [1] = game:GetService("Oyuncular").LocalPlayer,
+                                    [1] = game:GetService("Players").LocalPlayer,
                                     [2] = buyHouse,
                                     [3] = buyHouse,
                                     [4] = Vector3.new(0, -1, 0),
