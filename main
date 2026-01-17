@@ -2799,7 +2799,7 @@ _G.selectedParts = {
 
 
 Tab:AddTextBox({
-    Name = "Tronco",
+    Name = "Gövde",
     Description = "ID do Tronco",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2818,7 +2818,7 @@ Tab:AddTextBox({
 
 
 Tab:AddTextBox({
-    Name = "Braço Direito",
+    Name = "Sağ Kol",
     Description = "ID do Braço Direito",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2837,7 +2837,7 @@ Tab:AddTextBox({
 
 
 Tab:AddTextBox({
-    Name = "Braço Esquerdo",
+    Name = "Sol Kol",
     Description = "ID do Braço Esquerdo",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2856,7 +2856,7 @@ Tab:AddTextBox({
 
 
 Tab:AddTextBox({
-    Name = "Perna Direita",
+    Name = "Sağ Bacak",
     Description = "ID da Perna Direita",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2875,7 +2875,7 @@ Tab:AddTextBox({
 
 
 Tab:AddTextBox({
-    Name = "Perna Esquerda",
+    Name = "Sol Bacak",
     Description = "ID da Perna Esquerda",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2893,7 +2893,7 @@ Tab:AddTextBox({
 })
 
 Tab:AddTextBox({
-    Name = "Cabeça",
+    Name = "Kafa",
     Description = "ID da Cabeça",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2910,17 +2910,17 @@ Tab:AddTextBox({
     end
 })
 
-Tab:AddSection({ "Carregar Partes:" })
+Tab:AddSection({ "Parçaları Yükle:" })
 
 
-_G.parteSelecionada = "Tronco"
+_G.parteSelecionada = "Gövde"
 
 
 Tab:AddDropdown({
-    Name = "Selecionar Parte",
-    Description = "Escolha qual parte equipar",
-    Default = "Tronco",
-    Options = {"Tronco", "Braço Direito", "Braço Esquerdo", "Perna Direita", "Perna Esquerda", "Cabeça"},
+    Name = "Parça Seç",
+    Description = "Hangi parçayı kuşanacağını seç",
+    Default = "Gövde",
+    Options = {"Gövde", "Sağ Kol", "Sol Kol", "Sağ Bacak", "Sol Bacak", "Kafa"},
     Callback = function(Value)
         _G.parteSelecionada = Value
         print("Parte selecionada: " .. Value)
