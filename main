@@ -9,7 +9,7 @@ local ROXO_MEDIO = Color3.fromRGB(130, 0, 200)
 local ROXO_ESCURO = Color3.fromRGB(70, 0, 120)
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LyraHubLoading"
+ScreenGui.Name = "XenoHubLoading"
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
@@ -101,7 +101,7 @@ Title.Size = UDim2.new(0.7,0,0.12,0)
 Title.Position = UDim2.new(0.5,0,0.1,0)
 Title.AnchorPoint = Vector2.new(0.5,0)
 Title.BackgroundTransparency = 1
-Title.Text = "LYRA HUB"
+Title.Text = "XENO HUB"
 Title.Font = Enum.Font.GothamBlack
 Title.TextScaled = true
 Title.TextColor3 = ROXO_PRINCIPAL
@@ -198,8 +198,8 @@ ScreenGui:Destroy()
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/kayrus99/refs/heads/main/kayrusLINDO"))()
 
 local Window = redzlib:MakeWindow({
-  Title = "LYRA HUB",
-  SubTitle = "By:Kayrus999 & Xicrinho",
+  Title = "XENO HUB",
+  SubTitle = "By:EgeKazak_Real1",
   SaveFolder = "LinuxHub_Brookhaven"
 })
 
@@ -214,20 +214,20 @@ Window:AddMinimizeButton({
     },
 })
 
-local infoTab = Window:MakeTab({ "Informaçoes", "info" })
+local infoTab = Window:MakeTab({ "Bilgi", "info" })
 
 infoTab:AddDiscordInvite({
-    Name = "LYRA HUB",
-    Description = "https://discord.gg/YcM2DzZ4TM",
-    Logo = "rbxassetid://71841836891247",
-    Invite = "https://discord.gg/YcM2DzZ4TM",
+    Name = "XENO HUB",
+    Description = "https://discord.gg/FxQzXqzH",
+    Logo = "rbxassetid://76414491539900",
+    Invite = "https://discord.gg/FxQzXqzH",
 })
 
-infoTab:AddSection({ "informaçoes do script" })
-infoTab:AddParagraph({ "Roblox Dos Donos: Apenas_eu362/murilo_12303" })
-infoTab:AddParagraph({ "você esta usando:", "LYRA HUB" })
+infoTab:AddSection({ "komut dosyası bilgisi" })
+infoTab:AddParagraph({ "Roblox Sahipleri: EgeKazak_Real1" })
+infoTab:AddParagraph({ "Roblox Sahipleri:", "XENO HUB" })
 
-infoTab:AddSection({ "Informaçoes" })
+infoTab:AddSection({ "Bilgi" })
 
 local function createInfoBlock(tab, title, initial)
     local block
@@ -268,7 +268,7 @@ end
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
-local welcomeBlock = createInfoBlock(infoTab, "Lyra Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
+local welcomeBlock = createInfoBlock(infoTab, "Xeno Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
 infoTab:AddParagraph({"Kullanıcı Adınız: " .. (localPlayer.Name or "Desconhecido")})
 infoTab:AddParagraph({"ID'niz: " .. tostring(localPlayer.UserId or 0)})
 
@@ -300,7 +300,7 @@ end
 task.spawn(function()
     while true do
         task.wait(0.5)
-        setBlockText(welcomeBlock, "Lyra Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
+        setBlockText(welcomeBlock, "Xeno Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
         local e = os.clock() - startClock
         local h = math.floor(e/3600)
         local m = math.floor((e%3600)/60)
@@ -2350,7 +2350,7 @@ CarTab:AddTextBox({
     Name = "Decal",
     Description = "ID do decal",
     Default = "",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     ClearText = false,
     Callback = function(text)
         if text and text:gsub(" ", ""):len() > 0 then
@@ -2801,7 +2801,7 @@ _G.selectedParts = {
 Tab:AddTextBox({
     Name = "Tronco",
     Description = "ID do Tronco",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
@@ -2820,7 +2820,7 @@ Tab:AddTextBox({
 Tab:AddTextBox({
     Name = "Braço Direito",
     Description = "ID do Braço Direito",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
@@ -2839,7 +2839,7 @@ Tab:AddTextBox({
 Tab:AddTextBox({
     Name = "Braço Esquerdo",
     Description = "ID do Braço Esquerdo",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
@@ -2858,7 +2858,7 @@ Tab:AddTextBox({
 Tab:AddTextBox({
     Name = "Perna Direita",
     Description = "ID da Perna Direita",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
@@ -2877,7 +2877,7 @@ Tab:AddTextBox({
 Tab:AddTextBox({
     Name = "Perna Esquerda",
     Description = "ID da Perna Esquerda",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
@@ -2895,7 +2895,7 @@ Tab:AddTextBox({
 Tab:AddTextBox({
     Name = "Cabeça",
     Description = "ID da Cabeça",
-    PlaceholderText = "Lyra",
+    PlaceholderText = "Xeno",
     TextSize = 16,
     FontSize = 16,
     Callback = function(Value)
