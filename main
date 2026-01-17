@@ -5274,9 +5274,9 @@ Tab:AddToggle({
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
--- VIP Menü ve İsim Değiştirme Sistemi
+-- VIP / ADS Menü Sistemi
 Tab:AddButton({
-    Title = "VIP Renk Menüsünü Aç",
+    Title = "ADS VIP Menüsünü Aç",
     Locked = false,
     Callback = function()
         local Players = game:GetService("Players")
@@ -5284,102 +5284,140 @@ Tab:AddButton({
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local RunService = game:GetService("RunService")
         
-        -- Eğer eski menü varsa temizle
-        if PlayerGui:FindFirstChild("CustomVipMenu") then
-            PlayerGui.CustomVipMenu:Destroy()
+        -- Mevcut menüleri temizle
+        if PlayerGui:FindFirstChild("AdsVipMenu") then
+            PlayerGui.AdsVipMenu:Destroy()
         end
 
-        -- 1. Ayrı Bir Menü Oluşturma (ScreenGui)
+        -- 1. ScreenGui Oluşturma
         local ScreenGui = Instance.new("ScreenGui")
-        ScreenGui.Name = "CustomVipMenu"
+        ScreenGui.Name = "AdsVipMenu"
+        ScreenGui.ResetOnSpawn = false
         ScreenGui.Parent = PlayerGui
 
+        -- 2. Ana Panel (Ads / Banner Tasarımı)
         local MainFrame = Instance.new("Frame")
-        MainFrame.Size = UDim2.new(0, 250, 0, 300)
-        MainFrame.Position = UDim2.new(0.5, -125, 0.4, -150)
-        MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        MainFrame.Size = UDim2.new(0, 400, 0, 450)
+        MainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
+        MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
         MainFrame.BorderSizePixel = 0
         MainFrame.Active = true
         MainFrame.Draggable = true
         MainFrame.Parent = ScreenGui
-        
-        -- Köşeleri yuvarlat
+
         local UICorner = Instance.new("UICorner")
-        UICorner.CornerRadius = UDim.new(0, 10)
+        UICorner.CornerRadius = UDim.new(0, 15)
         UICorner.Parent = MainFrame
 
-        local Title = Instance.new("TextLabel")
-        Title.Size = UDim2.new(1, 0, 0, 40)
-        Title.Text = "VIP SEÇİM MENÜSÜ"
-        Title.TextColor3 = Color3.new(1, 1, 1)
-        Title.BackgroundTransparency = 1
-        Title.Font = Enum.Font.GothamBold
-        Title.TextSize = 18
-        Title.Parent = MainFrame
+        -- Üst Reklam Alanı (Ads Banner)
+        local AdBanner = Instance.new("Frame")
+        AdBanner.Size = UDim2.new(0.9, 0, 0, 80)
+        AdBanner.Position = UDim2.new(0.05, 0, 0.05, 0)
+        AdBanner.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        AdBanner.Parent = MainFrame
+        
+        local AdCorner = Instance.new("UICorner")
+        AdCorner.Parent = AdBanner
+
+        local AdText = Instance.new("TextLabel")
+        AdText.Size = UDim2.new(1, 0, 1, 0)
+        AdText.Text = "BECOME VIP - LIMITED OFFER!"
+        AdText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        AdText.Font = Enum.Font.GothamBold
+        AdText.TextSize = 20
+        AdText.BackgroundTransparency = 1
+        AdText.Parent = AdBanner
 
         -- Kapatma Butonu
         local CloseBtn = Instance.new("TextButton")
-        CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-        CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+        CloseBtn.Size = UDim2.new(0, 35, 0, 35)
+        CloseBtn.Position = UDim2.new(1, -40, 0, 5)
         CloseBtn.Text = "X"
-        CloseBtn.TextColor3 = Color3.new(1, 0, 0)
-        CloseBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        CloseBtn.TextColor3 = Color3.new(1, 1, 1)
+        CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
         CloseBtn.Parent = MainFrame
         CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
-        -- VIP Modları Değişkeni
-        _G.VipMode = "None"
+        local CloseCorner = Instance.new("UICorner")
+        CloseCorner.CornerRadius = UDim.new(1, 0)
+        CloseCorner.Parent = CloseBtn
 
-        -- Buton Oluşturucu Fonksiyon
-        local function createVipBtn(name, color, pos, mode)
+        -- VIP Modu Seçimi
+        _G.AdsVipSelection = "None"
+
+        -- Buton Oluşturucu (VIP 1, 2, 3)
+        local function createAdsBtn(text, subText, color, pos, mode)
             local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(0.8, 0, 0, 45)
+            btn.Size = UDim2.new(0.9, 0, 0, 70)
             btn.Position = pos
-            btn.Text = name
-            btn.TextColor3 = Color3.new(1, 1, 1)
             btn.BackgroundColor3 = color
-            btn.Font = Enum.Font.GothamSemibold
-            btn.TextSize = 16
+            btn.Text = ""
             btn.Parent = MainFrame
             
-            local btnCorner = Instance.new("UICorner")
-            btnCorner.Parent = btn
+            local bCorner = Instance.new("UICorner")
+            bCorner.Parent = btn
+
+            local mainTxt = Instance.new("TextLabel")
+            mainTxt.Size = UDim2.new(1, 0, 0.6, 0)
+            mainTxt.Text = text
+            mainTxt.TextColor3 = Color3.new(1, 1, 1)
+            mainTxt.Font = Enum.Font.GothamBold
+            mainTxt.TextSize = 22
+            mainTxt.BackgroundTransparency = 1
+            mainTxt.Parent = btn
+
+            local subTxt = Instance.new("TextLabel")
+            subTxt.Size = UDim2.new(1, 0, 0.4, 0)
+            subTxt.Position = UDim2.new(0, 0, 0.5, 0)
+            subTxt.Text = subText
+            subTxt.TextColor3 = Color3.new(0.9, 0.9, 0.9)
+            subTxt.Font = Enum.Font.Gotham
+            subTxt.TextSize = 14
+            subTxt.BackgroundTransparency = 1
+            subTxt.Parent = btn
 
             btn.MouseButton1Click:Connect(function()
-                _G.VipMode = mode
+                _G.AdsVipSelection = mode
                 game:GetService("StarterGui"):SetCore("SendNotification", {
-                    Title = "VIP Aktif",
-                    Text = name .. " modu seçildi!",
+                    Title = "ADS VIP",
+                    Text = text .. " Özellikleri Aktif!",
                     Duration = 2
                 })
             end)
         end
 
-        -- 3 Farklı VIP Butonu (Renkler ve Modlar)
-        createVipBtn("VIP 1 (Altın)", Color3.fromRGB(255, 170, 0), UDim2.new(0.1, 0, 0, 60), "Gold")
-        createVipBtn("VIP 2 (Elmas)", Color3.fromRGB(0, 170, 255), UDim2.new(0.1, 0, 0, 120), "Diamond")
-        createVipBtn("VIP 3 (Rainbow)", Color3.fromRGB(150, 0, 255), UDim2.new(0.1, 0, 0, 180), "Rainbow")
+        -- 3 Meşhur VIP Butonu
+        createAdsBtn("VIP GOLD", "Exclusive Gold Tag & Name", Color3.fromRGB(218, 165, 32), UDim2.new(0.05, 0, 0.3, 0), "Gold")
+        createAdsBtn("VIP DIAMOND", "Ultra Blue Shine Effects", Color3.fromRGB(0, 160, 255), UDim2.new(0.05, 0, 0.5, 0), "Diamond")
+        createAdsBtn("VIP RAINBOW", "Animated RGB Name Tag", Color3.fromRGB(120, 0, 200), UDim2.new(0.05, 0, 0.7, 0), "Rainbow")
 
-        -- 2. İsim Etiketi Döngüsü
-        -- Bu kısım basılan butona göre RP ismini sürekli günceller
+        -- 3. İsim Etiketi Güncelleyici
         spawn(function()
-            while ScreenGui.Parent do
+            while ScreenGui and ScreenGui.Parent do
                 local char = LocalPlayer.Character
-                if char and char:FindFirstChild("Head") then
-                    for _, v in pairs(char:GetDescendants()) do
-                        -- Brookhaven isim etiketlerini veya genel TextLabel'ları hedefle
-                        if v:IsA("TextLabel") and (v.Name == "NameTag" or v.Parent.Name == "Head") then
-                            if _G.VipMode == "Gold" then
-                                v.TextColor3 = Color3.fromRGB(255, 170, 0)
-                            elseif _G.VipMode == "Diamond" then
-                                v.TextColor3 = Color3.fromRGB(0, 170, 255)
-                            elseif _G.VipMode == "Rainbow" then
-                                v.TextColor3 = Color3.fromHSV(tick() % 5 / 5, 0.8, 1)
+                if char then
+                    for _, label in pairs(char:GetDescendants()) do
+                        if label:IsA("TextLabel") then
+                            if _G.AdsVipSelection == "Gold" then
+                                label.TextColor3 = Color3.fromRGB(255, 215, 0)
+                            elseif _G.AdsVipSelection == "Diamond" then
+                                label.TextColor3 = Color3.fromRGB(0, 255, 255)
+                            elseif _G.AdsVipSelection == "Rainbow" then
+                                label.TextColor3 = Color3.fromHSV(tick() % 5 / 5, 0.8, 1)
                             end
                         end
                     end
                 end
-                RunService.Heartbeat:Wait()
+                RunService.RenderStepped:Wait()
+            end
+        end)
+
+        -- 4. Brookhaven/ADS Bypass (Görsel Kilitleri Açma)
+        pcall(function()
+            for _, v in pairs(PlayerGui:GetDescendants()) do
+                if v:IsA("ImageLabel") and (v.Image:find("lock") or v.Name:lower():find("lock")) then
+                    v.Visible = false
+                end
             end
         end)
     end
