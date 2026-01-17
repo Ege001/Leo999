@@ -5442,7 +5442,7 @@ Tab:AddButton({
     Callback = function()
         local args = {
             [1] = "AcceptedToolToServer",
-            [2] = "SnowflakeGlider",
+            [2] = "RainbowSnowflake",
             [3] = game.Players.LocalPlayer
         }
 
