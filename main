@@ -272,7 +272,7 @@ local welcomeBlock = createInfoBlock(infoTab, "Xeno Hub'a Hoş Geldiniz - Bugün
 infoTab:AddParagraph({"Kullanıcı Adınız: " .. (localPlayer.Name or "Desconhecido")})
 infoTab:AddParagraph({"ID'niz: " .. tostring(localPlayer.UserId or 0)})
 
-local gameBlock    = createInfoBlock(infoTab, "Seu Jogo: ", "Yükleniyor...")
+local gameBlock    = createInfoBlock(infoTab, "Sizin Oyununuz: ", "Yükleniyor...")
 local timerBlock   = createInfoBlock(infoTab, "Script Kullanım Süresi: ", "00:00:00")
 local fpsBlock     = createInfoBlock(infoTab, "FPS'niz: ", "FPS: 0")
 local playersBlock = createInfoBlock(infoTab, "Sunucudaki Oyuncu Sayısı: ", tostring(#Players:GetPlayers()))
@@ -346,6 +346,14 @@ Tab:AddButton({
     Desc = "7yd7 Emote.",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua"))()
+    end
+})
+
+Tab:AddButton({
+    Name = "İblis",
+    Desc = "İblis FE.",
+    Callback = function()
+		loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/main/Dboas"))()
     end
 })
 
