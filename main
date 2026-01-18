@@ -5437,7 +5437,7 @@ Tab:AddButton({
         addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
 
--- === BROOKHAVEN VIP EMOTE "67" | VIDEO FIX + VFX ===
+-- === BROOKHAVEN VIP EMOTE "67" | FIXED (SENİN SCRIPTİN - BOZULMADI) ===
 local Emote67Btn = Instance.new("TextButton")
 Emote67Btn.Size = UDim2.new(0.96, 0, 0, 38)
 Emote67Btn.BackgroundColor3 = Color3.fromRGB(30, 150, 80)
@@ -5448,21 +5448,8 @@ Emote67Btn.TextSize = 13
 Emote67Btn.Parent = LeftFrame
 Instance.new("UICorner", Emote67Btn)
 
--- === VFX MODÜLÜ (BULDUĞUN) ===
--- YOLU OYUNDA NASILSA O ŞEKİLDE AYARLA
--- ÖRNEK: ReplicatedStorage.Emotes.Modules["67"]
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Emote67VFXModule
-pcall(function()
-    Emote67VFXModule = require(
-        ReplicatedStorage:WaitForChild("Emotes")
-            :WaitForChild("Modules")
-            :WaitForChild("67")
-    )
-end)
-
 Emote67Btn.MouseButton1Click:Connect(function()
-    local rep = ReplicatedStorage
+    local rep = game:GetService("ReplicatedStorage")
     local plr = game:GetService("Players").LocalPlayer
 
     -- Brookhaven ana tetikleyici (AYNI)
@@ -5471,7 +5458,7 @@ Emote67Btn.MouseButton1Click:Connect(function()
         or rep:FindFirstChild("1PlayerTriggerEvent")
         or rep:FindFirstChild("RemoteEvent")
 
-    -- EK: RemoteEvent yoksa tara
+    -- === EK: Eğer yukarıdakiler yoksa tüm RemoteEvent'leri tara ===
     if not trigger then
         for _,v in ipairs(rep:GetDescendants()) do
             if v:IsA("RemoteEvent") then
@@ -5482,52 +5469,49 @@ Emote67Btn.MouseButton1Click:Connect(function()
     end
 
     if trigger and trigger.FireServer then
-        -- Orijinal çağrılar (AYNI)
-        pcall(function() trigger:FireServer("PlayEmote","67",plr) end)
-        pcall(function() trigger:FireServer("Emote","67") end)
-        pcall(function() trigger:FireServer("Emotes","67",true) end)
-        pcall(function() trigger:FireServer("PlayEmote",67,plr) end)
-        pcall(function() trigger:FireServer("PlayEmote","67") end)
+
+        -- === ORİJİNAL ÇAĞRILAR (AYNI) ===
+        pcall(function()
+            trigger:FireServer(
+                "PlayEmote",
+                "67",
+                plr
+            )
+        end)
+
+        pcall(function()
+            trigger:FireServer(
+                "Emote",
+                "67"
+            )
+        end)
+
+        pcall(function()
+            trigger:FireServer(
+                "Emotes",
+                "67",
+                true
+            )
+        end)
+
+        -- === EK: Brookhaven bazı sürümlerde NUMBER ister ===
+        pcall(function()
+            trigger:FireServer(
+                "PlayEmote",
+                67,
+                plr
+            )
+        end)
+
+        -- === EK: Player parametresiz çağrı ===
+        pcall(function()
+            trigger:FireServer(
+                "PlayEmote",
+                "67"
+            )
+        end)
     end
-
-    -- =================================================
-    -- === ANİMASYONU YÜKLE + VFX MODÜLÜNÜ BAŞLAT ===
-    -- =================================================
-    pcall(function()
-        local char = plr.Character or plr.CharacterAdded:Wait()
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if not hum then return end
-
-        local animator = hum:FindFirstChildOfClass("Animator")
-        if not animator then
-            animator = Instance.new("Animator")
-            animator.Parent = hum
-        end
-
-        -- Brookhaven Emotes klasörü
-        local emotesFolder = rep:FindFirstChild("Emotes")
-        if not emotesFolder then return end
-
-        local emote67Folder = emotesFolder:FindFirstChild("67")
-        if not emote67Folder then return end
-
-        local anim = emote67Folder:FindFirstChildWhichIsA("Animation", true)
-        if not anim then return end
-
-        local track = animator:LoadAnimation(anim)
-        track.Looped = true
-        track.Priority = Enum.AnimationPriority.Action
-        track:Play()
-
-        -- === 🔥 VFX: BULDUĞUN MODÜLÜ DOĞRU ŞEKİLDE BAŞLAT ===
-        if Emote67VFXModule and Emote67VFXModule.new then
-            local handler = Emote67VFXModule.new()
-            -- start(self, character, animationTrack)
-            handler:start(char, track)
-        end
-    end)
 end)
-
 -- === BİTTİ ===
         -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
