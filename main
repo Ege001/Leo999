@@ -3431,7 +3431,7 @@ Tab:AddParagraph({
 })
 
 Tab:AddButton({
-    Name = "Mini REPO",
+    Name = "Women’s Pack – Harajuku Flex 🌸",
     Description = "Karakter mini personalizado",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3450,7 +3450,61 @@ Tab:AddButton({
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
             StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
-                Text = "Mini REPO equipado!",
+                Text = "Women’s Pack – Harajuku Flex 🌸 equipado!",
+                Duration = 3
+            })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "ULTRA MEGA NOOB 🌈✨",
+    Description = "Karakter mini personalizado",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local StarterGui = game:GetService("StarterGui")
+        
+        pcall(function()
+            local parts = {
+                133795438481810,
+                110247088456630,
+                121774020769523,
+                80418257159130,
+                103930862223759,
+                99914087269663
+            }
+            local args = {parts}
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            StarterGui:SetCore("SendNotification", {
+                Title = "Karakter",
+                Text = "ULTRA MEGA NOOB 🌈✨ equipado!",
+                Duration = 3
+            })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "Mini Soft Kitty {Noob} 🐱💖",
+    Description = "Karakter mini personalizado",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local StarterGui = game:GetService("StarterGui")
+        
+        pcall(function()
+            local parts = {
+                97301833314184,
+                110788015323359,
+                90866173464389,
+                77533207978345,
+                132677077191785,
+                134649517111774
+            }
+            local args = {parts}
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            StarterGui:SetCore("SendNotification", {
+                Title = "Karakter",
+                Text = "Mini Soft Kitty {Noob} 🐱💖 equipado!",
                 Duration = 3
             })
         end)
