@@ -342,6 +342,14 @@ local RE = ReplicatedStorage:WaitForChild("RE")
 local Tab = Window:MakeTab({"Fe Scripts", "rbxassetid://121106070017957"})
 
 Tab:AddButton({
+    Name = "7yd7",
+    Desc = "7yd7 Emote.",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua"))()
+    end
+})
+
+Tab:AddButton({
     Name = "Naruto",
     Desc = "Naruto FE.",
     Callback = function()
