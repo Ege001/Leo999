@@ -6658,146 +6658,190 @@ MusicTab:AddButton({
 })
 
 
--- ============================
--- GETITEM (MoneyGun) MODULE
--- Appended by assistant - does not modify existing code above
--- Use: GetItem("MoneyGun")
--- ============================
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
+-- =========================
+-- XENO SAFE APPEND MODULES
+-- Appended (DO NOT EDIT ABOVE) - This block is appended to the original file.
+-- Provides two safe functions exposed on _G:
+--   _G.XenoHub_GetItem(itemName)  -- tries to get an item (e.g., "MoneyGun")
+--   _G.XenoHub_GetCar(vehicle)    -- tries to force-spawn a vehicle (by name or id)
+-- These functions are wrapped to minimize interference with existing globals.
+-- Usage example (in-game / executor):
+--   _G.XenoHub_GetItem("MoneyGun")
+--   _G.XenoHub_GetCar("Lamborghini")
+-- =========================
 
-local function GetItem(itemName)
-    -- PickingTools yöntemi
-    pcall(function()
-        local r = ReplicatedStorage:FindFirstChild("RE", true)
-        if r and r:FindFirstChild("1Too1l") then
-            local ok = r:FindFirstChild("1Too1l")
-            if ok and ok.InvokeServer then
-                pcall(function() ok:InvokeServer("PickingTools", itemName) end)
-            end
-        end
-    end)
-
-    -- AcceptedToolToServer yöntemi
-    pcall(function()
-        local r = ReplicatedStorage:FindFirstChild("RE", true)
-        if r and r:FindFirstChild("1Playe1rTrigge1rEven1t") then
-            local evt = r:FindFirstChild("1Playe1rTrigge1rEven1t")
-            if evt and evt.FireServer then
-                pcall(function()
-                    evt:FireServer("AcceptedToolToServer", itemName, LocalPlayer)
-                end)
-            end
-        end
-    end)
-
-    -- Generic fallback: try common remotes
-    pcall(function()
-        for _, name in ipairs({"1Too1l","1Playe1rTrigge1rEven1t","ToolRemote","PlayerTrigger","AcceptedToolToServer"}) do
-            local found = ReplicatedStorage:FindFirstChild(name, true)
-            if found then
-                pcall(function()
-                    if found.InvokeServer then
-                        found:InvokeServer(itemName)
-                    elseif found.FireServer then
-                        found:FireServer(itemName)
-                    end
-                end)
-            end
-        end
-    end)
-end
-
--- Auto-call example (comment out if undesired)
--- GetItem("MoneyGun")
-
-
-
--- ============================
--- FORCE GETCAR / SPAWN MODULE
--- Appended by assistant - does not modify existing code above
--- Usage:
--- GetCar("VehicleName") or GetCar(123456)
--- ============================
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
-
-local LocalPlayer = Players.LocalPlayer
-
-local function getSpawnCFrame()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        return char.HumanoidRootPart.CFrame * CFrame.new(0, 0, -12)
-    end
-    return CFrame.new(0, 10, 0)
-end
-
-local function tryRemote(remote, mode, args)
-    pcall(function()
-        if mode == "Fire" and remote.FireServer then
-            remote:FireServer(unpack(args))
-        elseif mode == "Invoke" and remote.InvokeServer then
-            remote:InvokeServer(unpack(args))
-        end
-    end)
-end
-
-local function GetCar(vehicleNameOrId)
-    local spawnCF = getSpawnCFrame()
-
-    local patterns = {
-        { "1Ca1r", "Invoke", {"SpawnCar", vehicleNameOrId, spawnCF} },
-        { "1Ca1r", "Fire",   {"SpawnCar", vehicleNameOrId} },
-        { "1Ca1r", "Fire",   {vehicleNameOrId} },
-
-        { "1Pl4y3rC4r", "Invoke", {vehicleNameOrId, spawnCF} },
-        { "1Pl4y3rC4r", "Fire",   {vehicleNameOrId} },
-
-        { "SpawnVehicle", "Invoke", {vehicleNameOrId} },
-        { "SpawnVehicle", "Fire",   {vehicleNameOrId} },
-
-        { "VehicleSpawn", "Invoke", {vehicleNameOrId} },
-        { "VehicleSpawn", "Fire",   {vehicleNameOrId} },
-
-        { "BuyCar", "Invoke", {vehicleNameOrId} },
-        { "BuyCar", "Fire",   {vehicleNameOrId} },
-
-        { "Garage", "Invoke", {"Spawn", vehicleNameOrId} },
-        { "Garage", "Fire",   {"Spawn", vehicleNameOrId} },
-    }
-
-    -- Try matching remotes in ReplicatedStorage
-    for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do
-        if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
-            for _, p in ipairs(patterns) do
-                if obj.Name == p[1] then
-                    tryRemote(obj, p[2], p[3])
-                end
-            end
-        end
+do
+    local function safeFindReplicatedRemote(name)
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local found = ReplicatedStorage:FindFirstChild(name, true)
+        return found
     end
 
-    -- Workspace fallback: clone matching vehicle models
-    for _, v in ipairs(Workspace:GetDescendants()) do
-        if v:IsA("Model") and v:FindFirstChildWhichIsA("VehicleSeat") then
-            if tostring(v.Name):lower():find(tostring(vehicleNameOrId):lower()) then
-                local clone = v:Clone()
-                clone.Parent = Workspace
-                if clone.PrimaryPart then
-                    clone:SetPrimaryPartCFrame(spawnCF)
-                elseif clone:FindFirstChild("PrimaryPart") then
-                    clone.PrimaryPart = clone:FindFirstChildWhichIsA("BasePart")
-                    if clone.PrimaryPart then
-                        clone:SetPrimaryPartCFrame(spawnCF)
+    local function XenoHub_GetItem(itemName)
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
+        -- Try common REMOTE patterns used in many Brookhaven-like scripts.
+        local tried = {}
+
+        -- 1) Try known nested remotes under RE
+        pcall(function()
+            local re = ReplicatedStorage:FindFirstChild("RE", true) or ReplicatedStorage:FindFirstChild("Remotes", true)
+            if re then
+                for _, candidate in ipairs({"1Too1l","1Playe1rTrigge1rEven1t","ToolRemote","PlayerTrigger","AcceptedToolToServer","PickingTools"}) do
+                    local obj = re:FindFirstChild(candidate, true) or re:FindFirstChild(candidate)
+                    if obj and not tried[obj] then
+                        tried[obj] = true
+                        pcall(function()
+                            if obj.InvokeServer then
+                                obj:InvokeServer(itemName)
+                            elseif obj.FireServer then
+                                obj:FireServer(itemName)
+                            end
+                        end)
                     end
                 end
             end
-        end
-    end
-end
+        end)
 
--- Auto-call example (comment out if undesired)
--- GetCar("Lamborghini")
+        -- 2) Try scanning ReplicatedStorage for remotes and invoke common signatures
+        pcall(function()
+            for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do
+                if (obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction")) and not tried[obj] then
+                    local name = obj.Name:lower()
+                    local ok = false
+                    -- If name looks like a tool remote, try several signatures
+                    if name:find("tool") or name:find("pick") or name:find("item") or name:find("accept") then
+                        pcall(function() if obj.InvokeServer then obj:InvokeServer("PickingTools", itemName) end end)
+                        pcall(function() if obj.InvokeServer then obj:InvokeServer(itemName) end end)
+                        pcall(function() if obj.FireServer then obj:FireServer("AcceptedToolToServer", itemName, LocalPlayer) end end)
+                        pcall(function() if obj.FireServer then obj:FireServer(itemName) end end)
+                        tried[obj] = true
+                        ok = true
+                    end
+                    -- Also try generic attempt for any remote
+                    if not ok then
+                        pcall(function() if obj.InvokeServer then obj:InvokeServer(itemName) end end)
+                        pcall(function() if obj.FireServer then obj:FireServer(itemName) end end)
+                        tried[obj] = true
+                    end
+                end
+            end
+        end)
+
+        -- 3) As a last client-side fallback, create a local Tool that simulates spawn interaction (non-invasive)
+        pcall(function()
+            local success, err = pcall(function()
+                local tool = Instance.new("Tool")
+                tool.RequiresHandle = false
+                tool.Name = "XenoHub_TempGetItemTool"
+                tool.Parent = LocalPlayer.Backpack
+                -- Activate then remove
+                tool.Activated:Connect(function() end)
+                task.delay(0.5, function()
+                    if tool and tool.Parent then
+                        tool:Destroy()
+                    end
+                end)
+            end)
+        end)
+    end
+
+    local function XenoHub_GetCar(vehicleNameOrId)
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local Workspace = game:GetService("Workspace")
+        local LocalPlayer = Players.LocalPlayer
+
+        local function getSpawnCFrame()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                return char.HumanoidRootPart.CFrame * CFrame.new(0, 0, -12)
+            end
+            return CFrame.new(0, 10, 0)
+        end
+
+        local spawnCF = getSpawnCFrame()
+        local tried = {}
+
+        -- Try known remote names first (non-destructive attempts)
+        local patterns = {
+            {"1Ca1r", "Invoke", {"SpawnCar", vehicleNameOrId, spawnCF}},
+            {"1Ca1r", "Fire",   {"SpawnCar", vehicleNameOrId}},
+            {"1Pl4y3rC4r", "Invoke",{vehicleNameOrId, spawnCF}},
+            {"SpawnVehicle", "Invoke",{vehicleNameOrId}},
+            {"VehicleSpawn", "Invoke",{vehicleNameOrId}},
+            {"BuyCar", "Invoke",{vehicleNameOrId}},
+            {"Garage", "Invoke",{"Spawn", vehicleNameOrId}},
+        }
+
+        pcall(function()
+            for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do
+                if (obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction")) and not tried[obj] then
+                    for _, p in ipairs(patterns) do
+                        if obj.Name == p[1] then
+                            tried[obj] = true
+                            pcall(function()
+                                if p[2] == "Invoke" and obj.InvokeServer then
+                                    obj:InvokeServer(unpack(p[3]))
+                                elseif p[2] == "Fire" and obj.FireServer then
+                                    obj:FireServer(unpack(p[3]))
+                                end
+                            end)
+                        end
+                    end
+                end
+            end
+        end)
+
+        -- Generic attempt: try invoking or firing remotes with vehicle identifier
+        pcall(function()
+            for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do
+                if (obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction")) and not tried[obj] then
+                    tried[obj] = true
+                    pcall(function()
+                        if obj.InvokeServer then
+                            obj:InvokeServer(vehicleNameOrId)
+                        end
+                        if obj.FireServer then
+                            obj:FireServer(vehicleNameOrId)
+                        end
+                    end)
+                end
+            end
+        end)
+
+        -- Workspace fallback: clone a matching vehicle model (client-only, non-destructive)
+        pcall(function()
+            for _, v in ipairs(Workspace:GetDescendants()) do
+                if v:IsA("Model") and v:FindFirstChildWhichIsA("VehicleSeat") then
+                    if tostring(v.Name):lower():find(tostring(vehicleNameOrId):lower()) then
+                        local clone = v:Clone()
+                        clone.Parent = Workspace
+                        -- Try set PrimaryPart safely
+                        local ok = pcall(function()
+                            if clone.PrimaryPart then
+                                clone:SetPrimaryPartCFrame(spawnCF)
+                            else
+                                local bp = clone:FindFirstChildWhichIsA("BasePart")
+                                if bp then
+                                    clone.PrimaryPart = bp
+                                    clone:SetPrimaryPartCFrame(spawnCF)
+                                end
+                            end
+                        end)
+                    end
+                end
+            end
+        end)
+    end
+
+    -- Expose to global table non-invasively
+    pcall(function() _G.XenoHub_GetItem = XenoHub_GetItem end)
+    pcall(function() _G.XenoHub_GetCar = XenoHub_GetCar end)
+
+    -- Optional: helper local aliases (won't override globals outside this block)
+    _G.__XENO_APPENDED = true
+end
 
