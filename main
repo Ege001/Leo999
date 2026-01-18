@@ -5437,7 +5437,7 @@ Tab:AddButton({
         addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
 
--- === BROOKHAVEN VIP EMOTE "67" | FIXED (SENİN SCRIPTİN - BOZULMADI) ===
+-- === VIP EMOTE 67 BUTTON ===
 local Emote67Btn = Instance.new("TextButton")
 Emote67Btn.Size = UDim2.new(0.96, 0, 0, 38)
 Emote67Btn.BackgroundColor3 = Color3.fromRGB(30, 150, 80)
@@ -5449,18 +5449,17 @@ Emote67Btn.Parent = LeftFrame
 Instance.new("UICorner", Emote67Btn)
 
 Emote67Btn.MouseButton1Click:Connect(function()
-    local rep = game:GetService("ReplicatedStorage")
-    local plr = game:GetService("Players").LocalPlayer
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local plr = Players.LocalPlayer
 
-    -- Brookhaven ana tetikleyici (AYNI)
-    local trigger =
-        rep:FindFirstChild("1Playe1rTrigge1rEven1t")
-        or rep:FindFirstChild("1PlayerTriggerEvent")
-        or rep:FindFirstChild("RemoteEvent")
+    -- Ana trigger RemoteEvent
+    local trigger = ReplicatedStorage:FindFirstChild("1Playe1rTrigge1rEven1t") 
+        or ReplicatedStorage:FindFirstChild("1PlayerTriggerEvent") 
+        or ReplicatedStorage:FindFirstChild("RemoteEvent")
 
-    -- === EK: Eğer yukarıdakiler yoksa tüm RemoteEvent'leri tara ===
     if not trigger then
-        for _,v in ipairs(rep:GetDescendants()) do
+        for _,v in ipairs(ReplicatedStorage:GetDescendants()) do
             if v:IsA("RemoteEvent") then
                 trigger = v
                 break
@@ -5468,51 +5467,37 @@ Emote67Btn.MouseButton1Click:Connect(function()
         end
     end
 
-    if trigger and trigger.FireServer then
+    if trigger then
+        -- FireServer tetiklemeleri
+        local fires = {
+            {"PlayEmote", "67", plr},
+            {"Emote", "67"},
+            {"Emotes", "67", true},
+            {"PlayEmote", 67, plr},
+            {"PlayEmote", "67"}
+        }
+        for _, args in ipairs(fires) do
+            pcall(function()
+                trigger:FireServer(unpack(args))
+            end)
+        end
+    end
 
-        -- === ORİJİNAL ÇAĞRILAR (AYNI) ===
-        pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                "67",
-                plr
-            )
-        end)
+    -- Module tetikleme (VFX + MarkerReached)
+    local success, EmoteModule = pcall(function()
+        return require(ReplicatedStorage.Modules.Client.Emotes.Scripts.SixSevenEmote)
+    end)
+    if success then
+        local char = plr.Character or plr.CharacterAdded:Wait()
+        local humanoid = char:WaitForChild("Humanoid")
+        local Animator = humanoid:WaitForChild("Animator")
 
-        pcall(function()
-            trigger:FireServer(
-                "Emote",
-                "67"
-            )
-        end)
-
-        pcall(function()
-            trigger:FireServer(
-                "Emotes",
-                "67",
-                true
-            )
-        end)
-
-        -- === EK: Brookhaven bazı sürümlerde NUMBER ister ===
-        pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                67,
-                plr
-            )
-        end)
-
-        -- === EK: Player parametresiz çağrı ===
-        pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                "67"
-            )
-        end)
+        local emoteInstance = EmoteModule.new()
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://<Emote67AnimationId>" -- Buraya gerçek ID
+        emoteInstance:start(char, Animator, Animator:LoadAnimation(animation))
     end
 end)
--- === BİTTİ ===
         -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
 -- === START: GetCar compatibility helper (does NOT change other settings) ===
