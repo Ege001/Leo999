@@ -6656,3 +6656,148 @@ MusicTab:AddButton({
         end
     end
 })
+
+
+-- ============================
+-- GETITEM (MoneyGun) MODULE
+-- Appended by assistant - does not modify existing code above
+-- Use: GetItem("MoneyGun")
+-- ============================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local function GetItem(itemName)
+    -- PickingTools yöntemi
+    pcall(function()
+        local r = ReplicatedStorage:FindFirstChild("RE", true)
+        if r and r:FindFirstChild("1Too1l") then
+            local ok = r:FindFirstChild("1Too1l")
+            if ok and ok.InvokeServer then
+                pcall(function() ok:InvokeServer("PickingTools", itemName) end)
+            end
+        end
+    end)
+
+    -- AcceptedToolToServer yöntemi
+    pcall(function()
+        local r = ReplicatedStorage:FindFirstChild("RE", true)
+        if r and r:FindFirstChild("1Playe1rTrigge1rEven1t") then
+            local evt = r:FindFirstChild("1Playe1rTrigge1rEven1t")
+            if evt and evt.FireServer then
+                pcall(function()
+                    evt:FireServer("AcceptedToolToServer", itemName, LocalPlayer)
+                end)
+            end
+        end
+    end)
+
+    -- Generic fallback: try common remotes
+    pcall(function()
+        for _, name in ipairs({"1Too1l","1Playe1rTrigge1rEven1t","ToolRemote","PlayerTrigger","AcceptedToolToServer"}) do
+            local found = ReplicatedStorage:FindFirstChild(name, true)
+            if found then
+                pcall(function()
+                    if found.InvokeServer then
+                        found:InvokeServer(itemName)
+                    elseif found.FireServer then
+                        found:FireServer(itemName)
+                    end
+                end)
+            end
+        end
+    end)
+end
+
+-- Auto-call example (comment out if undesired)
+-- GetItem("MoneyGun")
+
+
+
+-- ============================
+-- FORCE GETCAR / SPAWN MODULE
+-- Appended by assistant - does not modify existing code above
+-- Usage:
+-- GetCar("VehicleName") or GetCar(123456)
+-- ============================
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+
+local function getSpawnCFrame()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        return char.HumanoidRootPart.CFrame * CFrame.new(0, 0, -12)
+    end
+    return CFrame.new(0, 10, 0)
+end
+
+local function tryRemote(remote, mode, args)
+    pcall(function()
+        if mode == "Fire" and remote.FireServer then
+            remote:FireServer(unpack(args))
+        elseif mode == "Invoke" and remote.InvokeServer then
+            remote:InvokeServer(unpack(args))
+        end
+    end)
+end
+
+local function GetCar(vehicleNameOrId)
+    local spawnCF = getSpawnCFrame()
+
+    local patterns = {
+        { "1Ca1r", "Invoke", {"SpawnCar", vehicleNameOrId, spawnCF} },
+        { "1Ca1r", "Fire",   {"SpawnCar", vehicleNameOrId} },
+        { "1Ca1r", "Fire",   {vehicleNameOrId} },
+
+        { "1Pl4y3rC4r", "Invoke", {vehicleNameOrId, spawnCF} },
+        { "1Pl4y3rC4r", "Fire",   {vehicleNameOrId} },
+
+        { "SpawnVehicle", "Invoke", {vehicleNameOrId} },
+        { "SpawnVehicle", "Fire",   {vehicleNameOrId} },
+
+        { "VehicleSpawn", "Invoke", {vehicleNameOrId} },
+        { "VehicleSpawn", "Fire",   {vehicleNameOrId} },
+
+        { "BuyCar", "Invoke", {vehicleNameOrId} },
+        { "BuyCar", "Fire",   {vehicleNameOrId} },
+
+        { "Garage", "Invoke", {"Spawn", vehicleNameOrId} },
+        { "Garage", "Fire",   {"Spawn", vehicleNameOrId} },
+    }
+
+    -- Try matching remotes in ReplicatedStorage
+    for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do
+        if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
+            for _, p in ipairs(patterns) do
+                if obj.Name == p[1] then
+                    tryRemote(obj, p[2], p[3])
+                end
+            end
+        end
+    end
+
+    -- Workspace fallback: clone matching vehicle models
+    for _, v in ipairs(Workspace:GetDescendants()) do
+        if v:IsA("Model") and v:FindFirstChildWhichIsA("VehicleSeat") then
+            if tostring(v.Name):lower():find(tostring(vehicleNameOrId):lower()) then
+                local clone = v:Clone()
+                clone.Parent = Workspace
+                if clone.PrimaryPart then
+                    clone:SetPrimaryPartCFrame(spawnCF)
+                elseif clone:FindFirstChild("PrimaryPart") then
+                    clone.PrimaryPart = clone:FindFirstChildWhichIsA("BasePart")
+                    if clone.PrimaryPart then
+                        clone:SetPrimaryPartCFrame(spawnCF)
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Auto-call example (comment out if undesired)
+-- GetCar("Lamborghini")
+
