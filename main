@@ -5437,7 +5437,7 @@ Tab:AddButton({
         addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
 
--- === BROOKHAVEN VIP EMOTE "67" | FIXED (SENİN SCRIPTİN - BOZULMADI) ===
+-- === BROOKHAVEN VIP EMOTE "67" | VIDEO FIX ===
 local Emote67Btn = Instance.new("TextButton")
 Emote67Btn.Size = UDim2.new(0.96, 0, 0, 38)
 Emote67Btn.BackgroundColor3 = Color3.fromRGB(30, 150, 80)
@@ -5458,7 +5458,7 @@ Emote67Btn.MouseButton1Click:Connect(function()
         or rep:FindFirstChild("1PlayerTriggerEvent")
         or rep:FindFirstChild("RemoteEvent")
 
-    -- === EK: Eğer yukarıdakiler yoksa tüm RemoteEvent'leri tara ===
+    -- EK: RemoteEvent yoksa tara
     if not trigger then
         for _,v in ipairs(rep:GetDescendants()) do
             if v:IsA("RemoteEvent") then
@@ -5469,49 +5469,60 @@ Emote67Btn.MouseButton1Click:Connect(function()
     end
 
     if trigger and trigger.FireServer then
-
-        -- === ORİJİNAL ÇAĞRILAR (AYNI) ===
+        -- Orijinal çağrılar (AYNI)
         pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                "67",
-                plr
-            )
+            trigger:FireServer("PlayEmote","67",plr)
         end)
 
         pcall(function()
-            trigger:FireServer(
-                "Emote",
-                "67"
-            )
+            trigger:FireServer("Emote","67")
         end)
 
         pcall(function()
-            trigger:FireServer(
-                "Emotes",
-                "67",
-                true
-            )
+            trigger:FireServer("Emotes","67",true)
         end)
 
-        -- === EK: Brookhaven bazı sürümlerde NUMBER ister ===
+        -- EK: number + player varyasyonu
         pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                67,
-                plr
-            )
+            trigger:FireServer("PlayEmote",67,plr)
         end)
 
-        -- === EK: Player parametresiz çağrı ===
         pcall(function()
-            trigger:FireServer(
-                "PlayEmote",
-                "67"
-            )
+            trigger:FireServer("PlayEmote","67")
         end)
     end
+
+    -- =================================================
+    -- === VIDEO'DAKİ GİBİ ZORLA LOOP EMOTE (ANA FİX) ===
+    -- =================================================
+    pcall(function()
+        local char = plr.Character or plr.CharacterAdded:Wait()
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if not hum then return end
+
+        local animator = hum:FindFirstChildOfClass("Animator")
+        if not animator then
+            animator = Instance.new("Animator")
+            animator.Parent = hum
+        end
+
+        -- Brookhaven Emotes klasörü
+        local emotesFolder = rep:FindFirstChild("Emotes")
+        if not emotesFolder then return end
+
+        local emote67Folder = emotesFolder:FindFirstChild("67")
+        if not emote67Folder then return end
+
+        local anim = emote67Folder:FindFirstChildWhichIsA("Animation", true)
+        if not anim then return end
+
+        local track = animator:LoadAnimation(anim)
+        track.Looped = true -- 🔁 VIDEO GİBİ SÜREKLİ
+        track.Priority = Enum.AnimationPriority.Action
+        track:Play()
+    end)
 end)
+
 -- === BİTTİ ===
         -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
