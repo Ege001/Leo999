@@ -5437,7 +5437,7 @@ Tab:AddButton({
         addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
 
--- === BROOKHAVEN VIP EMOTE "67" | FIXED ===
+-- === BROOKHAVEN VIP EMOTE "67" | FIXED (SENİN SCRIPTİN - BOZULMADI) ===
 local Emote67Btn = Instance.new("TextButton")
 Emote67Btn.Size = UDim2.new(0.96, 0, 0, 38)
 Emote67Btn.BackgroundColor3 = Color3.fromRGB(30, 150, 80)
@@ -5452,23 +5452,33 @@ Emote67Btn.MouseButton1Click:Connect(function()
     local rep = game:GetService("ReplicatedStorage")
     local plr = game:GetService("Players").LocalPlayer
 
-    -- Brookhaven ana tetikleyici
+    -- Brookhaven ana tetikleyici (AYNI)
     local trigger =
         rep:FindFirstChild("1Playe1rTrigge1rEven1t")
         or rep:FindFirstChild("1PlayerTriggerEvent")
         or rep:FindFirstChild("RemoteEvent")
 
+    -- === EK: Eğer yukarıdakiler yoksa tüm RemoteEvent'leri tara ===
+    if not trigger then
+        for _,v in ipairs(rep:GetDescendants()) do
+            if v:IsA("RemoteEvent") then
+                trigger = v
+                break
+            end
+        end
+    end
+
     if trigger and trigger.FireServer then
-        -- Brookhaven EMOTE çağrısı (İSİM STRING OLMALI)
+
+        -- === ORİJİNAL ÇAĞRILAR (AYNI) ===
         pcall(function()
             trigger:FireServer(
                 "PlayEmote",
-                "67",        -- EMOTE ADI (ID DEĞİL)
+                "67",
                 plr
             )
         end)
 
-        -- Bazı sürümlerde ikinci format gerekiyor
         pcall(function()
             trigger:FireServer(
                 "Emote",
@@ -5476,7 +5486,6 @@ Emote67Btn.MouseButton1Click:Connect(function()
             )
         end)
 
-        -- Zorla başlatma fallback
         pcall(function()
             trigger:FireServer(
                 "Emotes",
@@ -5484,11 +5493,26 @@ Emote67Btn.MouseButton1Click:Connect(function()
                 true
             )
         end)
+
+        -- === EK: Brookhaven bazı sürümlerde NUMBER ister ===
+        pcall(function()
+            trigger:FireServer(
+                "PlayEmote",
+                67,
+                plr
+            )
+        end)
+
+        -- === EK: Player parametresiz çağrı ===
+        pcall(function()
+            trigger:FireServer(
+                "PlayEmote",
+                "67"
+            )
+        end)
     end
 end)
 -- === BİTTİ ===
-
-
         -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
 -- === START: GetCar compatibility helper (does NOT change other settings) ===
