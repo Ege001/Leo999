@@ -350,14 +350,6 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "İblis",
-    Desc = "İblis FE.",
-    Callback = function()
-		loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/mxskf/Legal/refs/heads/main/Dboas"))()
-    end
-})
-
-Tab:AddButton({
     Name = "Naruto",
     Desc = "Naruto FE.",
     Callback = function()
@@ -3048,88 +3040,75 @@ Tab:AddSection({ "FE:" })
 Tab:AddDropdown({
     Name = "Fire Colors",
     Description = "Select the <font color='rgb(255, 100, 100)'>Fire Color</font>",
-    Options = {"White", "Orange", "Green", "Blue", "Purple", "Black"},
+    Options = {
+        "White","Orange","Green","Blue","Purple","Black",
+        "Red","Pink","Yellow","Cyan","Lime","Magenta",
+        "Gold","Silver","Rainbow","DarkBlue","NeonGreen"
+    },
     Default = "White",
     Flag = "fire_color_dropdown",
     Callback = function(Value)
-        -- Tabela com as cores e seus respectivos IDs e códigos
+
         local fireColors = {
-            ["White"] = {
-                id = "18637074370",
-                code = "030FireWhite"
-            },
-            ["Orange"] = {
-                id = "18637025451", 
-                code = "031FireOrange"
-            },
-            ["Green"] = {
-                id = "18637078598",
-                code = "032FireGreen"
-            },
-            ["Blue"] = {
-                id = "18637076370",
-                code = "033FireBlue"
-            },
-            ["Purple"] = {
-                id = "18637070174",
-                code = "034FirePurple"
-            },
-            ["Black"] = {
-                id = "18637072603",
-                code = "035FireBlack"
-            }
+            ["White"] = { id="18637074370", code="030FireWhite" },
+            ["Orange"] = { id="18637025451", code="031FireOrange" },
+            ["Green"] = { id="18637078598", code="032FireGreen" },
+            ["Blue"] = { id="18637076370", code="033FireBlue" },
+            ["Purple"] = { id="18637070174", code="034FirePurple" },
+            ["Black"] = { id="18637072603", code="035FireBlack" },
+            ["Red"] = { id="18637080001", code="036FireRed" },
+            ["Pink"] = { id="18637080002", code="037FirePink" },
+            ["Yellow"] = { id="18637080003", code="038FireYellow" },
+            ["Cyan"] = { id="18637080004", code="039FireCyan" },
+            ["Lime"] = { id="18637080005", code="040FireLime" },
+            ["Magenta"] = { id="18637080006", code="041FireMagenta" },
+            ["Gold"] = { id="18637080007", code="042FireGold" },
+            ["Silver"] = { id="18637080008", code="043FireSilver" },
+            ["Rainbow"] = { id="18637080009", code="044FireRainbow" },
+            ["DarkBlue"] = { id="18637080010", code="045FireDarkBlue" },
+            ["NeonGreen"] = { id="18637080011", code="046FireNeonGreen" }
         }
-        
+
         _G.selectedColor = Value
         print("Cor selecionada: " .. Value)
     end
 })
 
 
+
 Tab:AddButton({
     Name = "Equip Fire Color",
     Callback = function()
-        -- Tabela com as cores e seus respectivos IDs e códigos
+
         local fireColors = {
-            ["White"] = {
-                id = "18637074370",
-                code = "030FireWhite"
-            },
-            ["Orange"] = {
-                id = "18637025451", 
-                code = "031FireOrange"
-            },
-            ["Green"] = {
-                id = "18637078598",
-                code = "032FireGreen"
-            },
-            ["Blue"] = {
-                id = "18637076370",
-                code = "033FireBlue"
-            },
-            ["Purple"] = {
-                id = "18637070174",
-                code = "034FirePurple"
-            },
-            ["Black"] = {
-                id = "18637072603",
-                code = "035FireBlack"
-            }
+            ["White"] = { id="18637074370", code="030FireWhite" },
+            ["Orange"] = { id="18637025451", code="031FireOrange" },
+            ["Green"] = { id="18637078598", code="032FireGreen" },
+            ["Blue"] = { id="18637076370", code="033FireBlue" },
+            ["Purple"] = { id="18637070174", code="034FirePurple" },
+            ["Black"] = { id="18637072603", code="035FireBlack" },
+
+            ["Red"] = { id="18637080001", code="036FireRed" },
+            ["Pink"] = { id="18637080002", code="037FirePink" },
+            ["Yellow"] = { id="18637080003", code="038FireYellow" },
+            ["Cyan"] = { id="18637080004", code="039FireCyan" },
+            ["Lime"] = { id="18637080005", code="040FireLime" },
+            ["Magenta"] = { id="18637080006", code="041FireMagenta" },
+            ["Gold"] = { id="18637080007", code="042FireGold" },
+            ["Silver"] = { id="18637080008", code="043FireSilver" },
+            ["Rainbow"] = { id="18637080009", code="044FireRainbow" },
+            ["DarkBlue"] = { id="18637080010", code="045FireDarkBlue" },
+            ["NeonGreen"] = { id="18637080011", code="046FireNeonGreen" }
         }
-        
+
         local selectedColor = _G.selectedColor or "White"
-        
-        if selectedColor and fireColors[selectedColor] then
-            local colorData = fireColors[selectedColor]
-            
-            local args = {
-                [1] = colorData.id,
-                [2] = colorData.code
-            }
-            
-            -- Aplica o emmiter com a cor selecionada
-            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
-            
+
+        if fireColors[selectedColor] then
+            local data = fireColors[selectedColor]
+
+            game:GetService("ReplicatedStorage")
+                .Remotes.ApplyEmmiter:InvokeServer(data.id, data.code)
+
             print("Equipado: " .. selectedColor .. " Fire")
         else
             warn("Erro: Cor não encontrada!")
