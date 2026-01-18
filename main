@@ -14,7 +14,7 @@ ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local Sound = Instance.new("Sound")
-Sound.SoundId = "rbxassetid://1848354536"
+Sound.SoundId = "rbxassetid://14145620056"
 Sound.Volume = 1
 Sound.Looped = true
 Sound.Parent = ScreenGui
@@ -205,7 +205,7 @@ local Window = redzlib:MakeWindow({
 
 Window:AddMinimizeButton({
     Button = { 
-        Image = "rbxassetid://80391833363045", 
+        Image = "rbxassetid://129326077891103", 
         BackgroundTransparency = 0, 
         Size = UDim2.new(0, 55, 0, 55)
     },
@@ -293,7 +293,7 @@ local function getCurrentGameName()
     if success and gameInfo and gameInfo.Name then
         return gameInfo.Name
     else
-        return "Jogo Desconhecido"
+        return "Bilinmeyen Oyun"
     end
 end
 
@@ -308,7 +308,7 @@ task.spawn(function()
         setBlockText(timerBlock, "Script Kullanım Süresi: ", string.format("%02d:%02d:%02d", h, m, s))
         setBlockText(fpsBlock, "FPS'niz: ", "FPS: " .. tostring(currentFPS))
         setBlockText(playersBlock, "Sunucudaki Oyuncu Sayısı: ", tostring(#Players:GetPlayers()))
-        setBlockText(gameBlock, "Seu Jogo: ", getCurrentGameName())
+        setBlockText(gameBlock, "Sizin Oyununuz: ", getCurrentGameName())
     end
 end)
 
@@ -318,7 +318,7 @@ end
 Players.PlayerAdded:Connect(refreshPlayers)
 Players.PlayerRemoving:Connect(refreshPlayers)
 
-infoTab:AddParagraph({"Seu Executor: " .. (pcall(identifyexecutor) and identifyexecutor()) or "Bilinmiyor"})
+infoTab:AddParagraph({"Senin Executor: " .. (pcall(identifyexecutor) and identifyexecutor()) or "Bilinmiyor"})
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
