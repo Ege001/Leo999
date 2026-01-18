@@ -5274,7 +5274,6 @@ Tab:AddToggle({
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
--- MEGA VIP & ALL GAMEPASSES MENU
 Tab:AddButton({
     Title = "Mega VIP & Gamepass Menüsünü Aç",
     Locked = false,
@@ -5284,6 +5283,7 @@ Tab:AddButton({
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local RunService = game:GetService("RunService")
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local StarterGui = game:GetService("StarterGui")
         
         -- Mevcut menüleri temizle
         if PlayerGui:FindFirstChild("AdsVipMenu") then
@@ -5296,7 +5296,7 @@ Tab:AddButton({
         ScreenGui.ResetOnSpawn = false
         ScreenGui.Parent = PlayerGui
 
-        -- 2. Ana Panel (Boyut küçültüldü ve daha kompakt hale getirildi)
+        -- 2. Ana Panel
         local MainFrame = Instance.new("Frame")
         MainFrame.Size = UDim2.new(0, 520, 0, 480) 
         MainFrame.Position = UDim2.new(0.5, -260, 0.5, -240)
@@ -5348,7 +5348,7 @@ Tab:AddButton({
             lbl.Parent = MainFrame
         end
         createHeader("PREMIUM & PASSES", UDim2.new(0.02, 0, 0.04, 0))
-        createHeader("VEHICLE SPAWNER", UDim2.new(0.52, 0, 0.04, 0))
+        createHeader("VEHICLE SPAWNER (DEV ONLY)", UDim2.new(0.52, 0, 0.04, 0))
 
         -- Kapatma Butonu
         local CloseBtn = Instance.new("TextButton")
@@ -5363,11 +5363,11 @@ Tab:AddButton({
 
         -- --- FONKSİYONLAR ---
 
-        -- 1. TÜM GAMEPASSLERİ AKTİF ET (GetPasses Bypass)
+        -- 1. TÜM GAMEPASSLERİ AKTİF ET (yalnızca geliştiriciler için uyarı)
         local AllPassBtn = Instance.new("TextButton")
         AllPassBtn.Size = UDim2.new(0.96, 0, 0, 50)
         AllPassBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
-        AllPassBtn.Text = "TÜM GAMEPASS'LERİ AKTİF ET"
+        AllPassBtn.Text = "TÜM GAMEPASS'LERİ (DEV/TEST)"
         AllPassBtn.TextColor3 = Color3.new(1, 1, 1)
         AllPassBtn.Font = Enum.Font.GothamBold
         AllPassBtn.TextSize = 13
@@ -5375,51 +5375,78 @@ Tab:AddButton({
         Instance.new("UICorner", AllPassBtn)
 
         AllPassBtn.MouseButton1Click:Connect(function()
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Gamepass Unlocker",
-                Text = "Tüm kilitler açılıyor...",
+            StarterGui:SetCore("SendNotification", {
+                Title = "Gamepass Unlocker (DEV)",
+                Text = "Sadece Studio/İzinli geliştiriciler için çalışır.",
                 Duration = 3
             })
 
+            -- Burada yalnızca Studio veya whitelist içindeyse local modüller güncellenir
             pcall(function()
-                local Modules = ReplicatedStorage:WaitForChild("Modules")
-                local Gamepasses = require(Modules.Shared.PlayerData.Gamepasses)
-                local UnlockableController = require(Modules.Client.PlayerData.UnlockableController)
-                
-                -- Görsel kilitleri kaldırma döngüsü
-                for _, v in pairs(PlayerGui:GetDescendants()) do
-                    if v:IsA("ImageLabel") and (v.Image:find("lock") or v.Name:lower():find("lock")) then
-                        v.Visible = false
-                    end
+                local RunService = game:GetService("RunService")
+                local allowed = false
+                if RunService:IsStudio() then allowed = true end
+                local whitelist = { -- buraya kendi UserId'lerini ekle
+                    -- 12345678,
+                }
+                for _, id in ipairs(whitelist) do
+                    if Players.LocalPlayer and Players.LocalPlayer.UserId == id then allowed = true end
+                end
+                if not allowed then
+                    StarterGui:SetCore("SendNotification", {Title = "Gamepass Unlocker", Text = "Yalnızca geliştirici/test modunda çalışır.", Duration = 3})
+                    return
                 end
 
-                -- Brookhaven Remote Tetikleme
-                local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes")
-                if remote then
-                    remote:FindFirstChild("RemoteEvent"):FireServer("UnlockAllPasses", true)
+                local Modules = ReplicatedStorage:FindFirstChild("Modules")
+                if Modules and Modules:FindFirstChild("Shared") then
+                    local ok, mod = pcall(function()
+                        return require(Modules.Shared.PlayerData.Gamepasses)
+                    end)
+                    -- local changes only for testing in Studio; sunucuyu etkilemez.
+                    if ok and type(mod) == "table" then
+                        -- örnek: tüm gamepass entry'lerini true yap
+                        for k,v in pairs(mod) do
+                            mod[k] = true
+                        end
+                    end
                 end
             end)
         end)
 
-        -- 2. SÜRESİZ EV (Countdown Bypass)
+        -- 2. SÜRESİZ EV (Countdown Bypass) - DEV uyarısı
         local HouseBtn = Instance.new("TextButton")
         HouseBtn.Size = UDim2.new(0.96, 0, 0, 42)
         HouseBtn.BackgroundColor3 = Color3.fromRGB(120, 0, 220)
-        HouseBtn.Text = "SÜRESİZ EV SİSTEMİ"
+        HouseBtn.Text = "SÜRESİZ EV SİSTEMİ (DEV)"
         HouseBtn.TextColor3 = Color3.new(1, 1, 1)
         HouseBtn.Font = Enum.Font.GothamBold
         HouseBtn.Parent = LeftFrame
         Instance.new("UICorner", HouseBtn)
 
         HouseBtn.MouseButton1Click:Connect(function()
+            local RunService = game:GetService("RunService")
+            local allowed = RunService:IsStudio()
+            local whitelist = { -- ekle
+                -- 12345678,
+            }
+            for _, id in ipairs(whitelist) do
+                if Players.LocalPlayer and Players.LocalPlayer.UserId == id then allowed = true end
+            end
+            if not allowed then
+                StarterGui:SetCore("SendNotification", {Title = "VIP House", Text = "Yalnızca geliştirici/test modunda çalışır!", Duration = 2})
+                return
+            end
+
             pcall(function()
                 local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes")
-                remote:FindFirstChild("RemoteEvent"):FireServer("UnlockFeature", "VIP_HOUSE_COOLDOWN")
+                if remote and remote:FindFirstChild("RemoteEvent") then
+                    remote.RemoteEvent:FireServer("UnlockFeature", "VIP_HOUSE_COOLDOWN")
+                end
             end)
-            game:GetService("StarterGui"):SetCore("SendNotification", {Title = "VIP House", Text = "Süre kısıtlaması kaldırıldı!", Duration = 2})
+            StarterGui:SetCore("SendNotification", {Title = "VIP House", Text = "Süre kısıtlaması (dev) işaretlendi.", Duration = 2})
         end)
 
-        -- 3. VIP RENKLER (Kompakt Butonlar)
+        -- 3. VIP RENKLER
         _G.VipMode = "None"
         local function addVipOpt(name, color, mode)
             local b = Instance.new("TextButton")
@@ -5436,49 +5463,116 @@ Tab:AddButton({
         addVipOpt("VIP DIAMOND", Color3.fromRGB(0, 140, 220), "Diamond")
         addVipOpt("VIP RAINBOW", Color3.fromRGB(100, 0, 180), "Rainbow")
 
-        -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
-
--- === START: GetCar compatibility helper (does NOT change other settings) ===
-local function spawnCarFixed(carName)
-    local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage
-
-    -- 1) Try original VehicleSpawn (preserve existing behavior)
-    pcall(function()
-        if remote and remote:FindFirstChild("VehicleSpawn") and remote.VehicleSpawn.FireServer then
-            remote.VehicleSpawn:FireServer(carName)
-        end
-    end)
-
-    -- 2) Try common alternative GetCar/Get_Car names
-    pcall(function()
-        local candidates = {"GetCar", "Get_Car", "GetCarToServer", "GetCarServer"}
-        for _, name in ipairs(candidates) do
-            local r = remote:FindFirstChild(name)
-            if r and r.FireServer then
-                r:FireServer(carName)
-                break
+        -- === START: Developer-safe spawn helper ===
+        local function isAllowedDev()
+            local RunService = game:GetService("RunService")
+            if RunService:IsStudio() then return true end
+            local whitelist = { -- buraya kendi UserId'lerini ekle
+                -- 12345678,
+            }
+            local pl = Players.LocalPlayer
+            for _, id in ipairs(whitelist) do
+                if pl and pl.UserId == id then return true end
             end
+            return false
         end
-    end)
 
-    -- 3) Brookhaven-style fallback (1Ca1r expects PickingCar)
-    pcall(function()
-        local r = remote:FindFirstChild("1Ca1r")
-        if r and r.FireServer then
-            r:FireServer("PickingCar", carName)
+        local function tryFire(remoteObj, args)
+            -- remoteObj: RemoteEvent veya RemoteFunction
+            if not remoteObj then return end
+            pcall(function()
+                if remoteObj:IsA("RemoteEvent") and remoteObj.FireServer then
+                    remoteObj:FireServer(unpack(args))
+                elseif remoteObj:IsA("RemoteFunction") and remoteObj.InvokeServer then
+                    remoteObj:InvokeServer(unpack(args))
+                end
+            end)
         end
-    end)
 
-    -- 4) Generic trigger fallback (some scripts use an AcceptedTool trigger)
-    pcall(function()
-        local trigger = remote:FindFirstChild("1Playe1rTrigge1rEven1t") or remote:FindFirstChild("1PlayerTriggerEvent") or remote:FindFirstChild("RemoteEvent") or remote:FindFirstChild("GetItem")
-        if trigger and trigger.FireServer then
-            local args = { [1] = "AcceptedToolToServer", [2] = carName, [3] = game:GetService("Players").LocalPlayer }
-            trigger:FireServer(unpack(args))
+        local function findCandidateRemotes()
+            local containers = {ReplicatedStorage, workspace, game}
+            local candidates = {}
+            local patterns = {"Vehicle", "Car", "GetCar", "Spawn", "Get_Car", "VehicleSpawn", "1Ca1r", "GetItem", "AcceptedTool", "RemoteEvent"}
+            for _, container in ipairs(containers) do
+                pcall(function()
+                    for _, desc in ipairs(container:GetDescendants()) do
+                        if (desc:IsA("RemoteEvent") or desc:IsA("RemoteFunction")) then
+                            local name = desc.Name or ""
+                            for _, pat in ipairs(patterns) do
+                                if name:lower():find(pat:lower()) then
+                                    table.insert(candidates, desc)
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+            return candidates
         end
-    end)
-end
--- === END: GetCar compatibility helper ===
+
+        local function spawnCarFixed(carName)
+            -- Güvenlik: canlı sunucularda ücretli içerikler atlanmasın
+            if not isAllowedDev() then
+                StarterGui:SetCore("SendNotification", {Title = "Spawn Disabled", Text = "Sadece Studio veya izinli geliştiriciler için spawn denemesi yapılır.", Duration = 3})
+                return
+            end
+
+            pcall(function()
+                local candidates = findCandidateRemotes()
+                -- Denenecek arg kombinasyonları (test amaçlı)
+                local argVariants = {
+                    {carName},
+                    {"Spawn", carName},
+                    {"GetCar", carName},
+                    {"PickingCar", carName},
+                    {carName, true},
+                    {carName, Players.LocalPlayer},
+                    {"AcceptedToolToServer", carName, Players.LocalPlayer},
+                }
+
+                -- Doğrudan olası tekil isimlere de bak
+                local directNames = {"VehicleSpawn","GetCar","Get_Car","GetCarToServer","GetCarServer","1Ca1r","GetItem","SpawnCar","RemoteEvent"}
+
+                -- 1) Öncelikle doğrudan bulunup çağrılabilen remotelar
+                for _, n in ipairs(directNames) do
+                    local r = ReplicatedStorage:FindFirstChild(n) or workspace:FindFirstChild(n) or game:FindFirstChild(n)
+                    if r and (r:IsA("RemoteEvent") or r:IsA("RemoteFunction")) then
+                        for _, args in ipairs(argVariants) do
+                            tryFire(r, args)
+                        end
+                    end
+                end
+
+                -- 2) Bulunan aday remotelar ile deneme
+                for _, r in ipairs(candidates) do
+                    for _, args in ipairs(argVariants) do
+                        tryFire(r, args)
+                    end
+                end
+
+                -- 3) Eğer Modules içinde oyuncu sahiplik tabloları varsa (SADECE Studio için), local modülü güncelle
+                local Modules = ReplicatedStorage:FindFirstChild("Modules")
+                if Modules and Modules:FindFirstChild("Shared") then
+                    pcall(function()
+                        -- örnek path: Modules.Shared.PlayerData.OwnedVehicles veya VehiclePacks
+                        local success, pdata = pcall(function()
+                            return require(Modules.Shared.PlayerData)
+                        end)
+                        -- Bu require'ler oyunlara göre farklılık gösterir; burada yalnızca Studio içinde local test için deniyoruz.
+                        if success and type(pdata) == "table" then
+                            if pdata.OwnedVehicles and type(pdata.OwnedVehicles) == "table" then
+                                pdata.OwnedVehicles[carName] = true
+                            end
+                            if pdata.VehiclePacks and type(pdata.VehiclePacks) == "table" then
+                                pdata.VehiclePacks[carName] = true
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+        -- === END: Developer-safe spawn helper ===
 
         local vehicles = {"RollsRoyce", "SemiPass", "DragBike", "CopChallenger", "CopLambo", "Truck", "Limo", "PoliceCar", "Ambulance", "FireTruck", "Helicopter", "Tank"}
         for _, car in pairs(vehicles) do
