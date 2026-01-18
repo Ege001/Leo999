@@ -3042,8 +3042,6 @@ Tab:AddDropdown({
     Description = "Select the <font color='rgb(255, 100, 100)'>Fire Color</font>",
     Options = {
         "White","Orange","Green","Blue","Purple","Black",
-        "Red","Pink","Yellow","Cyan","Lime","Magenta",
-        "Gold","Silver","Rainbow","DarkBlue","NeonGreen"
     },
     Default = "White",
     Flag = "fire_color_dropdown",
@@ -3056,17 +3054,6 @@ Tab:AddDropdown({
             ["Blue"] = { id="18637076370", code="033FireBlue" },
             ["Purple"] = { id="18637070174", code="034FirePurple" },
             ["Black"] = { id="18637072603", code="035FireBlack" },
-            ["Red"] = { id="18637080001", code="036FireRed" },
-            ["Pink"] = { id="18637080002", code="037FirePink" },
-            ["Yellow"] = { id="18637080003", code="038FireYellow" },
-            ["Cyan"] = { id="18637080004", code="039FireCyan" },
-            ["Lime"] = { id="18637080005", code="040FireLime" },
-            ["Magenta"] = { id="18637080006", code="041FireMagenta" },
-            ["Gold"] = { id="18637080007", code="042FireGold" },
-            ["Silver"] = { id="18637080008", code="043FireSilver" },
-            ["Rainbow"] = { id="18637080009", code="044FireRainbow" },
-            ["DarkBlue"] = { id="18637080010", code="045FireDarkBlue" },
-            ["NeonGreen"] = { id="18637080011", code="046FireNeonGreen" }
         }
 
         _G.selectedColor = Value
@@ -3087,18 +3074,6 @@ Tab:AddButton({
             ["Blue"] = { id="18637076370", code="033FireBlue" },
             ["Purple"] = { id="18637070174", code="034FirePurple" },
             ["Black"] = { id="18637072603", code="035FireBlack" },
-
-            ["Red"] = { id="18637080001", code="036FireRed" },
-            ["Pink"] = { id="18637080002", code="037FirePink" },
-            ["Yellow"] = { id="18637080003", code="038FireYellow" },
-            ["Cyan"] = { id="18637080004", code="039FireCyan" },
-            ["Lime"] = { id="18637080005", code="040FireLime" },
-            ["Magenta"] = { id="18637080006", code="041FireMagenta" },
-            ["Gold"] = { id="18637080007", code="042FireGold" },
-            ["Silver"] = { id="18637080008", code="043FireSilver" },
-            ["Rainbow"] = { id="18637080009", code="044FireRainbow" },
-            ["DarkBlue"] = { id="18637080010", code="045FireDarkBlue" },
-            ["NeonGreen"] = { id="18637080011", code="046FireNeonGreen" }
         }
 
         local selectedColor = _G.selectedColor or "White"
@@ -3453,6 +3428,33 @@ Tab:AddSection({"Avatar Düzenleyicisi"})
 Tab:AddParagraph({
     Title = "Aviso: Vai resetar seu karakter",
     Content = "Os avatares abaixo irão substituir completamente seu personagem atual."
+})
+
+Tab:AddButton({
+    Name = "Mini REPO",
+    Description = "Karakter mini personalizado",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local StarterGui = game:GetService("StarterGui")
+        
+        pcall(function()
+            local parts = {
+                90179312856461,
+                125917814138066,
+                92066275480462,
+                106692521364435,
+                76405582041904,
+                85437524979545
+            }
+            local args = {parts}
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            StarterGui:SetCore("SendNotification", {
+                Title = "Karakter",
+                Text = "Mini REPO equipado!",
+                Duration = 3
+            })
+        end)
+    end
 })
 
 Tab:AddButton({
