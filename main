@@ -5408,15 +5408,14 @@ Tab:AddButton({
             end)
         end)
 
-        -- ARAÇ LİSTESİ (Brookhaven Dahili İsimleri)
-        -- Not: Bu isimler oyunun kodundaki 'Name' karşılıklarıdır.
+        -- ARAÇ LİSTESİ (Ambulans ilk sıraya eklendi)
         local carList = {
+            {n = "Ambulance", d = "🚑 AMBULANS (İLK)"}, -- İlk sırada
             {n = "Limo", d = "Limuzin (VIP)"},
             {n = "Lamborghini", d = "Lambo (Premium)"},
             {n = "Tesla", d = "Tesla Model S"},
             {n = "PoliceCar", d = "Polis Arabası"},
             {n = "FireTruck", d = "İtfaiye"},
-            {n = "Ambulance", d = "Ambulans"},
             {n = "Helicopter", d = "Helikopter"},
             {n = "Tank", d = "Askeri Tank"},
             {n = "SemiTruck", d = "Tır (Force)"},
@@ -5430,7 +5429,7 @@ Tab:AddButton({
         for _, car in pairs(carList) do
             local b = Instance.new("TextButton")
             b.Size = UDim2.new(0.96, 0, 0, 35)
-            b.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            b.BackgroundColor3 = car.n == "Ambulance" and Color3.fromRGB(60, 20, 20) or Color3.fromRGB(40, 40, 40)
             b.Text = car.d
             b.TextColor3 = Color3.new(1, 1, 1)
             b.Font = Enum.Font.Gotham
@@ -5443,7 +5442,7 @@ Tab:AddButton({
             end)
         end
 
-        -- VIP Renk Sistemi (Opsiyonel)
+        -- VIP Renk Sistemi
         local function addColor(name, color, id)
             local cb = Instance.new("TextButton")
             cb.Size = UDim2.new(0.96, 0, 0, 35)
@@ -5464,7 +5463,7 @@ Tab:AddButton({
             while ScreenGui and ScreenGui.Parent do
                 pcall(function()
                     local char = LocalPlayer.Character
-                    if char and char:FindFirstChild("HumanoidRootPart") then
+                    if char then
                         for _, tag in pairs(char:GetDescendants()) do
                             if tag:IsA("TextLabel") then
                                 if _G.VMode == 1 then tag.TextColor3 = Color3.fromRGB(255, 215, 0)
