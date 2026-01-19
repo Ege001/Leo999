@@ -5323,6 +5323,94 @@ Tab:AddToggle({
     end
 })
 
+-- ==================== PREMIUM BUTTON (Added) ====================
+Tab:AddButton({
+    Name = "Premium",
+    Description = "Aç Premium menüsü (simüle edilmiş özellikler)",
+    Callback = function()
+        -- Create a dedicated Premium tab (simulated features)
+		local Tab = Window:MakeTab({"Premium ⭐", "rbxassetid://127904742940104"})
+        PremiumTab:AddSection("Premium Features")
+
+        PremiumTab:AddButton({
+            Name = "Get Horse Unlocked (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddButton({
+            Name = "Get Music Unlocked (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddButton({
+            Name = "Get Faces Unlocked (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddButton({
+            Name = "Get Boat Pack (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddButton({
+            Name = "Get Vehicle Upgrade (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddButton({
+            Name = "Get Vehicle Speed Unlocked (PC)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddToggle({
+            Name = "Get Free Gamepass (Patched)",
+            Default = false,
+            Callback = function(state)
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Free Gamepass toggle: " .. tostring(state), Time = 3 })
+                end)
+            end
+        })
+
+        PremiumTab:AddSection("Options")
+        PremiumTab:AddButton({
+            Name = "Get Helicopter Gamepass (simulated)",
+            Callback = function()
+                pcall(function()
+                    redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
+                end)
+            end
+        })
+
+        -- End of PremiumTab
+    end
+})
+-- ==================== END PREMIUM BUTTON ====================
+
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
 -- MEGA VIP & ALL GAMEPASSES MENU
@@ -6797,92 +6885,3 @@ MusicTab:AddButton({
         end
     end
 })
-
-
--- ==================== PREMIUM BUTTON (Added) ====================
-Tab:AddButton({
-    Name = "Premium",
-    Description = "Aç Premium menüsü (simüle edilmiş özellikler)",
-    Callback = function()
-        -- Create a dedicated Premium tab (simulated features)
-		local Tab = Window:MakeTab({"Premium ⭐", "rbxassetid://127904742940104"})
-        PremiumTab:AddSection("Premium Features")
-
-        PremiumTab:AddButton({
-            Name = "Get Horse Unlocked (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddButton({
-            Name = "Get Music Unlocked (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddButton({
-            Name = "Get Faces Unlocked (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddButton({
-            Name = "Get Boat Pack (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddButton({
-            Name = "Get Vehicle Upgrade (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddButton({
-            Name = "Get Vehicle Speed Unlocked (PC)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddToggle({
-            Name = "Get Free Gamepass (Patched)",
-            Default = false,
-            Callback = function(state)
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Free Gamepass toggle: " .. tostring(state), Time = 3 })
-                end)
-            end
-        })
-
-        PremiumTab:AddSection("Options")
-        PremiumTab:AddButton({
-            Name = "Get Helicopter Gamepass (simulated)",
-            Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
-                end)
-            end
-        })
-
-        -- End of PremiumTab
-    end
-})
--- ==================== END PREMIUM BUTTON ====================
