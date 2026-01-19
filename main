@@ -5550,77 +5550,48 @@ Emote67Btn.MouseButton1Click:Connect(function()
     end
 end)
 
--- === LOCAL FIRE HOUSE (BOZMADAN EK) ===
+-- === BROOKHAVEN LEGIT FIRE HOUSE (BOZMADAN) ===
 
 local FireHouseBtn = Instance.new("TextButton")
 FireHouseBtn.Size = UDim2.new(0.96, 0, 0, 38)
-FireHouseBtn.BackgroundColor3 = Color3.fromRGB(190, 50, 40)
-FireHouseBtn.Text = "EVİ YAK 🔥"
+FireHouseBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+FireHouseBtn.Text = "KENDİ EVİMİ YAK 🔥"
 FireHouseBtn.TextColor3 = Color3.new(1,1,1)
 FireHouseBtn.Font = Enum.Font.GothamBold
 FireHouseBtn.TextSize = 13
 FireHouseBtn.Parent = LeftFrame
 Instance.new("UICorner", FireHouseBtn)
 
-local function getNearestHouse()
-    local char = game.Players.LocalPlayer.Character
-    if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-    local nearest, dist = nil, math.huge
-    for _, m in ipairs(workspace:GetDescendants()) do
-        if m:IsA("Model") then
-            local n = m.Name:lower()
-            if n:find("house") or n:find("home") or n:find("plot") then
-                local p = m:FindFirstChildWhichIsA("BasePart")
-                if p then
-                    local d = (p.Position - hrp.Position).Magnitude
-                    if d < dist then
-                        dist = d
-                        nearest = m
-                    end
-                end
+local function pressFireButton()
+    local gui = LocalPlayer:WaitForChild("PlayerGui")
+
+    for _, v in ipairs(gui:GetDescendants()) do
+        if v:IsA("TextButton") then
+            local t = v.Text:lower()
+            if t:find("fire") or t:find("burn") or t:find("yak") then
+                -- Brookhaven'deki gerçek yangın butonu
+                pcall(function()
+                    firesignal(v.MouseButton1Click)
+                end)
+                return true
             end
         end
     end
-    return nearest
-end
-
-local function igniteHouse(model)
-    local count = 0
-    for _, v in ipairs(model:GetDescendants()) do
-        if v:IsA("BasePart") and v.Transparency < 1 and count < 40 then
-            if not v:FindFirstChild("Fire") then
-                local f = Instance.new("Fire")
-                f.Size = 18
-                f.Heat = 10
-                f.Parent = v
-                count += 1
-                task.wait(0.02)
-            end
-        end
-    end
+    return false
 end
 
 FireHouseBtn.MouseButton1Click:Connect(function()
-    local house = getNearestHouse()
-    if house then
-        igniteHouse(house)
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Fire RP",
-            Text = "Ev ateşe verildi.",
-            Duration = 3
-        })
-    else
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Fire RP",
-            Text = "Yakın ev bulunamadı.",
-            Duration = 2
-        })
-    end
-end)
+    local success = pressFireButton()
 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Fire House",
+        Text = success and "Kendi evin yakıldı." or "Ev sahibi değilsen çalışmaz.",
+        Duration = 3
+    })
+end)
         -- 4. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
 -- === START: GetCar compatibility helper (does NOT change other settings) ===
