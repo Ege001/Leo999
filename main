@@ -6800,7 +6800,7 @@ MusicTab:AddButton({
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 -- ==================== PREMIUM BUTTON (Added) ====================
-Tab:AddButton({
+PremiumTab:AddButton({
     Name = "Premium",
     Description = "Aç Premium menüsü (simüle edilmiş özellikler)",
     Callback = function()
