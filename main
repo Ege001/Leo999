@@ -5325,131 +5325,87 @@ Tab:AddToggle({
 
 local Tab = Window:MakeTab({"Premium ⭐", "rbxassetid://127904742940104"})
 
--- ==================== BYPASS FONKSİYONU ====================
--- Bu fonksiyon ekran görüntüsündeki "AllPassesFetched" değerini bulur ve aktif eder.
-local function BypassGamepasses()
-    local player = game.Players.LocalPlayer
-    local bag = player:FindFirstChild("PlayersBag")
-    
-    if bag then
-        local passVal = bag:FindFirstChild("AllPassesFetched")
-        if passVal and passVal:IsA("BoolValue") then
-            if passVal.Value ~= true then
-                passVal.Value = true
-            end
-        end
-    end
-end
-
--- Anti-Patch (Sürekli Kontrol) Değişkeni
-local bypassEnabled = false
-
--- Arka planda çalışan döngü (Sürekli açık tutar, patchlenmesini engeller)
-task.spawn(function()
-    while task.wait(0.5) do
-        if bypassEnabled then
-            pcall(BypassGamepasses)
-        end
-    end
-end)
-
 -- ==================== PREMIUM FEATURES ====================
 
 Tab:AddSection("Premium Features")
 
 Tab:AddButton({
-    Name = "Get Horse Unlocked (Active)",
+    Name = "Get Horse Unlocked (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked & Bypass applied.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
         end)
     end
 })
 
 Tab:AddButton({
-    Name = "Get Music Unlocked (Active)",
+    Name = "Get Music Unlocked (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked & Bypass applied.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
         end)
     end
 })
 
 Tab:AddButton({
-    Name = "Get Faces Unlocked (Active)",
+    Name = "Get Faces Unlocked (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked & Bypass applied.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
         end)
     end
 })
 
 Tab:AddButton({
-    Name = "Get Boat Pack (Active)",
+    Name = "Get Boat Pack (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
         end)
     end
 })
 
 Tab:AddButton({
-    Name = "Get Vehicle Upgrade (Active)",
+    Name = "Get Vehicle Upgrade (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
         end)
     end
 })
 
 Tab:AddButton({
-    Name = "Get Vehicle Speed Unlocked (Active)",
+    Name = "Get Vehicle Speed Unlocked (PC)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
         end)
     end
 })
 
--- Toggleyi "Bypass" moduna çevirdik
 Tab:AddToggle({
-    Name = "Auto-Bypass All Gamepasses (Anti-Patch)",
+    Name = "Get Free Gamepass (Patched)",
     Default = false,
     Callback = function(state)
-        bypassEnabled = state
-        if state then
-            pcall(BypassGamepasses)
+        pcall(function()
             redzlib:MakeNotify({
-                Title = "Bypass System",
-                Text = "Anti-Patch System: ENABLED",
+                Title = "Premium",
+                Text = "Free Gamepass toggle: " .. tostring(state),
                 Time = 3
             })
-        else
-            redzlib:MakeNotify({
-                Title = "Bypass System",
-                Text = "Anti-Patch System: DISABLED",
-                Time = 3
-            })
-        end
+        end)
     end
 })
 
 Tab:AddSection("Options")
 
 Tab:AddButton({
-    Name = "Get Helicopter Gamepass (Active)",
+    Name = "Get Helicopter Gamepass (simulated)",
     Callback = function()
         pcall(function()
-            BypassGamepasses()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass unlocked.", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
         end)
-    end 
+    end
 })
 
 -- ==================== END PREMIUM ====================
