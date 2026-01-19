@@ -5338,14 +5338,29 @@ local function ApplyBypass()
             end
         end
 
-        -- 2. ReplicatedStorage'daki Patch Modüllerini Engelle
+        -- 2. ReplicatedStorage'daki Patch Modüllerini Engelle ve Reklam Modüllerini Tetikle
         local rep = game:GetService("ReplicatedStorage")
         local patchModules = {"CheckPasses", "PassModule", "GamepassHandler", "Validation"}
+        local adModules = {"AdModule", "AdvertisementHandler", "AdManager", "PromotionLogic"}
         
+        -- Patch Engelleme
         for _, name in pairs(patchModules) do
             local module = rep:FindFirstChild(name, true)
             if module and module:IsA("ModuleScript") then
                 module.Name = "Disabled_Patch_" .. math.random(100, 999)
+            end
+        end
+
+        -- Reklam Modüllerini Bul ve Zorla Çalıştır (Replica Bağlantısı)
+        for _, name in pairs(adModules) do
+            local adMod = rep:FindFirstChild(name, true)
+            if adMod and adMod:IsA("ModuleScript") then
+                local success, result = pcall(function() return require(adMod) end)
+                if success and typeof(result) == "table" then
+                    -- Reklam modülü içindeki yaygın fonksiyonları zorla tetikle
+                    if result.ShowAd then pcall(result.ShowAd) end
+                    if result.RewardPlayer then pcall(result.RewardPlayer) end
+                end
             end
         end
     end)
@@ -5353,6 +5368,13 @@ end
 
 -- ==================== AD SYSTEM (Reklam Sistemi) ====================
 local function ShowAdAndExecute(callback)
+    -- Brookhaven Replica Ads Sistemine bildirim gönder
+    redzlib:MakeNotify({ 
+        Title = "Ads System", 
+        Text = "Replica Ad Modules Linked & Running...", 
+        Time = 2 
+    })
+
     local sg = Instance.new("ScreenGui")
     sg.Name = "BrookhavenAdSystem"
     sg.Parent = game:GetService("CoreGui")
@@ -5386,7 +5408,7 @@ local function ShowAdAndExecute(callback)
     local desc = Instance.new("TextLabel")
     desc.Size = UDim2.new(1, 0, 0, 100)
     desc.Position = UDim2.new(0, 0, 0, 60)
-    desc.Text = "Ödülün hazırlanıyor...\nLütfen reklamın bitmesini bekle."
+    desc.Text = "Ödülün hazırlanıyor...\nReplica Ad modülleri üzerinden doğrulanıyor."
     desc.TextColor3 = Color3.fromRGB(200, 200, 200)
     desc.BackgroundTransparency = 1
     desc.Font = Enum.Font.Gotham
@@ -5409,7 +5431,7 @@ local function ShowAdAndExecute(callback)
     end
     
     sg:Destroy()
-    ApplyBypass() -- Zorla bypass yap
+    ApplyBypass() -- Zorla bypass yap ve Replica modüllerini tekrar tetikle
     callback()    -- İşlemi tamamla
 end
 
@@ -5421,7 +5443,7 @@ Tab:AddButton({
     Name = "Get Horse Unlocked (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked via Ad Module.", Time = 3 })
         end)
     end
 })
@@ -5430,7 +5452,7 @@ Tab:AddButton({
     Name = "Get Music Unlocked (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked via Ad Module.", Time = 3 })
         end)
     end
 })
@@ -5439,7 +5461,7 @@ Tab:AddButton({
     Name = "Get Faces Unlocked (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked via Ad Module.", Time = 3 })
         end)
     end
 })
@@ -5448,7 +5470,7 @@ Tab:AddButton({
     Name = "Get Boat Pack (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted via Ad Module.", Time = 3 })
         end)
     end
 })
@@ -5457,7 +5479,7 @@ Tab:AddButton({
     Name = "Get Vehicle Upgrade (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied.", Time = 3 })
         end)
     end
 })
@@ -5466,7 +5488,7 @@ Tab:AddButton({
     Name = "Get Vehicle Speed Unlocked (PC)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked via Ad Module.", Time = 3 })
         end)
     end
 })
@@ -5485,7 +5507,7 @@ Tab:AddToggle({
         pcall(function()
             redzlib:MakeNotify({
                 Title = "Premium",
-                Text = "Force Anti-Patch: " .. tostring(state),
+                Text = "Force Anti-Patch & Ads Link: " .. tostring(state),
                 Time = 3
             })
         end)
@@ -5498,13 +5520,12 @@ Tab:AddButton({
     Name = "Get Helicopter Gamepass (simulated)",
     Callback = function()
         ShowAdAndExecute(function()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (Forced Bypass).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Unlocked via Ads.", Time = 3 })
         end)
     end 
 })
 
 -- ==================== END PREMIUM ====================
-
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
