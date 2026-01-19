@@ -5485,7 +5485,7 @@ Tab:AddToggle({
         pcall(function()
             redzlib:MakeNotify({
                 Title = "Premium",
-                Text = "Force Anti-Patch: " .. tostring(state),
+                Text = "acForce Anti-Patch: " .. tostring(state),
                 Time = 3
             })
         end)
@@ -5504,6 +5504,7 @@ Tab:AddButton({
 })
 
 -- ==================== END PREMIUM ====================
+
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
 -- MEGA VIP & ALL GAMEPASSES MENU
