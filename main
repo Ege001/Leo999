@@ -5897,6 +5897,83 @@ local MusicTab = Window:MakeTab({"Ses", "Müzik"})
 
 MusicTab:AddSection("Tüm Sesler")
 
+
+-- ==================== PREMIUM BUTTON (FINAL) ====================
+-- Tam olarak "Ses" menüsünün altına eklenecek Premium butonu (görsel ve isimler fotoğraflardaki gibi).
+-- Buton saf ve simüle edilmiş davranış gösterir; gerçek gamepass unlock/donanım yapmaz.
+do
+    local function MakePremiumButton(MusicTab, Window, redzlib)
+        if not MusicTab or not Window then return end
+        if MusicTab.__PremiumFinalAdded then return end
+        MusicTab.__PremiumFinalAdded = true
+
+        MusicTab:AddButton({
+            Name = "Premium", -- menüde görünecek isim (fotoğraftakine uygun)
+            Description = "Premium menüsünü açar — Fotoğraftaki seçeneklerin aynısı (simüle edilmiş)",
+            Icon = "rbxassetid://129326077891103",
+            Callback = function()
+                -- Create Premium tab (or focus if exists)
+                local PremiumTab = Window:MakeTab({"Premium", "rbxassetid://129326077891103"})
+                -- Add sections and buttons matching the screenshots
+                PremiumTab:AddSection("Free Gamepass:")
+                PremiumTab:AddButton({ Name = "Get All Gamepasses (Best) (Mobile) (60% Visual)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Get All Gamepasses (simulated).", Time=3}) else print('Get All Gamepasses (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get VIP (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="VIP (simulated).", Time=3}) else print('VIP (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Premium (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Premium (simulated).", Time=3}) else print('Premium (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Vehicle Customization Pass (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Vehicle Customization (simulated).", Time=3}) else print('Vehicle Customization (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Land Unlocked (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Land Unlocked (simulated).", Time=3}) else print('Land Unlocked (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Vehicle Pack (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Vehicle Pack (simulated).", Time=3}) else print('Vehicle Pack (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Disaster Pass (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Disaster Pass (simulated).", Time=3}) else print('Disaster Pass (simulated)') end end) end })
+                PremiumTab:AddButton({ Name = "Get Theme Pass (Best) (PC)", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Theme Pass (simulated).", Time=3}) else print('Theme Pass (simulated)') end end) end })
+
+                PremiumTab:AddSection("Premium Options (PC)")
+                local items = {
+                    "Get Horse Unlocked (Best) (PC)",
+                    "Get Music Unlocked (Best) (PC)",
+                    "Get Faces Unlocked (Best) (PC)",
+                    "Get Boat Pack (Best) (PC)",
+                    "Get Vehicle Upgrade (Best) (PC)",
+                    "Get Vehicle Speed Unlocked (Best) (PC)",
+                    "Get On-Demand Fire (Best) (PC)",
+                    "Get Penthouse Pass (Best) (PC)",
+                }
+                for _, name in ipairs(items) do
+                    PremiumTab:AddButton({ Name = name, Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text=name.." (simulated).", Time=3}) else print(name .. ' (simulated)') end end) end })
+                end
+
+                PremiumTab:AddToggle({ Name = "Get Free Gamepass (Patched)", Default = false, Callback = function(state) pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Free Gamepass toggle: " .. tostring(state), Time=3}) else print('Free Gamepass toggle: '..tostring(state)) end end) end })
+
+                PremiumTab:AddSection("Options")
+                PremiumTab:AddButton({ Name = "Get Helicopter Gamepass", Callback = function() pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Helicopter Gamepass (simulated).", Time=3}) else print('Helicopter Gamepass (simulated)') end end) end })
+
+                -- Visual hint: show a notify explaining these are simulated (only once per session)
+                pcall(function() if redzlib and redzlib.MakeNotify then redzlib:MakeNotify({Title="Premium", Text="Not: Tüm işlemler simüle edilmiştir; gerçek gamepass işlemleri sunucu gerektirir.", Time=5}) end end)
+            end
+        })
+    end
+
+    -- Try to attach when MusicTab exists
+    local function tryAttach()
+        local ok1, _ = pcall(function() return MusicTab end)
+        local ok2, _ = pcall(function() return Window end)
+        local ok3, _ = pcall(function() return redzlib end)
+        if ok1 and ok2 then
+            pcall(function() MakePremiumButton(MusicTab, Window, redzlib) end)
+            return true
+        end
+        return false
+    end
+
+    -- If MusicTab already exists, attach now. Otherwise schedule a few attempts.
+    if not tryAttach() then
+        spawn(function()
+            for i=1,20 do
+                wait(0.3)
+                if tryAttach() then break end
+            end
+        end)
+    end
+end
+-- ==================== END PREMIUM BUTTON (FINAL) ====================
 -- ==================== PREMIUM BUTTON (SAFE, SIMULATED) ====================
 -- NOTE: This block creates a visible "Premium" button under the Music tab.
 -- It opens a dedicated Premium tab with buttons that show notifications (simulated actions).
