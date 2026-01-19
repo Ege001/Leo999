@@ -5325,15 +5325,29 @@ Tab:AddToggle({
 
 local Tab = Window:MakeTab({"Premium ⭐", "rbxassetid://127904742940104"})
 
--- ==================== BYPASS LOGIC (Gizli Fonksiyon) ====================
+-- ==================== ADVANCED BYPASS & ANTI-PATCH (Zorlayıcı Sistem) ====================
 local function ApplyBypass()
     pcall(function()
+        -- 1. AllPassesFetched Değerini Zorla (Force)
         local lp = game:GetService("Players").LocalPlayer
         local bag = lp:FindFirstChild("PlayersBag")
         if bag then
             local pass = bag:FindFirstChild("AllPassesFetched")
             if pass then
                 pass.Value = true
+            end
+        end
+
+        -- 2. ReplicatedStorage'daki Patch Modüllerini Engelle
+        -- Oyunun kontrol mekanizmalarını bozmak için yaygın isimleri hedef alır
+        local rep = game:GetService("ReplicatedStorage")
+        local patchModules = {"CheckPasses", "PassModule", "GamepassHandler", "Validation"}
+        
+        for _, name in pairs(patchModules) do
+            local module = rep:FindFirstChild(name, true)
+            if module and module:IsA("ModuleScript") then
+                -- Modülün içeriğini bozamazsak bile erişimi engellemeye çalışır veya işlevsiz bırakırız
+                module.Name = "Disabled_Patch_" .. math.random(100, 999)
             end
         end
     end)
@@ -5347,8 +5361,8 @@ Tab:AddButton({
     Name = "Get Horse Unlocked (PC)",
     Callback = function()
         pcall(function()
-            ApplyBypass() -- Patch engelleyici tetiklendi
-            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (Active).", Time = 3 })
+            ApplyBypass()
+            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5358,7 +5372,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5368,7 +5382,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5378,7 +5392,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5388,7 +5402,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5398,7 +5412,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (Forced Bypass).", Time = 3 })
         end)
     end
 })
@@ -5410,14 +5424,14 @@ Tab:AddToggle({
         _G.AntiPatch = state
         task.spawn(function()
             while _G.AntiPatch do
-                ApplyBypass() -- Değeri sürekli True tutarak patchlenmesini engeller
-                task.wait(0.1)
+                ApplyBypass() -- Hem değeri true tutar hem de modülleri tarar
+                task.wait(0.05) -- Daha agresif kontrol (0.1 -> 0.05)
             end
         end)
         pcall(function()
             redzlib:MakeNotify({
                 Title = "Premium",
-                Text = "Anti-Patch System: " .. tostring(state),
+                Text = "Force Anti-Patch: " .. tostring(state),
                 Time = 3
             })
         end)
@@ -5431,7 +5445,7 @@ Tab:AddButton({
     Callback = function()
         pcall(function()
             ApplyBypass()
-            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (Active).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (Forced Bypass).", Time = 3 })
         end)
     end 
 })
