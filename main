@@ -5324,8 +5324,8 @@ Tab:AddToggle({
 })
 local Tab = Window:MakeTab({"Premium ⭐", "rbxassetid://127904742940104"})
 
--- ==================== PREMIUM BUTTON ====================
-local PremiumButton = Tab:AddButton({
+local PremiumButton
+PremiumButton = Tab:AddButton({
     Name = "Premium",
     Description = "Aç Premium menüsü (simüle edilmiş özellikler)",
     Callback = function()
@@ -5335,54 +5335,42 @@ local PremiumButton = Tab:AddButton({
         PremiumTab:AddButton({
             Name = "Get Horse Unlocked (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
             end
         })
 
         PremiumTab:AddButton({
             Name = "Get Music Unlocked (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
             end
         })
 
         PremiumTab:AddButton({
             Name = "Get Faces Unlocked (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
             end
         })
 
         PremiumTab:AddButton({
             Name = "Get Boat Pack (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
             end
         })
 
         PremiumTab:AddButton({
             Name = "Get Vehicle Upgrade (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
             end
         })
 
         PremiumTab:AddButton({
             Name = "Get Vehicle Speed Unlocked (PC)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
             end
         })
 
@@ -5390,9 +5378,7 @@ local PremiumButton = Tab:AddButton({
             Name = "Get Free Gamepass (Patched)",
             Default = false,
             Callback = function(state)
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Free Gamepass toggle: " .. tostring(state), Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Free Gamepass: " .. tostring(state), Time = 3 })
             end
         })
 
@@ -5401,19 +5387,16 @@ local PremiumButton = Tab:AddButton({
         PremiumTab:AddButton({
             Name = "Get Helicopter Gamepass (simulated)",
             Callback = function()
-                pcall(function()
-                    redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
-                end)
+                redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
             end
         })
 
-        -- 🔒 Premium butonu kaybolur
         PremiumButton:SetVisible(false)
-        -- Eğer çalışmazsa: PremiumButton:Destroy()
-
     end
 })
--- ==================== END PREMIUM BUTTON ====================
+
+-- 🔥 otomatik çalıştır → tüm butonlar direkt görünür
+PremiumButton.Callback()
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
