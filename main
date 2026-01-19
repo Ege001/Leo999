@@ -6273,6 +6273,110 @@ MusicTab:AddDropdown({
     end
 })
 
+-- Orion Library Yükleme
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+-- Ana Pencere Oluşturma
+local Window = OrionLib:MakeWindow({
+    Name = "Cartola Hub | Premium Edition", 
+    HidePremium = false, 
+    SaveConfig = true, 
+    ConfigFolder = "CartolaHubConfig",
+    IntroEnabled = true,
+    IntroText = "Cartola Hub Yükleniyor..."
+})
+
+-- Giriş Bildirimi
+OrionLib:MakeNotification({
+	Name = "Hoş Geldin!",
+	Content = "Menü başarıyla aktif edildi.",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+
+-- [PREMIUM TAB] - Paylaştığın görsellerdeki ana sekme
+local PremiumTab = Window:MakeTab({
+	Name = "Premium",
+	Icon = "rbxassetid://127904742940104",
+	PremiumOnly = false
+})
+
+-- Bölüm Başlığı
+PremiumTab:AddSection({
+	Name = "Free Gamepass (Visual/Client Side)"
+})
+
+-- Butonlar (Görsellerdeki Sıralama İle)
+
+PremiumTab:AddButton({
+	Name = "Get All Gamepasses (Best) (Mobile) (60% Visual)",
+	Callback = function()
+        -- Buraya Gamepass scripti gelecek (Örnek çıktı)
+        print("Tüm Gamepassler aktif edildi (Görsel)")
+        OrionLib:MakeNotification({Name = "Başarılı", Content = "Tüm Gamepassler (Görsel) Aktif!", Time = 2})
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get VIP (Best) (PC)",
+	Callback = function()
+        print("VIP Aktif")
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get Premium (Best) (PC)",
+	Callback = function()
+        print("Premium Aktif")
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get Vehicle Customization Pass (Best) (PC)",
+	Callback = function()
+        print("Araç Özelleştirme Aktif")
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get Land Unlocked (Best) (PC)",
+	Callback = function()
+        print("Arsa Kilidi Açıldı")
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get Vehicle Pack (Best) (PC)",
+	Callback = function()
+        print("Araç Paketi Aktif")
+  	end    
+})
+
+PremiumTab:AddButton({
+	Name = "Get Horse Unlocked (Best) (PC)",
+	Callback = function()
+        print("At Kilidi Açıldı")
+  	end    
+})
+
+-- [ADDITIONAL SETTINGS] - Ayarlar ve Kapatma
+local ConfigTab = Window:MakeTab({
+	Name = "Ayarlar",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+ConfigTab:AddButton({
+	Name = "Menüyü Kapat (Destroy)",
+	Callback = function()
+        OrionLib:Destroy()
+  	end    
+})
+
+-- Script Başlatma
+OrionLib:Init()
+
+
 local function UpdatePlayerDropdown()
     local playerOptions = {}
     for _, player in pairs(game:GetService("Players"):GetPlayers()) do
