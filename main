@@ -6798,7 +6798,7 @@ MusicTab:AddButton({
     end
 })
 
-local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
+local PremiumTab = Window:MakeTab({"Premium/fun", "rbxassetid://127904742940104"})
 -- ==================== PREMIUM BUTTON (Added) ====================
 PremiumTab:AddButton({
     Name = "Premium",
