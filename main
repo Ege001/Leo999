@@ -2428,7 +2428,7 @@ RGBTab:AddToggle({
     end
 })
 
-local CarTab = Window:MakeTab({"Car 🚗 ", "car"})
+local CarTab = Window:MakeTab({"🚗 Veículo", "car"})
 
 CarTab:AddSection({ "🛞 Decal Pneu" })
 
@@ -2454,9 +2454,9 @@ local function ApplyDecal(decalId)
                 ["IsLocked"] = false,
                 ["Appearance"] = {
                     ["IsSmoking"] = false,
-                    ["IsOnFire"] = false,
                     ["SuspensionHeight"] = 1.1,
                     ["BabyCarSeatInstalledNumber"] = 0,
+                    ["IsOnFire"] = false,
                     ["WheelDecal"] = formattedDecal,
                 },
                 ["Performance"] = {
@@ -2568,46 +2568,6 @@ CarTab:AddToggle({
         else
             ReplicatedStorage.Remotes.StopHorn:InvokeServer()
         end
-    end
-})
-
--- 🔥💨 Fire & Smoke Bölümü (YENİ, BOZMADAN EKLENDİ)
-CarTab:AddSection({ "🔥💨 Fire & Smoke" })
-
-local fireActive = false
-local smokeActive = false
-
-local function applyFireSmoke()
-    if not CurrentVehicleUUID then return end
-    
-    pcall(function()
-        game:GetService("ReplicatedStorage").Remotes.ApplyStateToVehicle:InvokeServer(
-            CurrentVehicleUUID,
-            {
-                ["Appearance"] = {
-                    ["IsOnFire"] = fireActive,
-                    ["IsSmoking"] = smokeActive,
-                }
-            }
-        )
-    end)
-end
-
-CarTab:AddToggle({
-    Name = "🔥 Araçta Alev",
-    Default = false,
-    Callback = function(v)
-        fireActive = v
-        applyFireSmoke()
-    end
-})
-
-CarTab:AddToggle({
-    Name = "💨 Araçta Duman",
-    Default = false,
-    Callback = function(v)
-        smokeActive = v
-        applyFireSmoke()
     end
 })
 
