@@ -2214,16 +2214,16 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local RGBTab = Window:MakeTab({
-    Title = "🌈 RGB",
+    Title = "RGB",
     Icon = "rbxassetid://97889814027474"
 })
 
-RGBTab:AddSection({ "🎨 ÁREA RGB" })
+RGBTab:AddSection({ "ÁREA RGB" })
 
 local rgbSpeed = 3
 
 RGBTab:AddTextBox({
-    Name = "⚡ RGB Hızı",
+    Name = "RGB Hızı",
     Desc = "Escolha uma Velocidade Para O RGB",
     Default = tostring(rgbSpeed),
     TextDisappear = false,
@@ -2235,19 +2235,10 @@ RGBTab:AddTextBox({
     end
 })
 
--- Genel RGB loop fonksiyonu
-local function startRGBLoop(flagFunc, actionFunc, delayTime, mode)
+local function startRGBLoop(flagFunc, actionFunc, delayTime)
     task.spawn(function()
         while flagFunc() do
-            local hue = (tick() * rgbSpeed % 5) / 5
-            local color
-            if mode == "normal" then
-                color = Color3.fromHSV(hue, 1, 1)
-            elseif mode == "dark" then
-                color = Color3.fromHSV(hue, 0.8, 0.4)
-            elseif mode == "vip" then
-                color = Color3.fromHSV(hue, 0.9, 0.3)
-            end
+            local color = Color3.fromHSV((tick() * rgbSpeed % 5) / 5, 1, 1)
             pcall(function()
                 actionFunc(color)
             end)
@@ -2256,180 +2247,62 @@ local function startRGBLoop(flagFunc, actionFunc, delayTime, mode)
     end)
 end
 
--- Toggle flagları
-local rgbNome, rgbNomeDark, rgbNomeVIP = false, false, false
-local rgbBio, rgbBioDark, rgbBioVIP = false, false, false
-local rgbCasa, rgbCasaDark, rgbCasaVIP = false, false, false
-local rgbCarro, rgbCarroDark, rgbCarroVIP = false, false, false
+local rgbNome = false
+local rgbBio = false
+local rgbCasa = false
+local rgbCarro = false
 
--- ========== NOME ==========
 RGBTab:AddToggle({
-    Name = "📝 Nome RGB",
-    Desc = "Normal RGB",
+    Name = "Nome RGB",
+    Desc = "Nome RGB",
     Default = false,
     Callback = function(v)
         rgbNome = v
         if v then
             startRGBLoop(function() return rgbNome end, function(color)
                 RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "normal")
+            end, 0.03)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌑 Nome Dark RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbNomeDark = v
-        if v then
-            startRGBLoop(function() return rgbNomeDark end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 Nome VIP Dark RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbNomeVIP = v
-        if v then
-            startRGBLoop(function() return rgbNomeVIP end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "vip")
-        end
-    end
-})
-
--- ========== BIO ==========
-RGBTab:AddToggle({
-    Name = "💬 Bio RGB",
-    Desc = "Normal RGB",
+    Name = "Bio RGB",
+    Desc = "Bio RGB",
     Default = false,
     Callback = function(v)
         rgbBio = v
         if v then
             startRGBLoop(function() return rgbBio end, function(color)
                 RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "normal")
+            end, 0.03)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌑 Bio Dark RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbBioDark = v
-        if v then
-            startRGBLoop(function() return rgbBioDark end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 Bio VIP Dark RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbBioVIP = v
-        if v then
-            startRGBLoop(function() return rgbBioVIP end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "vip")
-        end
-    end
-})
-
--- ========== CASA ==========
-RGBTab:AddToggle({
-    Name = "🏠 RGB Casa",
-    Desc = "Normal RGB",
+    Name = "RGB Casa",
     Default = false,
     Callback = function(v)
         rgbCasa = v
         if v then
             startRGBLoop(function() return rgbCasa end, function(color)
                 RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "normal")
+            end, 0.1)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌌 Dark RGB Casa",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCasaDark = v
-        if v then
-            startRGBLoop(function() return rgbCasaDark end, function(color)
-                RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 VIP Dark RGB Casa",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCasaVIP = v
-        if v then
-            startRGBLoop(function() return rgbCasaVIP end, function(color)
-                RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "vip")
-        end
-    end
-})
-
--- ========== CARRO ==========
-RGBTab:AddToggle({
-    Name = "🚗 Carro RGB",
-    Desc = "Normal RGB",
+    Name = "Carro RGB",
+    Desc = " Carro RGB",
     Default = false,
     Callback = function(v)
         rgbCarro = v
         if v then
             startRGBLoop(function() return rgbCarro end, function(color)
                 RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "normal")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "🌑 Dark Carro RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCarroDark = v
-        if v then
-            startRGBLoop(function() return rgbCarroDark end, function(color)
-                RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 VIP Dark Carro RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCarroVIP = v
-        if v then
-            startRGBLoop(function() return rgbCarroVIP end, function(color)
-                RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "vip")
+            end, 0.05)
         end
     end
 })
