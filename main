@@ -2214,16 +2214,16 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local RGBTab = Window:MakeTab({
-    Title = "RGB",
+    Title = "RGB 🌈",
     Icon = "rbxassetid://97889814027474"
 })
 
-RGBTab:AddSection({ "ÁREA RGB" })
+RGBTab:AddSection({ "🎨 ÁREA RGB" })
 
 local rgbSpeed = 3
 
 RGBTab:AddTextBox({
-    Name = "RGB Hızı",
+    Name = "⚡ RGB Hızı",
     Desc = "Escolha uma Velocidade Para O RGB",
     Default = tostring(rgbSpeed),
     TextDisappear = false,
