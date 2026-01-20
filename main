@@ -2711,7 +2711,7 @@ spawn(function()
 end)
 
 -- 🧍‍♂️ VIP DARK KARAKTER MENÜSÜ 🖤✨
-local Tab = Window:MakeTab({"🧍‍♂️ Karakter | VIP DARK 🖤", "rbxassetid://10734952036"})
+local Tab = Window:MakeTab({"🧍‍♂️ Avatar 🖤", "rbxassetid://10734952036"})
 
 Tab:AddSection({ Name = "🎭 Skin Kopyalama (VIP)" })
 
