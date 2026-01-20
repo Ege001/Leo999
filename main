@@ -2428,9 +2428,9 @@ RGBTab:AddToggle({
     end
 })
 
-local CarTab = Window:MakeTab({"Veiculo", "car"})
+local CarTab = Window:MakeTab({"🚗 Veículo", "car"})
 
-CarTab:AddSection("Decal Pneu")
+CarTab:AddSection({ "🛞 Decal Pneu" })
 
 local CurrentDecal = ""
 local CurrentVehicleUUID = nil
@@ -2477,7 +2477,7 @@ game:GetService("ReplicatedStorage").Remotes.PlayerSpawnedVehicle.OnClientEvent:
 end)
 
 CarTab:AddTextBox({
-    Name = "Decal",
+    Name = "🛞 Decal ID",
     Description = "ID do decal",
     Default = "",
     PlaceholderText = "Xeno",
@@ -2493,7 +2493,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "Aplicar",
+    Name = "✅ Aplicar Decal",
     Callback = function()
         if CurrentDecal and CurrentDecal:len() > 0 then
             ApplyDecal(CurrentDecal)
@@ -2528,10 +2528,10 @@ local function spamPlayHorn()
     end
 end
 
-CarTab:AddSection({ "Spams" })
+CarTab:AddSection({ "🚨 Spams" })
 
 CarTab:AddToggle({
-    Name = "Spam HeadLights",
+    Name = "💡 Spam Farol",
     Default = false,
     Callback = function(value)
         spammingHeadLights = value
@@ -2545,7 +2545,7 @@ CarTab:AddToggle({
 })
 
 CarTab:AddToggle({
-    Name = "Spam HazardLights",
+    Name = "🚨 Spam Pisca-Alerta",
     Default = false,
     Callback = function(value)
         spammingHazardLights = value
@@ -2559,7 +2559,7 @@ CarTab:AddToggle({
 })
 
 CarTab:AddToggle({
-    Name = "Spam Horn",
+    Name = "📢 Spam Buzina",
     Default = false,
     Callback = function(value)
         spammingHorn = value
@@ -2571,7 +2571,7 @@ CarTab:AddToggle({
     end
 })
 
-CarTab:AddSection({ "Speed Car & Turbo" })
+CarTab:AddSection({ "🏎️ Speed Car & Turbo" })
 
 local speedValue = 200
 local turboValue = 11.3
@@ -2618,7 +2618,7 @@ local function applyToAllCars(valueType, value)
                 end)
             end
         else
-            local success = pcall(function()
+            pcall(function()
                 if valueType == "MaxSpeed" then
                     vehicleSeat.MaxSpeed = value
                 elseif valueType == "Turbo" then
@@ -2631,7 +2631,7 @@ local function applyToAllCars(valueType, value)
 end
 
 CarTab:AddTextBox({
-    Name = "Velocidade MaxSpeed",
+    Name = "🚀 Velocidade MaxSpeed",
     Description = "Digite o valor da velocidade máxima",
     PlaceholderText = "200",
     Callback = function(Value)
@@ -2643,7 +2643,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddTextBox({
-    Name = "Potencia Turbo",
+    Name = "🔥 Potência Turbo",
     Description = "Digite o valor do turbo",
     PlaceholderText = "11.3",
     Callback = function(Value)
@@ -2655,7 +2655,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "Aplicar Velocidade",
+    Name = "⚡ Aplicar Velocidade",
     Description = "Aplica a velocidade em todos os carros",
     Callback = function()
         applyToAllCars("MaxSpeed", speedValue)
@@ -2663,17 +2663,17 @@ CarTab:AddButton({
 })
 
 CarTab:AddButton({
-    Name = "Aplicar Turbo",
+    Name = "🔥 Aplicar Turbo",
     Description = "Aplica o turbo em todos os carros",
     Callback = function()
         applyToAllCars("Turbo", turboValue)
     end
 })
 
-local RGBSection = CarTab:AddSection({"Car RGB"})
+local RGBSection = CarTab:AddSection({ "🌈 Car RGB" })
 
 CarTab:AddToggle({
-    Name = "Car RGB",
+    Name = "🌈 Car RGB",
     Default = false,
     Callback = function(state)
         isColorChanging = state
@@ -2683,7 +2683,6 @@ CarTab:AddToggle({
         end
     end
 })
-
 
 _G.hubCarregando = true
 _G.togglesInicializadas = {}
@@ -2697,7 +2696,6 @@ spawn(function()
         local ResetRemote = Remotes:WaitForChild("ResetCharacterAppearance", 10)
         
         if ResetRemote then
-
             local ResetOriginal = ResetRemote.FireServer
             ResetRemote.FireServer = function(...)
                 if _G.hubCarregando then
@@ -2708,7 +2706,6 @@ spawn(function()
         end
     end
     
-
     wait(3)
     _G.hubCarregando = false
 end)
