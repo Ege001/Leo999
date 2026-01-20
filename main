@@ -2710,9 +2710,10 @@ spawn(function()
     _G.hubCarregando = false
 end)
 
-local Tab = Window:MakeTab({"Karakter", "rbxassetid://10734952036"})
+-- 🧍‍♂️ VIP DARK KARAKTER MENÜSÜ 🖤✨
+local Tab = Window:MakeTab({"🧍‍♂️ Karakter | VIP DARK 🖤", "rbxassetid://10734952036"})
 
-Tab:AddSection({ Name = "Copiar Skin" })
+Tab:AddSection({ Name = "🎭 Skin Kopyalama (VIP)" })
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -2721,7 +2722,7 @@ local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local LocalPlayer = Players.LocalPlayer
 local selectedPlayerName = nil
 
-
+-- 👥 Oyuncu Listesi
 local function getPlayerList()
     local PlayerNames = {}
     for _, player in ipairs(Players:GetPlayers()) do
@@ -2733,16 +2734,17 @@ local function getPlayerList()
 end
 
 local killDropdown = Tab:AddDropdown({
-    Name = "Oyuncu Seç",
+    Name = "👤 Oyuncu Seç",
     Options = getPlayerList(),
-    Default = "", -- Estado inicial vazio (mostra "..." ou equivalente)
+    Default = "",
     Callback = function(value)
         selectedPlayerName = value
         getgenv().Target = value
-        print("Jogador selecionado: " .. tostring(value))
+        print("✅ Oyuncu seçildi: " .. tostring(value))
     end
 })
 
+-- 🔄 Dropdown Güncelleme
 local function UpdateDropdown()
     local tablePlayers = Players:GetPlayers()
     local newPlayers = {}
@@ -2753,52 +2755,30 @@ local function UpdateDropdown()
             end
         end
         killDropdown:Set(newPlayers)
-
         selectedPlayerName = nil
         getgenv().Target = nil
-        killDropdown:SetValue("") -- Define o dropdown como vazio ("..." ou equivalente)
-        print("Lista de jogadores atualizada: ", table.concat(newPlayers, ", "))
+        killDropdown:SetValue("")
+        print("🔄 Oyuncu listesi güncellendi.")
         if #newPlayers == 0 then
-            print("Nenhum jogador disponível (exceto você).")
+            print("⚠️ Başka oyuncu yok.")
         end
     else
-        print("Erro: Dropdown Hayır encontrado.")
+        print("❌ Hata: Dropdown bulunamadı.")
     end
 end
-
 
 Players.PlayerAdded:Connect(UpdateDropdown)
 Players.PlayerRemoving:Connect(UpdateDropdown)
 
-
 Tab:AddButton({
-    Name = "Oyuncu Listesini Güncelle",
+    Name = "🔄 Oyuncu Listesini Yenile",
     Callback = function()
-        local tablePlayers = Players:GetPlayers()
-        local newPlayers = {}
-        if killDropdown then
-            for _, player in ipairs(tablePlayers) do
-                if player.Name ~= LocalPlayer.Name then
-                    table.insert(newPlayers, player.Name)
-                end
-            end
-            killDropdown:Set(newPlayers)
-            selectedPlayerName = nil
-            getgenv().Target = nil
-            killDropdown:SetValue("") -- Define o dropdown como vazio ("..." ou equivalente)
-            print("Lista de jogadores atualizada manualmente: ", table.concat(newPlayers, ", "))
-            print("Seleção resetada ao atualizar a lista.")
-            if #newPlayers == 0 then
-                print("Nenhum jogador disponível (exceto você).")
-            end
-        else
-            print("Erro: Dropdown Hayır encontrado.")
-        end
+        UpdateDropdown()
     end
 })
 
 Tab:AddButton({
-    Name = "Copiar Karakter",
+    Name = "🎭 Karakteri Kopyala (VIP)",
     Callback = function()
         if not Target then return end
 
@@ -2811,10 +2791,10 @@ Tab:AddButton({
             local THumanoid = TPlayer.Character:FindFirstChildOfClass("Humanoid")
 
             if LHumanoid and THumanoid then
-                -- RESETAR LOCALPLAYER
+                -- 🔄 LocalPlayer reset
                 local LDesc = LHumanoid:GetAppliedDescription()
 
-                -- Remover acessÃ³rios, roupas e face atuais
+                -- ❌ Eski aksesuar & kıyafetleri sil
                 for _, acc in ipairs(LDesc:GetAccessories(true)) do
                     if acc.AssetId and tonumber(acc.AssetId) then
                         Remotes.Wear:InvokeServer(tonumber(acc.AssetId))
@@ -2837,9 +2817,8 @@ Tab:AddButton({
                     task.wait(0.2)
                 end
 
-
+                -- 🎯 Hedef karakter bilgisi
                 local PDesc = THumanoid:GetAppliedDescription()
-
 
                 local argsBody = {
                     [1] = {
@@ -2887,7 +2866,7 @@ Tab:AddButton({
                     task.wait(0.3)
                 end
 
-
+                -- 📝 RP Name & Bio
                 local Bag = TPlayer:FindFirstChild("PlayersBag")
                 if Bag then
                     if Bag:FindFirstChild("RPName") and Bag.RPName.Value ~= "" then
@@ -2907,13 +2886,15 @@ Tab:AddButton({
                         task.wait(0.3)
                     end
                 end
+
+                print("✅ Karakter başarıyla kopyalandı!")
             end
         end
     end
 })
 
-Tab:AddSection({ "Partes do Corpo:" })
-
+-- 🧩 VÜCUT PARÇALARI
+Tab:AddSection({ "🧩 Vücut Parçaları (VIP)" })
 
 _G.selectedParts = {
     Torso = nil,
@@ -2924,9 +2905,8 @@ _G.selectedParts = {
     Cabeca = nil
 }
 
-
 Tab:AddTextBox({
-    Name = "Gövde",
+    Name = "🧱 Gövde",
     Description = "ID do Tronco",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2934,18 +2914,17 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.Torso = nil
-            print("Tronco: vazio")
+            print("🧱 Gövde: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.Torso = id
-            print("Tronco: " .. id)
+            print("🧱 Gövde ID: " .. id)
         end
     end
 })
 
-
 Tab:AddTextBox({
-    Name = "Sağ Kol",
+    Name = "💪 Sağ Kol",
     Description = "ID do Braço Direito",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2953,18 +2932,17 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.BracoDireito = nil
-            print("Braço Direito: vazio")
+            print("💪 Sağ Kol: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.BracoDireito = id
-            print("Braço Direito: " .. id)
+            print("💪 Sağ Kol ID: " .. id)
         end
     end
 })
 
-
 Tab:AddTextBox({
-    Name = "Sol Kol",
+    Name = "💪 Sol Kol",
     Description = "ID do Braço Esquerdo",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2972,18 +2950,17 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.BracoEsquerdo = nil
-            print("Braço Esquerdo: vazio")
+            print("💪 Sol Kol: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.BracoEsquerdo = id
-            print("Braço Esquerdo: " .. id)
+            print("💪 Sol Kol ID: " .. id)
         end
     end
 })
 
-
 Tab:AddTextBox({
-    Name = "Sağ Bacak",
+    Name = "🦵 Sağ Bacak",
     Description = "ID da Perna Direita",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -2991,18 +2968,17 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.PernaDireita = nil
-            print("Perna Direita: vazio")
+            print("🦵 Sağ Bacak: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.PernaDireita = id
-            print("Perna Direita: " .. id)
+            print("🦵 Sağ Bacak ID: " .. id)
         end
     end
 })
 
-
 Tab:AddTextBox({
-    Name = "Sol Bacak",
+    Name = "🦵 Sol Bacak",
     Description = "ID da Perna Esquerda",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -3010,17 +2986,17 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.PernaEsquerda = nil
-            print("Perna Esquerda: vazio")
+            print("🦵 Sol Bacak: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.PernaEsquerda = id
-            print("Perna Esquerda: " .. id)
+            print("🦵 Sol Bacak ID: " .. id)
         end
     end
 })
 
 Tab:AddTextBox({
-    Name = "Kafa",
+    Name = "🧠 Kafa",
     Description = "ID da Cabeça",
     PlaceholderText = "Xeno",
     TextSize = 16,
@@ -3028,164 +3004,125 @@ Tab:AddTextBox({
     Callback = function(Value)
         if Value == "" then
             _G.selectedParts.Cabeca = nil
-            print("Cabeça: vazio")
+            print("🧠 Kafa: boş")
         else
             local id = tonumber(Value) or 0
             _G.selectedParts.Cabeca = id
-            print("Cabeça: " .. id)
+            print("🧠 Kafa ID: " .. id)
         end
     end
 })
 
-Tab:AddSection({ "Parçaları Yükle:" })
-
+Tab:AddSection({ "🎯 Parça Seç & Yükle" })
 
 _G.parteSelecionada = "Gövde"
 
-
 Tab:AddDropdown({
-    Name = "Parça Seç",
+    Name = "📦 Parça Seç",
     Description = "Hangi parçayı kuşanacağını seç",
     Default = "Gövde",
     Options = {"Gövde", "Sağ Kol", "Sol Kol", "Sağ Bacak", "Sol Bacak", "Kafa"},
     Callback = function(Value)
         _G.parteSelecionada = Value
-        print("Parte selecionada: " .. Value)
+        print("📦 Seçilen parça: " .. Value)
     end
 })
 
-
 Tab:AddButton({
-    Name = "Equipar Parte Selecionada",
-    Description = "Equipa apenas a parte escolhida Hayır dropdown",
+    Name = "🎯 Seçili Parçayı Giydir",
+    Description = "Sadece seçilen parçayı uygular",
     Callback = function()
         local args = {
-            [1] = {
-                [1] = 0, -- Torso
-                [2] = 0, -- Right Arm
-                [3] = 0, -- Left Arm
-                [4] = 0, -- Right Leg
-                [5] = 0, -- Left Leg
-                [6] = 0  -- Head
-            }
+            [1] = {0, 0, 0, 0, 0, 0}
         }
         
-        if _G.parteSelecionada == "Tronco" and _G.selectedParts.Torso then
+        if _G.parteSelecionada == "Gövde" and _G.selectedParts.Torso then
             args[1][1] = _G.selectedParts.Torso
-            print("Equipando Tronco: " .. _G.selectedParts.Torso)
-        elseif _G.parteSelecionada == "Braço Direito" and _G.selectedParts.BracoDireito then
+        elseif _G.parteSelecionada == "Sağ Kol" and _G.selectedParts.BracoDireito then
             args[1][2] = _G.selectedParts.BracoDireito
-            print("Equipando Braço Direito: " .. _G.selectedParts.BracoDireito)
-        elseif _G.parteSelecionada == "Braço Esquerdo" and _G.selectedParts.BracoEsquerdo then
+        elseif _G.parteSelecionada == "Sol Kol" and _G.selectedParts.BracoEsquerdo then
             args[1][3] = _G.selectedParts.BracoEsquerdo
-            print("Equipando Braço Esquerdo: " .. _G.selectedParts.BracoEsquerdo)
-        elseif _G.parteSelecionada == "Perna Direita" and _G.selectedParts.PernaDireita then
+        elseif _G.parteSelecionada == "Sağ Bacak" and _G.selectedParts.PernaDireita then
             args[1][4] = _G.selectedParts.PernaDireita
-            print("Equipando Perna Direita: " .. _G.selectedParts.PernaDireita)
-        elseif _G.parteSelecionada == "Perna Esquerda" and _G.selectedParts.PernaEsquerda then
+        elseif _G.parteSelecionada == "Sol Bacak" and _G.selectedParts.PernaEsquerda then
             args[1][5] = _G.selectedParts.PernaEsquerda
-            print("Equipando Perna Esquerda: " .. _G.selectedParts.PernaEsquerda)
-        elseif _G.parteSelecionada == "Cabeça" and _G.selectedParts.Cabeca then
+        elseif _G.parteSelecionada == "Kafa" and _G.selectedParts.Cabeca then
             args[1][6] = _G.selectedParts.Cabeca
-            print("Equipando Cabeça: " .. _G.selectedParts.Cabeca)
         else
-            print("Erro: " .. _G.parteSelecionada .. " esta vazia! Digite um ID primeiro.")
+            print("❌ Hata: Seçili parça boş!")
             return
         end
         
         pcall(function()
             game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
         end)
+        print("✅ Parça başarıyla giydirildi!")
     end
 })
 
 Tab:AddButton({
-    Name = "Carregar Todas as Partes",
-    Description = "Equipa todas as partes digitadas de uma vez",
+    Name = "🚀 Tüm Parçaları Yükle",
+    Description = "Tüm girilen parçaları aynı anda uygular",
     Callback = function()
-
-        local temAlgumaParteSelecionada = _G.selectedParts.Torso or _G.selectdParts.BracoDireito or 
+        local temAlgumaParteSelecionada = _G.selectedParts.Torso or _G.selectedParts.BracoDireito or 
                                          _G.selectedParts.BracoEsquerdo or _G.selectedParts.PernaDireita or 
                                          _G.selectedParts.PernaEsquerda or _G.selectedParts.Cabeca
         
         if not temAlgumaParteSelecionada then
-            print("Erro: Nenhuma parte foi selecionada! Digite pelo menos um ID.")
+            print("❌ Hata: Hiç parça girilmedi!")
             return
         end
         
         local args = {
             [1] = {
-                [1] = _G.selectedParts.Torso or 0,
-                [2] = _G.selectedParts.BracoDireito or 0,
-                [3] = _G.selectedParts.BracoEsquerdo or 0,
-                [4] = _G.selectedParts.PernaDireita or 0,
-                [5] = _G.selectedParts.PernaEsquerda or 0,
-                [6] = _G.selectedParts.Cabeca or 0
+                _G.selectedParts.Torso or 0,
+                _G.selectedParts.BracoDireito or 0,
+                _G.selectedParts.BracoEsquerdo or 0,
+                _G.selectedParts.PernaDireita or 0,
+                _G.selectedParts.PernaEsquerda or 0,
+                _G.selectedParts.Cabeca or 0
             }
         }
-        
-        if _G.selectedParts.Torso then print("Tronco: " .. _G.selectedParts.Torso) end
-        if _G.selectedParts.BracoDireito then print("Braço Direito: " .. _G.selectedParts.BracoDireito) end
-        if _G.selectedParts.BracoEsquerdo then print("Braço Esquerdo: " .. _G.selectedParts.BracoEsquerdo) end
-        if _G.selectedParts.PernaDireita then print("Perna Direita: " .. _G.selectedParts.PernaDireita) end
-        if _G.selectedParts.PernaEsquerda then print("Perna Esquerda: " .. _G.selectedParts.PernaEsquerda) end
-        if _G.selectedParts.Cabeca then print("Cabeça: " .. _G.selectedParts.Cabeca) end
         
         pcall(function()
             game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
         end)
+        print("🚀 Tüm parçalar başarıyla yüklendi!")
     end
 })
 
-Tab:AddSection({ "Outros:" })
-
+-- 🔄 DİĞER
+Tab:AddSection({ "⚙️ Diğer Ayarlar" })
 
 Tab:AddButton({
-    Name = "Resetar Personagem",
-    Description = "Reset completo do personagem",
+    Name = "🔄 Karakteri Resetle",
+    Description = "Tüm karakteri sıfırlar",
     Callback = function()
         pcall(function()
             game:GetService("ReplicatedStorage").Remotes.ResetCharacterAppearance:FireServer()
         end)
-        print("Personagem resetado completamente!")
+        print("🔄 Karakter tamamen resetlendi!")
     end
 })
 
-
-
-Tab:AddSection({ "FE:" })
-
+-- 🔥 FE FIRE & SMOKE
+Tab:AddSection({ "🔥 FE Fire & Smoke (VIP DARK)" })
 
 Tab:AddDropdown({
-    Name = "Fire Colors",
-    Description = "Select the <font color='rgb(255, 100, 100)'>Fire Color</font>",
-    Options = {
-        "White","Orange","Green","Blue","Purple","Black",
-    },
+    Name = "🔥 Fire Renkleri",
+    Description = "Fire rengini seç",
+    Options = {"White","Orange","Green","Blue","Purple","Black"},
     Default = "White",
     Flag = "fire_color_dropdown",
     Callback = function(Value)
-
-        local fireColors = {
-            ["White"] = { id="18637074370", code="030FireWhite" },
-            ["Orange"] = { id="18637025451", code="031FireOrange" },
-            ["Green"] = { id="18637078598", code="032FireGreen" },
-            ["Blue"] = { id="18637076370", code="033FireBlue" },
-            ["Purple"] = { id="18637070174", code="034FirePurple" },
-            ["Black"] = { id="18637072603", code="035FireBlack" },
-        }
-
         _G.selectedColor = Value
-        print("Cor selecionada: " .. Value)
+        print("🔥 Fire rengi seçildi: " .. Value)
     end
 })
 
-
-
 Tab:AddButton({
-    Name = "Equip Fire Color",
+    Name = "🔥 Fire Rengini Giydir",
     Callback = function()
-
         local fireColors = {
             ["White"] = { id="18637074370", code="030FireWhite" },
             ["Orange"] = { id="18637025451", code="031FireOrange" },
@@ -3199,134 +3136,59 @@ Tab:AddButton({
 
         if fireColors[selectedColor] then
             local data = fireColors[selectedColor]
-
-            game:GetService("ReplicatedStorage")
-                .Remotes.ApplyEmmiter:InvokeServer(data.id, data.code)
-
-            print("Equipado: " .. selectedColor .. " Fire")
+            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(data.id, data.code)
+            print("🔥 Fire giydirildi: " .. selectedColor)
         else
-            warn("Erro: Cor Hayır encontrada!")
+            warn("❌ Hata: Fire rengi bulunamadı!")
         end
     end
 })
 
-
 Tab:AddDropdown({
-    Name = "Smoke Colors",
-    Description = "Select the <font color='rgb(150, 150, 150)'>Smoke Color</font>",
+    Name = "💨 Smoke Renkleri",
+    Description = "Smoke rengini seç",
     Options = {"White", "Yellow", "Orange", "Green", "Blue", "Purple", "Red", "Black"},
     Default = "White",
     Flag = "smoke_color_dropdown",
     Callback = function(Value)
-        -- Tabela com as cores de smoke e seus respectivos IDs e códigos
-        local smokeColors = {
-            ["White"] = {
-                id = "18637791748",
-                code = "080SmokeWhite"
-            },
-            ["Yellow"] = {
-                id = "18637800482",
-                code = "081SmokeYellow"
-            },
-            ["Orange"] = {
-                id = "18637793920",
-                code = "082SmokeOrange"
-            },
-            ["Green"] = {
-                id = "18637789299",
-                code = "083SmokeGreen"
-            },
-            ["Blue"] = {
-                id = "18637803021",
-                code = "084SmokeBlue"
-            },
-            ["Purple"] = {
-                id = "18637813360",
-                code = "085SmokePurple"
-            },
-            ["Red"] = {
-                id = "18637796598",
-                code = "086SmokeRed"
-            },
-            ["Black"] = {
-                id = "18637798529",
-                code = "087SmokeBlack"
-            }
-        }
-        
         _G.selectedSmokeColor = Value
-        print("Cor de smoke selecionada: " .. Value)
+        print("💨 Smoke rengi seçildi: " .. Value)
     end
 })
 
-
 Tab:AddButton({
-    Name = "Equip Smoke Color",
+    Name = "💨 Smoke Rengini Giydir",
     Callback = function()
-        -- Tabela com as cores de smoke e seus respectivos IDs e códigos
         local smokeColors = {
-            ["White"] = {
-                id = "18637791748",
-                code = "080SmokeWhite"
-            },
-            ["Yellow"] = {
-                id = "18637800482",
-                code = "081SmokeYellow"
-            },
-            ["Orange"] = {
-                id = "18637793920",
-                code = "082SmokeOrange"
-            },
-            ["Green"] = {
-                id = "18637789299",
-                code = "083SmokeGreen"
-            },
-            ["Blue"] = {
-                id = "18637803021",
-                code = "084SmokeBlue"
-            },
-            ["Purple"] = {
-                id = "18637813360",
-                code = "085SmokePurple"
-            },
-            ["Red"] = {
-                id = "18637796598",
-                code = "086SmokeRed"
-            },
-            ["Black"] = {
-                id = "18637798529",
-                code = "087SmokeBlack"
-            }
+            ["White"] = { id = "18637791748", code = "080SmokeWhite" },
+            ["Yellow"] = { id = "18637800482", code = "081SmokeYellow" },
+            ["Orange"] = { id = "18637793920", code = "082SmokeOrange" },
+            ["Green"] = { id = "18637789299", code = "083SmokeGreen" },
+            ["Blue"] = { id = "18637803021", code = "084SmokeBlue" },
+            ["Purple"] = { id = "18637813360", code = "085SmokePurple" },
+            ["Red"] = { id = "18637796598", code = "086SmokeRed" },
+            ["Black"] = { id = "18637798529", code = "087SmokeBlack" }
         }
         
         local selectedSmokeColor = _G.selectedSmokeColor or "White"
         
-        if selectedSmokeColor and smokeColors[selectedSmokeColor] then
+        if smokeColors[selectedSmokeColor] then
             local colorData = smokeColors[selectedSmokeColor]
-            
-            local args = {
-                [1] = colorData.id,
-                [2] = colorData.code
-            }
-            
-            -- Aplica o emmiter com a cor de smoke selecionada
-            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(unpack(args))
-            
-            print("Equipado: " .. selectedSmokeColor .. " Smoke")
+            game:GetService("ReplicatedStorage").Remotes.ApplyEmmiter:InvokeServer(colorData.id, colorData.code)
+            print("💨 Smoke giydirildi: " .. selectedSmokeColor)
         else
-            warn("Erro: Cor de smoke Hayır encontrada!")
+            warn("❌ Hata: Smoke rengi bulunamadı!")
         end
     end
 })
 
-
+-- 📏 ÖZEL VÜCUT TOGGLE
 if not _G.togglesInicializadas then
     _G.togglesInicializadas = {}
 end
 
 Tab:AddToggle({
-    Name = "Small",
-    Description = "",
+    Name = "📏 Small Body",
     Default = false,
     Flag = "custom_body_toggle",
     Callback = function(Value)
@@ -3336,26 +3198,26 @@ Tab:AddToggle({
         end
         
         local customBody = {
-            [1] = 104157277410075,
-            [2] = 86280536086607,
-            [3] = 81974054542977,
-            [4] = 74524984742501,
-            [5] = 122626731952977,
-            [6] = 134082579
+            104157277410075,
+            86280536086607,
+            81974054542977,
+            74524984742501,
+            122626731952977,
+            134082579
         }
         
         if Value then
-            local args = {[1] = customBody}
-            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
+            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(customBody)
+            print("📏 Small Body aktif!")
         else
             game:GetService("ReplicatedStorage").Remotes.ResetCharacterAppearance:FireServer()
+            print("🔄 Small Body kapatıldı.")
         end
     end
 })
 
 Tab:AddToggle({
-    Name = "Giant Karakter",
-    Description = "",
+    Name = "🗿 Giant Body",
     Default = false,
     Flag = "custom_body_v2_toggle",
     Callback = function(Value)
@@ -3365,96 +3227,42 @@ Tab:AddToggle({
         end
         
         local customBodyV2 = {
-            [1] = 17713016036,
-            [2] = 17713016151,
-            [3] = 17713015861,
-            [4] = 17713021340,
-            [5] = 17713016191,
-            [6] = 6340213
+            17713016036,
+            17713016151,
+            17713015861,
+            17713021340,
+            17713016191,
+            6340213
         }
         
         if Value then
-            local args = {[1] = customBodyV2}
-            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(unpack(args))
+            game:GetService("ReplicatedStorage").Remotes.ChangeCharacterBody:InvokeServer(customBodyV2)
+            print("🗿 Giant Body aktif!")
         else
             game:GetService("ReplicatedStorage").Remotes.ResetCharacterAppearance:FireServer()
+            print("🔄 Giant Body kapatıldı.")
         end
     end
 })
 
-
-Tab:AddSection({"Roupas 3D"})
+-- 🎒 3D KIYAFETLER
+Tab:AddSection({"🎒 3D Kıyafetler & Aksesuarlar (VIP)"})
 
 Tab:AddDropdown({
-    Name = "Acessorios 3D",
-    Description = "Selecione para equipar",
+    Name = "🧸 3D Aksesuar Seç",
+    Description = "Seç ve giydir",
     Default = nil,
     Options = {
-        "La Vaca Saturno",
-        "brainrot",
-        "Galo",
-        "Capivara",
-        "Tigre",
-        "Capivara",
-        "Peixe",
-        "Pepino Doidao",
-        "Gato",
-        "Rato",
-        "Sei la KKKKOKK",
-        "Pato Banana",
-        "Fantasma",
-        "Gato Lasanha",
-        "Arvore",
-        "Gato Cupcake",
-        "Formiga",
-        "KKKKKKKK",
-        "Sherek Feiosa",
-        "Frango",
-        "Pinguin",
-        "rato",
-        "Minions",
-        "Dinossauro",
-        "Ovni",
-        "Passaro Gordo",
-        "Balao Cachorro",
-        "Urso Pelucia",
-        "Minecraft",
-        "Fofuxo",
-        "Sapo",
-        "Bruxo",
-        "Rato Grande",
-        "Burro",
-        "Nemo",
-        "Careca desenho KKKKK",
-        "Pinguin Mini",
-        "Mini Sherek",
-        "Coruja",
-        "Gato de Manga",
-        "Tung Saur", 
-        "Tralaleiro",
-        "Monstro S.A",
-        "Trenzinho",
-        "Dino",
-        "Pou idoso",
-        "Coco/boxt@",
-        "Coelho",
-        "Hipopótamo",
-        "Ratatui",
-        "Galinha",
-        "Pepa pig",
-        "Pinguin",
-        "Sid",
-        "Puga grande",
-        "SHREK AMALDIÇOADO",
-        "Mosquito grande",
-        "Noob Invertido",
-        "Pato(a)",
-        "Cachorro Chihuahua",
-        "Gato sla",
-        "Gato fei",
-        "Inpostor",
-        "Simon amarelo",
-        "Simon azul"
+        "La Vaca Saturno","brainrot","Galo","Capivara","Tigre","Peixe","Pepino Doidao",
+        "Gato","Rato","Sei la KKKKOKK","Pato Banana","Fantasma","Gato Lasanha","Arvore",
+        "Gato Cupcake","Formiga","KKKKKKKK","Sherek Feiosa","Frango","Pinguin","Minions",
+        "Dinossauro","Ovni","Passaro Gordo","Balao Cachorro","Urso Pelucia","Minecraft",
+        "Fofuxo","Sapo","Bruxo","Rato Grande","Burro","Nemo","Careca desenho KKKKK",
+        "Pinguin Mini","Mini Sherek","Coruja","Gato de Manga","Tung Saur","Tralaleiro",
+        "Monstro S.A","Trenzinho","Dino","Pou idoso","Coco/boxt@","Coelho","Hipopótamo",
+        "Ratatui","Galinha","Pepa pig","Sid","Puga grande","SHREK AMALDIÇOADO",
+        "Mosquito grande","Noob Invertido","Pato(a)","Cachorro Chihuahua","Gato sla",
+        "Gato fei","Inpostor","Simon amarelo","Simon azul"
     },
     Callback = function(selected)
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3466,7 +3274,6 @@ Tab:AddDropdown({
             ["Galo"] = 134279966389194,
             ["Capivara"] = 123881270149502,
             ["Tigre"] = 119471161887334,
-            ["Capivara"] = 70941023284215,
             ["Peixe"] = 100767254038825,
             ["Pepino Doidao"] = 140311949273388,
             ["Gato"] = 18863879460,
@@ -3482,7 +3289,6 @@ Tab:AddDropdown({
             ["Sherek Feiosa"] = 93929184789448,
             ["Frango"] = 12151793832,
             ["Pinguin"] = 94944293759578,
-            ["rato"] = 115152504142706,
             ["Minions"] = 80206221835435,
             ["Dinossauro"] = 78418661102501,
             ["Ovni"] = 108699752030063,
@@ -3500,7 +3306,6 @@ Tab:AddDropdown({
             ["Pinguin Mini"] = 140417314445581,
             ["Mini Sherek"] = 121680981245369,
             ["Coruja"] = 16259522726,
-            -- Avatares originais
             ["Gato de Manga"] = 124948425515124,
             ["Tung Saur"] = 117098257036480,
             ["Tralaleiro"] = 99459753608381,
@@ -3530,11 +3335,10 @@ Tab:AddDropdown({
         
         if avatars[selected] then
             pcall(function()
-                local args = {avatars[selected]}
-                ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
+                ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(avatars[selected])
                 StarterGui:SetCore("SendNotification", {
-                    Title = "Karakter",
-                    Text = "Karakter" .. selected .. " equipado!",
+                    Title = "🧍‍♂️ Karakter",
+                    Text = "✅ " .. selected .. " giydirildi!",
                     Duration = 3
                 })
             end)
@@ -3542,16 +3346,17 @@ Tab:AddDropdown({
     end
 })
 
-Tab:AddSection({"Avatar Düzenleyicisi"})
+-- 🧑‍🎨 HAZIR AVATAR PACKLERİ
+Tab:AddSection({"🎨 Hazır Avatar Paketleri (VIP)"})
 
 Tab:AddParagraph({
-    Title = "Aviso: Vai resetar seu karakter",
-    Content = "Os avatares abaixo irão substituir completamente seu personagem atual."
+    Title = "⚠️ Uyarı",
+    Content = "Bu avatarlar mevcut karakterini tamamen değiştirir."
 })
 
 Tab:AddButton({
-    Name = "Women’s Pack – Harajuku Flex 🌸",
-    Description = "Karakter mini personalizado",
+    Name = "🌸 Women’s Pack – Harajuku Flex",
+    Description = "Mini VIP karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3565,11 +3370,10 @@ Tab:AddButton({
                 76405582041904,
                 85437524979545
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Women’s Pack – Harajuku Flex 🌸 equipado!",
+                Title = "🌸 Karakter",
+                Text = "Women’s Pack – Harajuku Flex giydirildi!",
                 Duration = 3
             })
         end)
@@ -3577,8 +3381,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "ULTRA MEGA NOOB 🌈✨",
-    Description = "Karakter mini personalizado",
+    Name = "🌈 ULTRA MEGA NOOB",
+    Description = "Mini eğlenceli karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3592,11 +3396,10 @@ Tab:AddButton({
                 103930862223759,
                 99914087269663
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "ULTRA MEGA NOOB 🌈✨ equipado!",
+                Title = "🌈 Karakter",
+                Text = "ULTRA MEGA NOOB giydirildi!",
                 Duration = 3
             })
         end)
@@ -3604,8 +3407,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Mini Soft Kitty {Noob} 🐱💖",
-    Description = "Karakter mini personalizado",
+    Name = "🐱 Mini Soft Kitty {Noob}",
+    Description = "Sevimli mini karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3619,11 +3422,10 @@ Tab:AddButton({
                 132677077191785,
                 134649517111774
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Mini Soft Kitty {Noob} 🐱💖 equipado!",
+                Title = "🐱 Karakter",
+                Text = "Mini Soft Kitty giydirildi!",
                 Duration = 3
             })
         end)
@@ -3631,8 +3433,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Mini REPO",
-    Description = "Karakter mini personalizado",
+    Name = "🤖 Mini REPO",
+    Description = "Robot mini karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3646,11 +3448,10 @@ Tab:AddButton({
                 133391239416999,
                 111818794467824
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Mini REPO equipado!",
+                Title = "🤖 Karakter",
+                Text = "Mini REPO giydirildi!",
                 Duration = 3
             })
         end)
@@ -3658,8 +3459,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Mini Garanhão",
-    Description = "Karakter mini garanhão",
+    Name = "🐎 Mini Garanhão",
+    Description = "Mini güçlü karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3673,11 +3474,10 @@ Tab:AddButton({
                 109182039511426,
                 0
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Mini Garanhão equipado!",
+                Title = "🐎 Karakter",
+                Text = "Mini Garanhão giydirildi!",
                 Duration = 3
             })
         end)
@@ -3685,8 +3485,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Stick",
-    Description = "Karakter estilo palito",
+    Name = "🪵 Stick",
+    Description = "Çöp adam karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3700,11 +3500,10 @@ Tab:AddButton({
                 14731377941,
                 14731382899
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Stick equipado!",
+                Title = "🪵 Karakter",
+                Text = "Stick giydirildi!",
                 Duration = 3
             })
         end)
@@ -3712,8 +3511,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Chunky-Bug",
-    Description = "Karakter estilo bug",
+    Name = "🐛 Chunky-Bug",
+    Description = "Böcek tipi karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3727,11 +3526,10 @@ Tab:AddButton({
                 15527827184,
                 15527827599
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Chunky-Bug equipado!",
+                Title = "🐛 Karakter",
+                Text = "Chunky-Bug giydirildi!",
                 Duration = 3
             })
         end)
@@ -3739,8 +3537,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Cursed-Spider",
-    Description = "Karakter aranha amaldiçoada",
+    Name = "🕷️ Cursed-Spider",
+    Description = "Lanetli örümcek karakter",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3754,11 +3552,10 @@ Tab:AddButton({
                 95907982259204,
                 91289185840375
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Cursed-Spider equipado!",
+                Title = "🕷️ Karakter",
+                Text = "Cursed-Spider giydirildi!",
                 Duration = 3
             })
         end)
@@ -3766,8 +3563,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Possessed-Horror",
-    Description = "Karakter horror possuído",
+    Name = "👻 Possessed-Horror",
+    Description = "Lanetli korku karakteri",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local StarterGui = game:GetService("StarterGui")
@@ -3781,154 +3578,124 @@ Tab:AddButton({
                 102906187256945,
                 78311422507297
             }
-            local args = {parts}
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(parts)
             StarterGui:SetCore("SendNotification", {
-                Title = "Karakter",
-                Text = "Possessed-Horror equipado!",
+                Title = "👻 Karakter",
+                Text = "Possessed-Horror giydirildi!",
                 Duration = 3
             })
         end)
     end
 })
 
-local Section = Tab:AddSection({
-    Name = "Equipar Corpos"
-})
-
+-- 🧱 ÖZEL VÜCUT PRESETLERİ
+local Section = Tab:AddSection({ Name = "🧱 Hazır Vücut Presetleri (VIP)" })
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 Tab:AddButton({
-    Name = "Anão 1",
+    Name = "👶 Anão 1",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
             101678129797722,
             74948603903648,
             114267907635155,
             101387518276175,
             100840538291335,
             0
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        })
     end
 })
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 Tab:AddButton({
-    Name = "Mulher Fina",
+    Name = "👩 Mulher Fina",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
             75159926897589,
             76683091425509,
             14567282030,
             14567281990,
             14874108946,
             0
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        })
     end
 })
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 Tab:AddButton({
-    Name = "Mulher fina 2",
+    Name = "👩 Mulher Fina 2",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
             97119075795691,
             72699005696177,
             122027795919157,
             80393546275035,
             125637672664513,
             0
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        })
     end
 })
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 Tab:AddButton({
-    Name = "Anão 2",
+    Name = "👶 Anão 2",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
             14579958702,
             14583777042,
             14583777007,
             14579959249,
             14579963667,
             0
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        })
     end
 })
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 Tab:AddButton({
-    Name = "Bombado",
+    Name = "💪 Bombado",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
             121532625082697,
-        119216187383922,
-        121634444400488,
-        100229264383618,
-        126161096503611,
-        0
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+            119216187383922,
+            121634444400488,
+            100229264383618,
+            126161096503611,
+            0
+        })
     end
 })
-
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 Tab:AddButton({
-    Name = "Gordin",
+    Name = "🍔 Gordin",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
-        16305051918,
-        16305051718,
-        16305053205,
-        16305053865,
-        16305051982,
-        16305055011
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
+            16305051918,
+            16305051718,
+            16305053205,
+            16305053865,
+            16305051982,
+            16305055011
+        })
     end
 })
-
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 Tab:AddButton({
-    Name = "Golem",
+    Name = "🪨 Golem",
     Description = "By Lolyta",
     Callback = function()
-        local ChangeCharacterBody = ReplicatedStorage.Remotes.ChangeCharacterBody
-        local partesSelecionadas = {
-        15489582363,
-        15489584734,
-        15489584622,
-        15489582354,
-        15489584682,
-        15489582340
-        }
-        ChangeCharacterBody:InvokeServer(partesSelecionadas)
+        ReplicatedStorage.Remotes.ChangeCharacterBody:InvokeServer({
+            15489582363,
+            15489584734,
+            15489584622,
+            15489582354,
+            15489584682,
+            15489582340
+        })
     end
 })
-
 
 local scriptsTab = Window:MakeTab({"Scripts Troll", "rbxassetid://6862780932"})
 
