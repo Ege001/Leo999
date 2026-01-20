@@ -4,9 +4,9 @@ local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
-local ROXO_PRINCIPAL = Color3.fromRGB(145, 90, 230) -- VIP ana mor
-local ROXO_MEDIO     = Color3.fromRGB(110, 70, 190) -- Yumuşak orta mor
-local ROXO_ESCURO    = Color3.fromRGB(55, 35, 110)  -- Koyu premium mor
+local ROXO_PRINCIPAL = Color3.fromRGB(145, 90, 230)
+local ROXO_MEDIO     = Color3.fromRGB(110, 70, 190)
+local ROXO_ESCURO    = Color3.fromRGB(55, 35, 110)
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "XenoHubLoading"
@@ -15,7 +15,7 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local Sound = Instance.new("Sound")
 Sound.SoundId = "rbxassetid://14145620056"
-Sound.Volume = 1
+Sound.Volume = 0.7
 Sound.Looped = true
 Sound.Parent = ScreenGui
 Sound:Play()
@@ -27,86 +27,86 @@ Frame.Parent = ScreenGui
 
 local Gradient = Instance.new("UIGradient")
 Gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, ROXO_PRINCIPAL),
-	ColorSequenceKeypoint.new(0.5, ROXO_MEDIO),
-	ColorSequenceKeypoint.new(1, ROXO_ESCURO)
+    ColorSequenceKeypoint.new(0, ROXO_PRINCIPAL),
+    ColorSequenceKeypoint.new(0.5, ROXO_MEDIO),
+    ColorSequenceKeypoint.new(1, ROXO_ESCURO)
 }
 Gradient.Rotation = 90
 Gradient.Parent = Frame
 
-
+-- Noktalar
 for i = 1, 35 do
-	local ponto = Instance.new("Frame")
-	ponto.Size = UDim2.new(0, math.random(4,7), 0, math.random(4,7))
-	ponto.Position = UDim2.new(math.random(), 0, math.random(), 0)
-	ponto.AnchorPoint = Vector2.new(0.5,0.5)
-	ponto.BackgroundColor3 = ROXO_PRINCIPAL
-	ponto.BackgroundTransparency = 0.25
-	ponto.Parent = Frame
+    local ponto = Instance.new("Frame")
+    ponto.Size = UDim2.new(0, math.random(4,7), 0, math.random(4,7))
+    ponto.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    ponto.AnchorPoint = Vector2.new(0.5,0.5)
+    ponto.BackgroundColor3 = ROXO_PRINCIPAL
+    ponto.BackgroundTransparency = 0.25
+    ponto.Parent = Frame
+    Instance.new("UICorner", ponto).CornerRadius = UDim.new(1,0)
 
-	Instance.new("UICorner", ponto).CornerRadius = UDim.new(1,0)
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = ROXO_PRINCIPAL
+    stroke.Thickness = 1
+    stroke.Transparency = 0.4
+    stroke.Parent = ponto
 
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = ROXO_PRINCIPAL
-	stroke.Thickness = 1
-	stroke.Transparency = 0.4
-	stroke.Parent = ponto
-
-	task.spawn(function()
-		while ScreenGui.Parent do
-			TweenService:Create(
-				ponto,
-				TweenInfo.new(math.random(2,4), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-				{Size = UDim2.new(0,9,0,9), BackgroundTransparency = 0.05}
-			):Play()
-			task.wait(2)
-			TweenService:Create(
-				ponto,
-				TweenInfo.new(math.random(2,4), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-				{Size = UDim2.new(0,5,0,5), BackgroundTransparency = 0.35}
-			):Play()
-			task.wait(2)
-		end
-	end)
+    task.spawn(function()
+        while ScreenGui.Parent do
+            TweenService:Create(
+                ponto,
+                TweenInfo.new(math.random(2,3), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                {Size = UDim2.new(0,9,0,9), BackgroundTransparency = 0.05}
+            ):Play()
+            task.wait(1.5)
+            TweenService:Create(
+                ponto,
+                TweenInfo.new(math.random(2,3), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                {Size = UDim2.new(0,5,0,5), BackgroundTransparency = 0.35}
+            ):Play()
+            task.wait(1.5)
+        end
+    end)
 end
 
-
+-- Çizgiler
 for i=1,20 do
-	local line = Instance.new("Frame")
-	line.Size = UDim2.new(0, math.random(60,220), 0, 2)
-	line.Position = UDim2.new(-0.3,0, math.random(),0)
-	line.AnchorPoint = Vector2.new(0,0.5)
-	line.BackgroundColor3 = ROXO_PRINCIPAL
-	line.BackgroundTransparency = 0.4
-	line.Parent = Frame
-	Instance.new("UICorner", line).CornerRadius = UDim.new(1,0)
+    local line = Instance.new("Frame")
+    line.Size = UDim2.new(0, math.random(60,200), 0, 2)
+    line.Position = UDim2.new(-0.3,0, math.random(),0)
+    line.AnchorPoint = Vector2.new(0,0.5)
+    line.BackgroundColor3 = ROXO_PRINCIPAL
+    line.BackgroundTransparency = 0.35
+    line.Parent = Frame
+    Instance.new("UICorner", line).CornerRadius = UDim.new(1,0)
 
-	task.spawn(function()
-		while ScreenGui.Parent do
-			local tween = TweenService:Create(
-				line,
-				TweenInfo.new(math.random(2,4), Enum.EasingStyle.Linear),
-				{Position = UDim2.new(1.3,0, math.random(),0)}
-			)
-			tween:Play()
-			tween.Completed:Wait()
-			line.Position = UDim2.new(-0.3,0, math.random(),0)
-		end
-	end)
+    task.spawn(function()
+        while ScreenGui.Parent do
+            local tween = TweenService:Create(
+                line,
+                TweenInfo.new(math.random(2,4), Enum.EasingStyle.Linear),
+                {Position = UDim2.new(1.3,0, math.random(),0)}
+            )
+            tween:Play()
+            tween.Completed:Wait()
+            line.Position = UDim2.new(-0.3,0, math.random(),0)
+        end
+    end)
 end
 
---==================== TITULO ====================
+-- Başlık
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.7,0,0.12,0)
 Title.Position = UDim2.new(0.5,0,0.1,0)
 Title.AnchorPoint = Vector2.new(0.5,0)
 Title.BackgroundTransparency = 1
-Title.Text = "XENO HUB"
+Title.Text = "💎 XENO HUB"
 Title.Font = Enum.Font.GothamBlack
 Title.TextScaled = true
 Title.TextColor3 = ROXO_PRINCIPAL
 Title.Parent = Frame
 
+-- Avatar
 local LogoFrame = Instance.new("Frame")
 LogoFrame.Size = UDim2.new(0,110,0,110)
 LogoFrame.Position = UDim2.new(0.5,0,0.35,0)
@@ -114,42 +114,40 @@ LogoFrame.AnchorPoint = Vector2.new(0.5,0.5)
 LogoFrame.BackgroundTransparency = 1
 LogoFrame.Parent = Frame
 
-local thumb = Players:GetUserThumbnailAsync(
-	player.UserId,
-	Enum.ThumbnailType.AvatarBust,
-	Enum.ThumbnailSize.Size420x420
-)
-
+local thumb = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
 local Avatar = Instance.new("ImageLabel")
 Avatar.Size = UDim2.new(1,0,1,0)
 Avatar.BackgroundTransparency = 1
 Avatar.Image = thumb
 Avatar.Parent = LogoFrame
-
 Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1,0)
 
 local Stroke = Instance.new("UIStroke")
 Stroke.Thickness = 3
 Stroke.Color = ROXO_PRINCIPAL
+Stroke.Transparency = 0.2
 Stroke.Parent = Avatar
 
+-- Döndürme
 local angle = 0
 RunService.RenderStepped:Connect(function(dt)
-	angle += dt * 45
-	LogoFrame.Rotation = angle % 360
+    angle += dt * 30
+    LogoFrame.Rotation = angle % 360
 end)
 
+-- Kullanıcı adı
 local Nick = Instance.new("TextLabel")
 Nick.Size = UDim2.new(0.4,0,0.05,0)
 Nick.Position = UDim2.new(0.5,0,0.53,0)
 Nick.AnchorPoint = Vector2.new(0.5,0)
 Nick.BackgroundTransparency = 1
-Nick.Text = "Kullanıcı: "..player.Name
+Nick.Text = "👑 "..player.Name
 Nick.Font = Enum.Font.GothamBold
 Nick.TextScaled = true
 Nick.TextColor3 = ROXO_PRINCIPAL
 Nick.Parent = Frame
 
+-- Alt yazı
 local Sub = Instance.new("TextLabel")
 Sub.Size = UDim2.new(0.6,0,0.05,0)
 Sub.Position = UDim2.new(0.5,0,0.6,0)
@@ -161,6 +159,7 @@ Sub.TextScaled = true
 Sub.TextColor3 = ROXO_MEDIO
 Sub.Parent = Frame
 
+-- Loading bar
 local BarBG = Instance.new("Frame")
 BarBG.Size = UDim2.new(0.6,0,0.05,0)
 BarBG.Position = UDim2.new(0.2,0,0.8,0)
@@ -184,11 +183,11 @@ Percent.TextScaled = true
 Percent.TextColor3 = Color3.new(1,1,1)
 Percent.Parent = Frame
 
-local totalTime = 5
+-- Progress
 for i=1,100 do
-	Bar.Size = UDim2.new(i/100,0,1,0)
-	Percent.Text = i.."%"
-	task.wait(totalTime/100)
+    Bar.Size = UDim2.new(i/100,0,1,0)
+    Percent.Text = i.."%"
+    task.wait(0.04)
 end
 
 task.wait(0.5)
