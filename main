@@ -4152,6 +4152,7 @@ scriptsTab:AddButton({
     end
 })
 
+-- FreeCamByXenoHub (mobil + pc uyumlu)
 scriptsTab:AddSection({ "🎥 Freecam Tool" })
 
 scriptsTab:AddButton({
@@ -4160,95 +4161,333 @@ scriptsTab:AddButton({
         local Players = game:GetService("Players")
         local UserInputService = game:GetService("UserInputService")
         local RunService = game:GetService("RunService")
+        local ContextActionService = game:GetService("ContextActionService")
         local player = Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoid = character:WaitForChild("Humanoid")
-        local cam = workspace.CurrentCamera
+        if not player then return end
 
-        -- Tool oluştur
+        -- create tool
         local tool = Instance.new("Tool")
         tool.Name = "FreeCamByXenoHub"
         tool.RequiresHandle = false
         tool.CanBeDropped = true
         tool.TextureId = "rbxassetid://130069738634749"
-        tool.Parent = player.Backpack
+        tool.Parent = player:FindFirstChild("Backpack") or player:WaitForChild("Backpack")
 
+        -- state
+        local cam = workspace.CurrentCamera
         local freecamEnabled = false
-        local baseSpeed = 1
+        local baseSpeed = 4
         local speed = baseSpeed
-        local rotSpeed = 0.002
-        local rotation = Vector2.zero
-        local conn
-        local scrollConn
+        local rotSpeed = 0.0035
+        local pitchLimit = math.rad(85)
+        local rotation = Vector2.new(0,0) -- x = pitch, y = yaw
+        local connRender = nil
+        local connInputChanged = nil
+        local connInputBegan = nil
+        local connInputEnded = nil
 
-        -- Karakter sabit kalacak
-        local originalPlatformStand = humanoid.PlatformStand
+        local moveState = { W=false, A=false, S=false, D=false }
+        local touchPanId = nil
+        local touchRotActive = false
+        local wasPlatformStand = nil
+        local humanoid -- set on equip
+        local hrp
 
-        -- Scroll ile hız ayarı
-        scrollConn = UserInputService.InputChanged:Connect(function(input, gp)
-            if freecamEnabled and input.UserInputType == Enum.UserInputType.MouseWheel then
-                speed = math.clamp(speed + input.Position.Z * 0.5, 0.5, 10)
-            end
-        end)
+        -- UI creation (unique names)
+        local gui = Instance.new("ScreenGui")
+        gui.Name = "FreeCamByXenoHub_GUI"
+        gui.ResetOnSpawn = false
+        gui.Parent = player:WaitForChild("PlayerGui")
 
-        local function getMoveDirection()
-            local dir = Vector3.zero
+        -- Left touch pad (W A S D)
+        local leftFrame = Instance.new("Frame", gui)
+        leftFrame.Name = "FreeCam_LeftPad"
+        leftFrame.AnchorPoint = Vector2.new(0, 0.5)
+        leftFrame.Position = UDim2.new(0.02, 0, 0.6, 0)
+        leftFrame.Size = UDim2.new(0, 110, 0, 140)
+        leftFrame.BackgroundTransparency = 1
 
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir += Vector3.new(0, 0, -1) end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir += Vector3.new(0, 0, 1) end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir += Vector3.new(-1, 0, 0) end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir += Vector3.new(1, 0, 0) end
-
-            return dir
+        local function makeBtn(name, text, pos)
+            local b = Instance.new("TextButton", leftFrame)
+            b.Name = name
+            b.Text = text
+            b.Font = Enum.Font.SourceSansBold
+            b.TextSize = 20
+            b.TextColor3 = Color3.new(1,1,1)
+            b.Size = UDim2.new(0, 44, 0, 44)
+            b.Position = pos
+            b.BackgroundTransparency = 0.35
+            b.BackgroundColor3 = Color3.fromRGB(40,40,40)
+            b.AutoButtonColor = false
+            b.ClipsDescendants = true
+            local corner = Instance.new("UICorner", b)
+            corner.CornerRadius = UDim.new(0.2, 0)
+            return b
         end
 
-        local function enableFreecam()
-            if freecamEnabled then return end
-            freecamEnabled = true
+        local btnW = makeBtn("WBtn","W",UDim2.new(0,33,0,0))
+        btnW.Position = UDim2.new(0.17,0,0,0)
+        local btnA = makeBtn("ABtn","A",UDim2.new(0,0,0,0))
+        btnA.Position = UDim2.new(0,0,0.4,0)
+        local btnS = makeBtn("SBtn","S",UDim2.new(0,33,0.4,0))
+        btnS.Position = UDim2.new(0.17,0,0.4,0)
+        local btnD = makeBtn("DBtn","D",UDim2.new(0,66,0.4,0))
+        btnD.Position = UDim2.new(0.34,0,0.4,0)
 
-            -- Karakter hareket etmesin
-            humanoid.PlatformStand = true
+        -- Top center speed display
+        local speedFrame = Instance.new("Frame", gui)
+        speedFrame.Name = "FreeCam_SpeedFrame"
+        speedFrame.AnchorPoint = Vector2.new(0.5, 0)
+        speedFrame.Position = UDim2.new(0.5, 0, 0.02, 0)
+        speedFrame.Size = UDim2.new(0, 220, 0, 40)
+        speedFrame.BackgroundTransparency = 0.25
+        speedFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        local spCorner = Instance.new("UICorner", speedFrame)
+        spCorner.CornerRadius = UDim.new(0.2,0)
 
-            cam.CameraType = Enum.CameraType.Scriptable
-            cam.CFrame = cam.CFrame
+        local speedLabel = Instance.new("TextLabel", speedFrame)
+        speedLabel.Name = "SpeedLabel"
+        speedLabel.AnchorPoint = Vector2.new(0.5,0.5)
+        speedLabel.Position = UDim2.new(0.5,0,0.5,0)
+        speedLabel.Size = UDim2.new(0.7,0,0.9,0)
+        speedLabel.BackgroundTransparency = 1
+        speedLabel.Font = Enum.Font.GothamBold
+        speedLabel.TextSize = 18
+        speedLabel.TextColor3 = Color3.new(1,1,1)
+        speedLabel.Text = "Speed: " .. tostring(math.floor(speed*10)/10)
 
-            UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-            UserInputService.MouseIconEnabled = false
+        local plusBtn = Instance.new("TextButton", speedFrame)
+        plusBtn.Name = "SpeedPlus"
+        plusBtn.Size = UDim2.new(0,36,0,36)
+        plusBtn.Position = UDim2.new(0.92,0,0.5,-18)
+        plusBtn.Text = "+"
+        plusBtn.Font = Enum.Font.GothamBold
+        plusBtn.TextSize = 20
+        plusBtn.BackgroundColor3 = Color3.fromRGB(45,45,45)
+        plusBtn.TextColor3 = Color3.new(1,1,1)
+        local plusCorner = Instance.new("UICorner", plusBtn); plusCorner.CornerRadius = UDim.new(0.2,0)
 
-            conn = RunService.RenderStepped:Connect(function(dt)
-                local delta = UserInputService:GetMouseDelta()
-                rotation = rotation + Vector2.new(-delta.Y, -delta.X) * rotSpeed
-                rotation = Vector2.new(
-                    math.clamp(rotation.X, -math.rad(85), math.rad(85)),
-                    rotation.Y
-                )
+        local minusBtn = Instance.new("TextButton", speedFrame)
+        minusBtn.Name = "SpeedMinus"
+        minusBtn.Size = UDim2.new(0,36,0,36)
+        minusBtn.Position = UDim2.new(0.02,0,0.5,-18)
+        minusBtn.Text = "-"
+        minusBtn.Font = Enum.Font.GothamBold
+        minusBtn.TextSize = 20
+        minusBtn.BackgroundColor3 = Color3.fromRGB(45,45,45)
+        minusBtn.TextColor3 = Color3.new(1,1,1)
+        local minusCorner = Instance.new("UICorner", minusBtn); minusCorner.CornerRadius = UDim.new(0.2,0)
 
-                local cf = CFrame.new(cam.CFrame.Position)
-                    * CFrame.Angles(0, rotation.Y, 0)
-                    * CFrame.Angles(rotation.X, 0, 0)
+        -- Hidden by default on non-touch devices? keep visible always per request
+        gui.Enabled = false -- will enable only when tool equipped
 
-                local moveDir = getMoveDirection()
-                cam.CFrame = cf + cf:VectorToWorldSpace(moveDir * speed)
+        -- helper: update speed label
+        local function updateSpeedLabel()
+            speedLabel.Text = "Speed: " .. tostring(math.floor(speed*10)/10)
+        end
+
+        -- Input handlers for touch buttons
+        local function bindTouchButton(btn, key)
+            local active = false
+            btn.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    moveState[key] = true
+                    active = true
+                    btn.BackgroundTransparency = 0.1
+                end
+            end)
+            btn.InputEnded:Connect(function(input)
+                if active then
+                    moveState[key] = false
+                    active = false
+                    btn.BackgroundTransparency = 0.35
+                end
             end)
         end
 
-        local function disableFreecam()
-            if not freecamEnabled then return end
+        -- bind buttons
+        bindTouchButton(btnW, "W")
+        bindTouchButton(btnA, "A")
+        bindTouchButton(btnS, "S")
+        bindTouchButton(btnD, "D")
+
+        -- plus/minus
+        plusBtn.MouseButton1Click:Connect(function()
+            speed = math.clamp(speed + 0.5, 0.5, 25)
+            updateSpeedLabel()
+        end)
+        minusBtn.MouseButton1Click:Connect(function()
+            speed = math.clamp(speed - 0.5, 0.5, 25)
+            updateSpeedLabel()
+        end)
+
+        -- helper to cleanup
+        local function cleanup()
+            pcall(function()
+                if connRender then connRender:Disconnect() end
+                if connInputChanged then connInputChanged:Disconnect() end
+                if connInputBegan then connInputBegan:Disconnect() end
+                if connInputEnded then connInputEnded:Disconnect() end
+            end)
+            pcall(function()
+                if gui and gui.Parent then gui:Destroy() end
+            end)
+            -- restore PlatformStand if humanoid exists
+            pcall(function()
+                if humanoid and wasPlatformStand ~= nil then
+                    humanoid.PlatformStand = wasPlatformStand
+                end
+            end)
             freecamEnabled = false
-
-            -- Karakter hareket tekrar aktif
-            humanoid.PlatformStand = originalPlatformStand
-
-            if conn then conn:Disconnect() end
-            conn = nil
-
-            cam.CameraType = Enum.CameraType.Custom
-            UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-            UserInputService.MouseIconEnabled = true
         end
 
-        tool.Equipped:Connect(enableFreecam)
-        tool.Unequipped:Connect(disableFreecam)
+        -- movement vector calc
+        local function getKeyboardMove()
+            local dir = Vector3.new(0,0,0)
+            if moveState.W then dir += Vector3.new(0,0,-1) end
+            if moveState.S then dir += Vector3.new(0,0,1) end
+            if moveState.A then dir += Vector3.new(-1,0,0) end
+            if moveState.D then dir += Vector3.new(1,0,0) end
+            return dir
+        end
+
+        -- enable/disable functions
+        local function enableFreecamLocal()
+            if freecamEnabled then return end
+            -- update character references
+            local char = player.Character or player.CharacterAdded:Wait()
+            humanoid = char:FindFirstChildOfClass("Humanoid")
+            hrp = char:FindFirstChild("HumanoidRootPart")
+            if humanoid then
+                wasPlatformStand = humanoid.PlatformStand
+                humanoid.PlatformStand = true -- freeze character movement
+            end
+
+            rotation = Vector2.new(0, cam.CFrame:ToEulerAnglesYXZ()) -- reset rotation approximation
+
+            -- show gui
+            gui.Enabled = true
+            freecamEnabled = true
+            updateSpeedLabel()
+
+            -- mouse wheel speed adjust
+            connInputChanged = UserInputService.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseWheel and freecamEnabled then
+                    speed = math.clamp(speed + input.Position.Z * 0.5, 0.5, 25)
+                    updateSpeedLabel()
+                end
+                -- touch movement for rotation
+                if input.UserInputType == Enum.UserInputType.Touch and freecamEnabled then
+                    if touchRotActive and input.UserInputState == Enum.UserInputState.Change then
+                        local delta = input.Delta or Vector2.new(0,0)
+                        rotation = rotation + Vector2.new(-delta.Y * 0.01, -delta.X * 0.01)
+                        rotation = Vector2.new(math.clamp(rotation.X, -pitchLimit, pitchLimit), rotation.Y)
+                    end
+                end
+            end)
+
+            -- start render loop
+            connRender = RunService.RenderStepped:Connect(function(dt)
+                if not freecamEnabled then return end
+                -- mouse rotation (PC)
+                local delta = UserInputService:GetMouseDelta()
+                if not UserInputService.TouchEnabled or not UserInputService.TouchEnabled and UserInputService.MouseEnabled then
+                    rotation = rotation + Vector2.new(-delta.Y * rotSpeed, -delta.X * rotSpeed)
+                    rotation = Vector2.new(math.clamp(rotation.X, -pitchLimit, pitchLimit), rotation.Y)
+                end
+
+                -- compute orientation
+                local camPos = cam.CFrame.Position
+                local lookCFrame = CFrame.new(camPos) * CFrame.Angles(rotation.X, rotation.Y, 0)
+                -- move based on W/A/S/D
+                local localMove = getKeyboardMove()
+                if localMove.Magnitude > 0 then
+                    localMove = localMove.Unit * speed * dt * 60 -- scale
+                    cam.CFrame = lookCFrame + lookCFrame:VectorToWorldSpace(localMove)
+                else
+                    cam.CFrame = lookCFrame
+                end
+            end)
+
+            -- input began/ended for keyboard W/A/S/D
+            connInputBegan = UserInputService.InputBegan:Connect(function(input, gpe)
+                if gpe then return end
+                if input.UserInputType == Enum.UserInputType.Keyboard then
+                    local k = input.KeyCode
+                    if k == Enum.KeyCode.W then moveState.W = true end
+                    if k == Enum.KeyCode.S then moveState.S = true end
+                    if k == Enum.KeyCode.A then moveState.A = true end
+                    if k == Enum.KeyCode.D then moveState.D = true end
+                elseif input.UserInputType == Enum.UserInputType.Touch then
+                    -- if touch on right half, start rotating
+                    local touch = input
+                    if touch then
+                        if touch.Position.X > (workspace.CurrentCamera.ViewportSize.X * 0.5) then
+                            touchRotActive = true
+                            touchPanId = touch.UserInputType and touch -- store id (we rely on event objects)
+                        end
+                    end
+                end
+            end)
+
+            connInputEnded = UserInputService.InputEnded:Connect(function(input, gpe)
+                if input.UserInputType == Enum.UserInputType.Keyboard then
+                    local k = input.KeyCode
+                    if k == Enum.KeyCode.W then moveState.W = false end
+                    if k == Enum.KeyCode.S then moveState.S = false end
+                    if k == Enum.KeyCode.A then moveState.A = false end
+                    if k == Enum.KeyCode.D then moveState.D = false end
+                elseif input.UserInputType == Enum.UserInputType.Touch then
+                    touchRotActive = false
+                end
+            end)
+        end
+
+        local function disableFreecamLocal()
+            if not freecamEnabled then return end
+            -- cleanup
+            cleanup()
+            -- restore camera
+            pcall(function()
+                cam.CameraType = Enum.CameraType.Custom
+            end)
+        end
+
+        -- tool events
+        tool.Equipped:Connect(function()
+            enableFreecamLocal()
+        end)
+
+        tool.Unequipped:Connect(function()
+            disableFreecamLocal()
+        end)
+
+        -- also clean up if tool removed/dropped
+        tool.AncestryChanged:Connect(function(_, parent)
+            if not parent then
+                -- tool removed/dropped from game; disable freecam
+                disableFreecamLocal()
+            end
+        end)
+
+        -- extra safety: if player respawns, disable and re-enable when appropriate
+        player.CharacterAdded:Connect(function(char)
+            -- small delay to ensure humanoid present
+            task.wait(0.5)
+            if freecamEnabled then
+                -- disable to avoid broken references
+                disableFreecamLocal()
+            end
+        end)
+
+        -- done: notify
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "FreeCamByXenoHub",
+                Text = "Tool envanterine eklendi. Eline al to enable freecam.",
+                Duration = 4
+            })
+        end)
     end
 })
 
