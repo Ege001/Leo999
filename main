@@ -2428,7 +2428,7 @@ RGBTab:AddToggle({
     end
 })
 
-local CarTab = Window:MakeTab({"🚗 Veículo", "car"})
+local CarTab = Window:MakeTab({"Car 🚗 ", "car"})
 
 CarTab:AddSection({ "🛞 Decal Pneu" })
 
