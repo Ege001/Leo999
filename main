@@ -230,7 +230,7 @@ infoTab:AddSection({ "📜 Komut Dosyası Bilgileri" })
 infoTab:AddParagraph({ "👤 Script Sahibi:", "EgeKazak_Real1" })
 infoTab:AddParagraph({ "🏷️ Hub & Geliştirici:", "XENO HUB & EgeKazak_Real1" })
 
-infoTab:AddSection({ "Bilgi" })
+infoTab:AddSection({ "💡 Bilgi" })
 
 local function createInfoBlock(tab, title, initial)
     local block
