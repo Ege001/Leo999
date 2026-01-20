@@ -300,25 +300,27 @@ end
 task.spawn(function()
     while true do
         task.wait(0.5)
-        setBlockText(welcomeBlock, "Xeno Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
+        setBlockText(welcomeBlock, "👑 Xeno Hub'a Hoş Geldiniz | Tarih:", getCurrentDate())
+
         local e = os.clock() - startClock
         local h = math.floor(e/3600)
         local m = math.floor((e%3600)/60)
         local s = math.floor(e%60)
-        setBlockText(timerBlock, "Script Kullanım Süresi: ", string.format("%02d:%02d:%02d", h, m, s))
-        setBlockText(fpsBlock, "FPS'niz: ", "FPS: " .. tostring(currentFPS))
-        setBlockText(playersBlock, "Sunucudaki Oyuncu Sayısı: ", tostring(#Players:GetPlayers()))
-        setBlockText(gameBlock, "Sizin Oyununuz: ", getCurrentGameName())
+        setBlockText(timerBlock, "⏱️ Script Kullanım Süresi:", string.format("%02d:%02d:%02d", h, m, s))
+
+        setBlockText(fpsBlock, "📊 FPS'niz:", "FPS: " .. tostring(currentFPS))
+        setBlockText(playersBlock, "👥 Sunucudaki Oyuncu Sayısı:", tostring(#Players:GetPlayers()))
+        setBlockText(gameBlock, "🎮 Oynadığınız Oyun:", getCurrentGameName())
     end
 end)
 
 local function refreshPlayers()
-    setBlockText(playersBlock, "Sunucudaki Oyuncu Sayısı: ", tostring(#Players:GetPlayers()))
+    setBlockText(playersBlock, "👥 Sunucudaki Oyuncu Sayısı:", tostring(#Players:GetPlayers()))
 end
 Players.PlayerAdded:Connect(refreshPlayers)
 Players.PlayerRemoving:Connect(refreshPlayers)
 
-infoTab:AddParagraph({"KULLANILAN EXECUTOR: " .. (pcall(identifyexecutor) and identifyexecutor()) or "Bilinmiyor"})
+infoTab:AddParagraph({ "🖥️ Kullanılan Executor: " .. (pcall(identifyexecutor) and identifyexecutor() or "Bilinmiyor") })
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
