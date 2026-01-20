@@ -2214,7 +2214,7 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local RGBTab = Window:MakeTab({
-    Title = "🌈 RGB",
+    Title = "RGB 🌈",
     Icon = "rbxassetid://97889814027474"
 })
 
