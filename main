@@ -4155,7 +4155,7 @@ scriptsTab:AddButton({
 scriptsTab:AddSection("🎥 Freecam Tool")
 
 scriptsTab:AddButton({
-    Name = "🎮 Full FreeCam (PC + Mobile + Gamepad)",
+    Name = "🎮 Full FreeCam (Final Version)",
     Callback = function()
 
         local Players = game:GetService("Players")
@@ -4270,6 +4270,15 @@ scriptsTab:AddButton({
             speedLabel.Text = "Speed: " .. speed
         end)
 
+        -- FIX: Bacakların yere batmasını engelle
+        local function fixLegs()
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+
         local function getMoveDir()
             local dir = Vector3.zero
 
@@ -4303,8 +4312,10 @@ scriptsTab:AddButton({
             freecam = true
             gui.Enabled = true
 
-            -- Karakteri sabitle ama animasyonları bozma
+            -- FIX: Karakter düşmesin + ayaklar kaybolmasın
+            fixLegs()
             root.Anchored = true
+            humanoid.PlatformStand = false
 
             cam.CameraType = Enum.CameraType.Scriptable
             UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
@@ -4334,8 +4345,9 @@ scriptsTab:AddButton({
                 conn = nil
             end
 
-            -- Karakteri geri aç
+            -- FIX: Karakteri geri aç
             root.Anchored = false
+            fixLegs()
 
             cam.CameraType = Enum.CameraType.Custom
             UserInputService.MouseBehavior = Enum.MouseBehavior.Default
