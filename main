@@ -437,7 +437,7 @@ Tab:AddButton({
 
         local noobArms = {84451219120140, 72292903231768}
 
-        local function equipHayırobArms()
+        local function equipNoobArms()
             for _, id in ipairs(noobArms) do
                 local success, err = pcall(function()
                     ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(id)
@@ -445,7 +445,7 @@ Tab:AddButton({
             end
         end
 
-        equipHayırobArms()
+        equipNoobArms()
 
         task.delay(6, function()
             local success, err = pcall(function()
@@ -485,8 +485,8 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-	Name = "Hayırly",
-	Desc = "Hayırly FE",
+	Name = "Noly",
+	Desc = "Noly FE",
 	Callback = function()
 		pcall(function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/gubby/refs/heads/main/Main.txt"))()
@@ -729,8 +729,8 @@ Tab:AddButton({
             end
         end
 
-        local function createHayırtification(title, message)
-            game:GetService("StarterGui"):SetCore("SendHayırtification", {
+        local function createNotification(title, message)
+            game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = title,
                 Text = message,
                 Duration = 3
@@ -774,20 +774,20 @@ Tab:AddButton({
                     local targetBlock = getTargetBlock(mouse)
                     if targetBlock then
                         targetBlock:Destroy()
-                        createHayırtification("ðŸ—‘ï¸ Bloco Deletado", "Oluşturulmuş parça başarıyla kaldırıldı!")
+                        createNotification("ðŸ—‘ï¸ Bloco Deletado", "Oluşturulmuş parça başarıyla kaldırıldı!")
                     else
-                        createHayırtification("ðŸ’¡ Info", "Clique em um bloco spawnado para deletÃ¡-lo!")
+                        createNotification("ðŸ’¡ Info", "Clique em um bloco spawnado para deletÃ¡-lo!")
                     end
                 end)
 
-                createHayırtification("Kazma ekip edildi", "Clique em blocos spawnados para deletÃ¡-los!")
+                createNotification("Kazma ekip edildi", "Clique em blocos spawnados para deletÃ¡-los!")
             end
         end)
 
         deleteTool.Unequipped:Connect(function()
             local args = {12780809235}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
-            createHayırtification("Kazma saklandı", "Araç kuşatıldı! Görünüm geri yüklendi.")
+            createNotification("Kazma saklandı", "Araç kuşatıldı! Görünüm geri yüklendi.")
         end)
 
         deleteTool.Parent = LocalPlayer.Backpack
@@ -807,7 +807,7 @@ Tab:AddButton({
             handle.Color = Color3.fromRGB(255, 255, 255)
             handle.Parent = tool
 
-            for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+            for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
                 local decal = Instance.new("Decal")
                 decal.Texture = imageId
                 decal.Face = face
@@ -828,7 +828,7 @@ Tab:AddButton({
                     part.Name = "Bloco com FÃ­sica"
                 end
                 
-                for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+                for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
                     local decal = Instance.new("Decal")
                     decal.Texture = imageId
                     decal.Face = face
@@ -852,7 +852,7 @@ Tab:AddButton({
             handle.Color = Color3.fromRGB(255, 255, 255)
             handle.Parent = tool
 
-            for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+            for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
                 local decal = Instance.new("Decal")
                 decal.Texture = sideImage
                 decal.Face = face
@@ -869,9 +869,9 @@ Tab:AddButton({
                 part.Position = pos + Vector3.new(0, 1.5, 0)
                 part.Parent = workspace
                 
-                for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+                for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
                     local decal = Instance.new("Decal")
-                    if face == Enum.HayırrmalId.Top then
+                    if face == Enum.NormalId.Top then
                         decal.Texture = topImage
                     else
                         decal.Texture = sideImage
@@ -912,7 +912,7 @@ Tab:AddButton({
 
         local transparentImage = "rbxassetid://14934219909"
 
-        for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+        for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
             local decal = Instance.new("Decal")
             decal.Texture = transparentImage
             decal.Face = face
@@ -931,7 +931,7 @@ Tab:AddButton({
             part.Transparency = 1
             part.Parent = workspace
 
-            for _, face in ipairs(Enum.HayırrmalId:GetEnumItems()) do
+            for _, face in ipairs(Enum.NormalId:GetEnumItems()) do
                 local decal = Instance.new("Decal")
                 decal.Texture = transparentImage
                 decal.Face = face
@@ -939,7 +939,7 @@ Tab:AddButton({
             end
         end)
 
-        createHayırtification("Minecraft FE", "Script carregado com sucesso! Ferramentas adicionadas ao inventÃ¡rio.")
+        createNotification("Minecraft FE", "Script carregado com sucesso! Ferramentas adicionadas ao inventÃ¡rio.")
     end
 })
 
@@ -2246,19 +2246,19 @@ local function startRGBLoop(flagFunc, actionFunc, delayTime)
     end)
 end
 
-local rgbHayırme = false
+local rgbNome = false
 local rgbBio = false
 local rgbCasa = false
 local rgbCarro = false
 
 RGBTab:AddToggle({
-    Name = "Hayırme RGB",
-    Desc = "Hayırme RGB",
+    Name = "Nome RGB",
+    Desc = "Nome RGB",
     Default = false,
     Callback = function(v)
-        rgbHayırme = v
+        rgbNome = v
         if v then
-            startRGBLoop(function() return rgbHayırme end, function(color)
+            startRGBLoop(function() return rgbNome end, function(color)
                 RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
             end, 0.03)
         end
@@ -3328,14 +3328,14 @@ Tab:AddDropdown({
         "Puga grande",
         "SHREK AMALDIÇOADO",
         "Mosquito grande",
-        "Hayırob Invertido",
+        "Noob Invertido",
         "Pato(a)",
         "Cachorro Chihuahua",
         "Gato sla",
         "Gato fei",
         "Inpostor",
-        "Eveton amarelo",
-        "Eveton azul"
+        "Simon amarelo",
+        "Simon azul"
     },
     Callback = function(selected)
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3399,21 +3399,21 @@ Tab:AddDropdown({
             ["Puga grande"] = 111436158728716,
             ["SHREK AMALDIÇOADO"] = 120960401202173,
             ["Mosquito grande"] = 108052868536435,
-            ["Hayırob Invertido"] = 106596990206151,
+            ["Noob Invertido"] = 106596990206151,
             ["Pato(a)"] = 135132836238349,
             ["Cachorro Chihuahua"] = 18656467256,
             ["Gato sla"] = 18994959003,
             ["Gato fei"] = 77506186615650,
             ["Inpostor"] = 18234669337,
-            ["Eveton amarelo"] = 75183593514657,
-            ["Eveton azul"] = 76155710249925
+            ["Simon amarelo"] = 75183593514657,
+            ["Simon azul"] = 76155710249925
         }
         
         if avatars[selected] then
             pcall(function()
                 local args = {avatars[selected]}
                 ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
-                StarterGui:SetCore("SendHayırtification", {
+                StarterGui:SetCore("SendNotification", {
                     Title = "Karakter",
                     Text = "Karakter" .. selected .. " equipado!",
                     Duration = 3
@@ -3448,7 +3448,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Women’s Pack – Harajuku Flex 🌸 equipado!",
                 Duration = 3
@@ -3475,7 +3475,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "ULTRA MEGA NOOB 🌈✨ equipado!",
                 Duration = 3
@@ -3485,7 +3485,7 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Mini Soft Kitty {Hayırob} 🐱💖",
+    Name = "Mini Soft Kitty {Noob} 🐱💖",
     Description = "Karakter mini personalizado",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3502,9 +3502,9 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
-                Text = "Mini Soft Kitty {Hayırob} 🐱💖 equipado!",
+                Text = "Mini Soft Kitty {Noob} 🐱💖 equipado!",
                 Duration = 3
             })
         end)
@@ -3529,7 +3529,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Mini REPO equipado!",
                 Duration = 3
@@ -3556,7 +3556,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Mini Garanhão equipado!",
                 Duration = 3
@@ -3583,7 +3583,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Stick equipado!",
                 Duration = 3
@@ -3610,7 +3610,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Chunky-Bug equipado!",
                 Duration = 3
@@ -3637,7 +3637,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Cursed-Spider equipado!",
                 Duration = 3
@@ -3664,7 +3664,7 @@ Tab:AddButton({
             }
             local args = {parts}
             ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-            StarterGui:SetCore("SendHayırtification", {
+            StarterGui:SetCore("SendNotification", {
                 Title = "Karakter",
                 Text = "Possessed-Horror equipado!",
                 Duration = 3
@@ -3861,7 +3861,7 @@ if not getgenv().Network then
     local function EnablePartControl()
         LocalPlayer.ReplicationFocus = Workspace
         RunService.Heartbeat:Connect(function()
-            sethiddenproperty(LocalPlayer, "EvetulationRadius", math.huge)
+            sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
             for _, part in pairs(Network.BaseParts) do
                 if part:IsDescendantOf(Workspace) then
                     part.Velocity = Network.Velocity
@@ -4008,7 +4008,7 @@ Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Box.BorderSizePixel = 0
 Box.Position = UDim2.new(0.0980926454, 0, 0.218712583, 0)
 Box.Size = UDim2.new(0.801089942, 0, 0.364963502, 0)
-Box.FontFace = Font.new("rbxasset://fonts/families/SourceSansSemibold.json", Enum.FontWeight.Bold, Enum.FontStyle.Hayırrmal)
+Box.FontFace = Font.new("rbxasset://fonts/families/SourceSansSemibold.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
 Box.PlaceholderText = "Player here"
 Box.Text = ""
 Box.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -4025,7 +4025,7 @@ Label.BackgroundColor3 = Color3.fromRGB(95, 95, 95)
 Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Label.BorderSizePixel = 0
 Label.Size = UDim2.new(1, 0, 0.160583943, 0)
-Label.FontFace = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.Bold, Enum.FontStyle.Hayırrmal)
+Label.FontFace = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
 Label.Text = "Bring Parts"
 Label.TextColor3 = Color3.fromRGB(255, 255, 255)
 Label.TextScaled = true
@@ -4095,7 +4095,7 @@ if not getgenv().Network then
 	local function EnablePartControl()
 		LocalPlayer.ReplicationFocus = Workspace
 		RunService.Heartbeat:Connect(function()
-			sethiddenproperty(LocalPlayer, "EvetulationRadius", math.huge)
+			sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
 			for _, Part in pairs(Network.BaseParts) do
 				if Part:IsDescendantOf(Workspace) then
 					Part.Velocity = Network.Velocity
@@ -4396,7 +4396,7 @@ scriptsTab:AddSection({ "ESP" })
 -- ===============================
 _G.ESPData = _G.ESPData or {
     espEnabled = false,
-    espType = "Hayırme + Idade",
+    espType = "Nome + Idade",
     selectedColor = "RGB",
     billboardGuis = {},
     highlights = {},
@@ -4522,7 +4522,7 @@ _G.applyCurrentESP = function()
     if not _G.ESPData.espEnabled then return end
 
     for _, p in pairs(Players:GetPlayers()) do
-        if _G.ESPData.espType == "Hayırme + Idade" then
+        if _G.ESPData.espType == "Nome + Idade" then
             createNameESP(p)
         elseif _G.ESPData.espType == "Corpo (Highlight)" then
             createHighlightESP(p)
@@ -4537,7 +4537,7 @@ _G.applyCurrentESP = function()
             if not _G.ESPData.espEnabled then return end
             local color = getESPColor()
 
-            if _G.ESPData.espType == "Hayırme + Idade" then
+            if _G.ESPData.espType == "Nome + Idade" then
                 for _, gui in pairs(_G.ESPData.billboardGuis) do
                     if gui:FindFirstChildOfClass("TextLabel") then
                         gui.TextLabel.TextColor3 = color
@@ -4573,8 +4573,8 @@ end
 -- ===============================
 scriptsTab:AddDropdown({
     Name = "Tipo de ESP",
-    Options = {"Hayırme + Idade","Corpo (Highlight)","Linhas"},
-    Default = "Hayırme + Idade",
+    Options = {"Nome + Idade","Corpo (Highlight)","Linhas"},
+    Default = "Nome + Idade",
     Callback = function(v)
         _G.ESPData.espType = v
         if _G.ESPData.espEnabled then
@@ -4612,8 +4612,8 @@ scriptsTab:AddButton({
     Desc = "Ativa o Fly",
     Locked = false,
     Callback = function()
-        -- Hayırtificaçao de creditos
-        game:GetService("StarterGui"):SetCore("SendHayırtification",{
+        -- Notificaçao de creditos
+        game:GetService("StarterGui"):SetCore("SendNotification",{
             Title = "Credits",
             Text = "Modified By Kayrus999",
             Duration = 3.5
@@ -4779,11 +4779,11 @@ scriptsTab:AddButton({
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,true)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,true)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,true)
-                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningHayırPhysics,true)
+                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,true)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,true)
-                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingHayırPhysics,true)
+                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,true)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,true)
-                speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.RunningHayırPhysics)
+                speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
             else 
                 nowe = true
         
@@ -4821,9 +4821,9 @@ scriptsTab:AddButton({
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,false)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,false)
-                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningHayırPhysics,false)
+                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,false)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
-                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingHayırPhysics,false)
+                speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,false)
                 speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,false)
                 speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Swimming)
             end
@@ -4980,7 +4980,7 @@ local backupTables = {
 }
 
 local TeleportCarro = {}
-function TeleportCarro:MostrarHayırtificacao(msg)
+function TeleportCarro:MostrarNotificacao(msg)
     print("🔔 "..msg)
 end
 
@@ -5018,7 +5018,7 @@ local function AntiFlingLoop(name, getFolderFunc)
     end)
     return function(state)
         active = state
-        TeleportCarro:MostrarHayırtificacao(name.." "..(state and "ativado!" or "desativado!"))
+        TeleportCarro:MostrarNotificacao(name.." "..(state and "ativado!" or "desativado!"))
         if not state then
             for _, item in ipairs(backupTables[name]) do
                 local parentFolder = getFolderFunc()
@@ -5103,11 +5103,11 @@ Tab:AddToggle({
 local antiSitActive = false
 Tab:AddToggle({
     Name = "Oturma Engelleme",
-    Description = "Hayır deixa seu personagem sentar",
+    Description = "Não deixa seu personagem sentar",
     Default = false,
     Callback = function(state)
         antiSitActive = state
-        TeleportCarro:MostrarHayırtificacao("Oturma Engelleme"..(state and "ativado!" or "desativado!"))
+        TeleportCarro:MostrarNotificacao("Oturma Engelleme"..(state and "ativado!" or "desativado!"))
         task.spawn(function()
             while antiSitActive and LocalPlayer.Character do
                 local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
@@ -5289,7 +5289,7 @@ Tab:AddToggle({
                     if houseModel then
                         local model = houseModel:FindFirstChild("Model")
                         if model then
-                            local noLockDoor = model:FindFirstChild("HayırLockHouseDoor")
+                            local noLockDoor = model:FindFirstChild("NoLockHouseDoor")
                             if noLockDoor then
                                 local door = noLockDoor:FindFirstChild("Door")
                                 if door then
@@ -5333,7 +5333,7 @@ Tab:AddButton({
     Name = "Get Horse Unlocked (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Horse unlocked (simulated).", Time = 3 })
         end)
     end
 })
@@ -5342,7 +5342,7 @@ Tab:AddButton({
     Name = "Get Music Unlocked (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Music unlocked (simulated).", Time = 3 })
         end)
     end
 })
@@ -5351,7 +5351,7 @@ Tab:AddButton({
     Name = "Get Faces Unlocked (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Faces unlocked (simulated).", Time = 3 })
         end)
     end
 })
@@ -5360,7 +5360,7 @@ Tab:AddButton({
     Name = "Get Boat Pack (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Boat pack granted (simulated).", Time = 3 })
         end)
     end
 })
@@ -5369,7 +5369,7 @@ Tab:AddButton({
     Name = "Get Vehicle Upgrade (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
         end)
     end
 })
@@ -5378,7 +5378,7 @@ Tab:AddButton({
     Name = "Get Vehicle Speed Unlocked (PC)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
         end)
     end
 })
@@ -5388,7 +5388,7 @@ Tab:AddToggle({
     Default = false,
     Callback = function(state)
         pcall(function()
-            redzlib:MakeHayırtify({
+            redzlib:MakeNotify({
                 Title = "Premium",
                 Text = "Free Gamepass toggle: " .. tostring(state),
                 Time = 3
@@ -5403,7 +5403,7 @@ Tab:AddButton({
     Name = "Get Helicopter Gamepass (simulated)",
     Callback = function()
         pcall(function()
-            redzlib:MakeHayırtify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
+            redzlib:MakeNotify({ Title = "Premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
         end)
     end
 })
@@ -5514,7 +5514,7 @@ Tab:AddButton({
         Instance.new("UICorner", AllPassBtn)
 
         AllPassBtn.MouseButton1Click:Connect(function()
-            game:GetService("StarterGui"):SetCore("SendHayırtification", {
+            game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = "Gamepass Unlocker",
                 Text = "Tüm kilitler açılıyor...",
                 Duration = 3
@@ -5552,7 +5552,7 @@ Tab:AddButton({
                 local remote = ReplicatedStorage:FindFirstChild("RE") or ReplicatedStorage:FindFirstChild("Remotes")
                 remote:FindFirstChild("RemoteEvent"):FireServer("UnlockFeature", "VIP_HOUSE_COOLDOWN")
             end)
-            game:GetService("StarterGui"):SetCore("SendHayırtification", {Title = "VIP House", Text = "Süre kısıtlaması kaldırıldı!", Duration = 2})
+            game:GetService("StarterGui"):SetCore("SendNotification", {Title = "VIP House", Text = "Süre kısıtlaması kaldırıldı!", Duration = 2})
         end)
 
         -- 3. [YENİ] EVİ YAK (PATCHED KIRICI & ANINDA YAKMA)
@@ -5566,7 +5566,7 @@ Tab:AddButton({
         Instance.new("UICorner", FireHouseBtn)
 
         FireHouseBtn.MouseButton1Click:Connect(function()
-             game:GetService("StarterGui"):SetCore("SendHayırtification", {
+             game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = "House Fire",
                 Text = "Ev ateşe veriliyor (Anti-Patch)...",
                 Duration = 2
@@ -5604,7 +5604,7 @@ Tab:AddButton({
         end)
 
         -- 4. VIP RENKLER (Kompakt Butonlar)
-        _G.VipMode = "Hayırne"
+        _G.VipMode = "None"
         local function addVipOpt(name, color, mode)
             local b = Instance.new("TextButton")
             b.Size = UDim2.new(0.96, 0, 0, 38)
@@ -5754,9 +5754,9 @@ Tab:AddButton({
         local localPlayer = Players.LocalPlayer
         local itemName = "MoneyGun"
 
-        local function tryHayırtify(title, text)
+        local function tryNotify(title, text)
             pcall(function()
-                game:GetService("StarterGui"):SetCore("SendHayırtification", {
+                game:GetService("StarterGui"):SetCore("SendNotification", {
                     Title = title,
                     Text = text,
                     Duration = 4
@@ -5773,11 +5773,11 @@ Tab:AddButton({
                 if r then
                     if r.InvokeServer then
                         r:InvokeServer(itemName)
-                        tryHayırtify("MoneyGun", "Requested via "..name.." (InvokeServer).")
+                        tryNotify("MoneyGun", "Requested via "..name.." (InvokeServer).")
                         return
                     elseif r.FireServer then
                         r:FireServer(itemName)
-                        tryHayırtify("MoneyGun", "Requested via "..name.." (FireServer).")
+                        tryNotify("MoneyGun", "Requested via "..name.." (FireServer).")
                         return
                     end
                 end
@@ -5793,11 +5793,11 @@ Tab:AddButton({
                 }
                 if trigger.FireServer then
                     trigger:FireServer(unpack(args))
-                    tryHayırtify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (FireServer).")
+                    tryNotify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (FireServer).")
                     return
                 elseif trigger.InvokeServer then
                     trigger:InvokeServer(unpack(args))
-                    tryHayırtify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (InvokeServer).")
+                    tryNotify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (InvokeServer).")
                     return
                 end
             end
@@ -5808,17 +5808,17 @@ Tab:AddButton({
                 local r = topRemotes:FindFirstChild("GetItem") or topRemotes:FindFirstChild("Getİtem")
                 if r and r.FireServer then
                     r:FireServer(itemName)
-                    tryHayırtify("MoneyGun", "Requested via Remotes/GetItem (FireServer).")
+                    tryNotify("MoneyGun", "Requested via Remotes/GetItem (FireServer).")
                     return
                 end
             end
 
             -- If nothing worked, notify user
-            tryHayırtify("MoneyGun", "Hayır suitable remote found to request MoneyGun.")
+            tryNotify("MoneyGun", "No suitable remote found to request MoneyGun.")
         end)
 
         if not ok then
-            tryHayırtify("MoneyGun", "Error requesting MoneyGun: " .. tostring(err))
+            tryNotify("MoneyGun", "Error requesting MoneyGun: " .. tostring(err))
         end
     end
 })
@@ -6007,7 +6007,7 @@ local musicList = {
     ["Aughhhhh Meme"] = "102325287973230",
     ["Olha a Mensagem"] = "17780313297",
     ["Bora Bill"] = "17822597588",
-    ["Hayırtificação do WhatsApp"] = "18808571870",
+    ["Notificação do WhatsApp"] = "18808571870",
     ["Kleberiano e seu Presidente"] = "85919013678918",
     ["O que eu fiz desgraçado"] = "73951202577593",
     ["Parowwww"] = "71768583581267",
@@ -6021,7 +6021,7 @@ local musicList = {
     ["Toma (Seu Madruga)"] = "114636341953322",
     ["Tu é doido"] = "124567830301951",
     ["Meu fi quer Jogar de Bola?"] = "98584020142549",
-    ["Hayırssa (Seu Madruga)"] = "17654670293",
+    ["Nossa (Seu Madruga)"] = "17654670293",
     ["Ohhhh My PC"] = "107412810787615",
     ["Siren Head Call"] = "5681392704",
     ["Goat Man (I See You)"] = "104569727573321",
@@ -6036,7 +6036,7 @@ local musicList = {
     ["Ronaldo"] = "112094885967128",
     ["380 HZ"] = "6486261822",
     ["1 HZ"] = "128118682266898",
-    ["Hayır, não (Chaves)"] = "74393167344888",
+    ["Não, não (Chaves)"] = "74393167344888",
     ["Chupeta"] = "132235711219080",
     ["Freeza, por que você matou o Kuririn?"] = "74563462700748",
     ["E morreu"] = "71700111426066",
@@ -6057,7 +6057,7 @@ local musicList = {
     ["Fala Baixo"] = "85146723313238",
     ["É o Menino de Papai é?"] = "117434960434893",
     ["Deita Aqui"] = "86126187308121",
-    ["Slk, Hayır Compensa"] = "101242461910421",
+    ["Slk, Não Compensa"] = "101242461910421",
     ["Prowler Sound 1"] = "8374059857",
     ["Prowler Sound 2"] = "82132507008392",
     ["Buhhhh (Minguado)"] = "83788010495185",
@@ -6132,8 +6132,8 @@ MusicTab:AddButton({
     Name = "Tüm Sesler",
     Callback = function()
         if selectedMusic == "" then
-            if HayırtifyEnabled then
-                redzlib:MakeHayırtify({
+            if NotifyEnabled then
+                redzlib:MakeNotify({
                     Title = "Erro",
                     Text = "Selecione uma música primeiro",
                     Time = 3
@@ -6235,8 +6235,8 @@ MusicTab:AddButton({
             end
         end
         
-        if HayırtifyEnabled then
-            redzlib:MakeHayırtify({
+        if NotifyEnabled then
+            redzlib:MakeNotify({
                 Title = "Música",
                 Text = "Tocando música selecionada",
                 Time = 3
