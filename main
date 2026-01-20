@@ -4,9 +4,9 @@ local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
-local ROXO_PRINCIPAL = Color3.fromRGB(160, 80, 255) -- Ana canlı mor
-local ROXO_MEDIO     = Color3.fromRGB(120, 60, 200) -- Orta ton mor
-local ROXO_ESCURO    = Color3.fromRGB(60, 30, 120)  -- Koyu mor (arka plan için ideal)
+local ROXO_PRINCIPAL = Color3.fromRGB(145, 90, 230) -- VIP ana mor
+local ROXO_MEDIO     = Color3.fromRGB(110, 70, 190) -- Yumuşak orta mor
+local ROXO_ESCURO    = Color3.fromRGB(55, 35, 110)  -- Koyu premium mor
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "XenoHubLoading"
