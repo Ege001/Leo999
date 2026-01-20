@@ -4148,16 +4148,129 @@ scriptsTab:AddButton({
     Desc = "Ativa o Fly",
     Locked = false,
     Callback = function()
-        -- Fly kodu aynen korunmuştur
+    	loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
     end
 })
 
-scriptsTab:AddSection({ "💾 Sunucuyu Kaydet" })
+scriptsTab:AddSection({ "🎥 Freecam Tool" })
 
 scriptsTab:AddButton({
-    Name = "💾 Sunucuyu Kaydet",
+    Name = "🎥 FreeCam Tool Al",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/ShadowsHubseila/Save-server/refs/heads/main/Main%20(4).txt"))()
+        local Players = game:GetService("Players")
+        local UserInputService = game:GetService("UserInputService")
+        local RunService = game:GetService("RunService")
+        local player = Players.LocalPlayer
+
+        -- Tool oluştur
+        local tool = Instance.new("Tool")
+        tool.Name = "FreeCamByXenoHub"
+        tool.RequiresHandle = false
+        tool.CanBeDropped = true
+        tool.TextureId = "rbxassetid://130069738634749"
+        tool.Parent = player.Backpack
+
+        local cam = workspace.CurrentCamera
+        local freecamEnabled = false
+        local baseSpeed = 1
+        local speed = baseSpeed
+        local rotSpeed = 0.002
+        local rotation = Vector2.zero
+        local conn
+        local scrollConn
+        local touchMove = Vector2.zero
+        local gamepadMove = Vector3.zero
+
+        -- Mobil joystick
+        UserInputService.TouchMoved:Connect(function(input, gp)
+            if freecamEnabled then
+                touchMove = input.Delta
+            end
+        end)
+
+        -- Scroll ile hız ayarı
+        scrollConn = UserInputService.InputChanged:Connect(function(input, gp)
+            if freecamEnabled and input.UserInputType == Enum.UserInputType.MouseWheel then
+                speed = math.clamp(speed + input.Position.Z * 0.5, 0.5, 10)
+            end
+        end)
+
+        local function getMoveDirection()
+            local dir = Vector3.zero
+
+            -- Klavye
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir += Vector3.new(0, 0, -1) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir += Vector3.new(0, 0, 1) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir += Vector3.new(-1, 0, 0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir += Vector3.new(1, 0, 0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0, 1, 0) end
+            if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then dir += Vector3.new(0, -1, 0) end
+
+            -- Mobil
+            if touchMove.Magnitude > 0 then
+                dir += Vector3.new(touchMove.X * 0.01, 0, -touchMove.Y * 0.01)
+                touchMove = Vector2.zero
+            end
+
+            -- Controller
+            local gamepad = UserInputService:GetGamepadState(Enum.UserInputType.Gamepad1)
+            for _, input in ipairs(gamepad) do
+                if input.KeyCode == Enum.KeyCode.Thumbstick1 then
+                    dir += Vector3.new(input.Position.X, 0, -input.Position.Y)
+                elseif input.KeyCode == Enum.KeyCode.Thumbstick2 then
+                    rotation = rotation + Vector2.new(-input.Position.Y, -input.Position.X) * 0.05
+                end
+            end
+
+            return dir
+        end
+
+        local function enableFreecam()
+            if freecamEnabled then return end
+            freecamEnabled = true
+
+            cam.CameraType = Enum.CameraType.Scriptable
+            cam.CFrame = cam.CFrame
+
+            UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+            UserInputService.MouseIconEnabled = false
+
+            conn = RunService.RenderStepped:Connect(function(dt)
+                local delta = UserInputService:GetMouseDelta()
+                rotation = rotation + Vector2.new(-delta.Y, -delta.X) * rotSpeed
+                rotation = Vector2.new(
+                    math.clamp(rotation.X, -math.rad(85), math.rad(85)),
+                    rotation.Y
+                )
+
+                local cf = CFrame.new(cam.CFrame.Position)
+                    * CFrame.Angles(0, rotation.Y, 0)
+                    * CFrame.Angles(rotation.X, 0, 0)
+
+                local moveDir = getMoveDirection()
+                cam.CFrame = cf + cf:VectorToWorldSpace(moveDir * speed)
+            end)
+        end
+
+        local function disableFreecam()
+            if not freecamEnabled then return end
+            freecamEnabled = false
+
+            if conn then conn:Disconnect() end
+            conn = nil
+
+            cam.CameraType = Enum.CameraType.Custom
+            UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+            UserInputService.MouseIconEnabled = true
+        end
+
+        tool.Equipped:Connect(function()
+            enableFreecam()
+        end)
+
+        tool.Unequipped:Connect(function()
+            disableFreecam()
+        end)
     end
 })
 
