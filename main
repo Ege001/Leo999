@@ -53,17 +53,9 @@ for i = 1, 35 do
 
     task.spawn(function()
         while ScreenGui.Parent do
-            TweenService:Create(
-                ponto,
-                TweenInfo.new(math.random(2,3), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-                {Size = UDim2.new(0,9,0,9), BackgroundTransparency = 0.05}
-            ):Play()
+            TweenService:Create(ponto,TweenInfo.new(math.random(2,3),Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Size=UDim2.new(0,9,0,9),BackgroundTransparency=0.05}):Play()
             task.wait(1.5)
-            TweenService:Create(
-                ponto,
-                TweenInfo.new(math.random(2,3), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-                {Size = UDim2.new(0,5,0,5), BackgroundTransparency = 0.35}
-            ):Play()
+            TweenService:Create(ponto,TweenInfo.new(math.random(2,3),Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Size=UDim2.new(0,5,0,5),BackgroundTransparency=0.35}):Play()
             task.wait(1.5)
         end
     end)
@@ -82,11 +74,7 @@ for i=1,20 do
 
     task.spawn(function()
         while ScreenGui.Parent do
-            local tween = TweenService:Create(
-                line,
-                TweenInfo.new(math.random(2,4), Enum.EasingStyle.Linear),
-                {Position = UDim2.new(1.3,0, math.random(),0)}
-            )
+            local tween = TweenService:Create(line,TweenInfo.new(math.random(2,4),Enum.EasingStyle.Linear),{Position=UDim2.new(1.3,0, math.random(),0)})
             tween:Play()
             tween.Completed:Wait()
             line.Position = UDim2.new(-0.3,0, math.random(),0)
@@ -100,7 +88,7 @@ Title.Size = UDim2.new(0.7,0,0.12,0)
 Title.Position = UDim2.new(0.5,0,0.1,0)
 Title.AnchorPoint = Vector2.new(0.5,0)
 Title.BackgroundTransparency = 1
-Title.Text = "💎 XENO HUB"
+Title.Text = "💎 XENO HUB 🚀"
 Title.Font = Enum.Font.GothamBlack
 Title.TextScaled = true
 Title.TextColor3 = ROXO_PRINCIPAL
@@ -123,9 +111,9 @@ Avatar.Parent = LogoFrame
 Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1,0)
 
 local Stroke = Instance.new("UIStroke")
-Stroke.Thickness = 3
+Stroke.Thickness = 4
 Stroke.Color = ROXO_PRINCIPAL
-Stroke.Transparency = 0.2
+Stroke.Transparency = 0.15
 Stroke.Parent = Avatar
 
 -- Döndürme
@@ -137,7 +125,7 @@ end)
 
 -- Kullanıcı adı
 local Nick = Instance.new("TextLabel")
-Nick.Size = UDim2.new(0.4,0,0.05,0)
+Nick.Size = UDim2.new(0.45,0,0.05,0)
 Nick.Position = UDim2.new(0.5,0,0.53,0)
 Nick.AnchorPoint = Vector2.new(0.5,0)
 Nick.BackgroundTransparency = 1
@@ -147,17 +135,27 @@ Nick.TextScaled = true
 Nick.TextColor3 = ROXO_PRINCIPAL
 Nick.Parent = Frame
 
--- Alt yazı
+-- Alt yazı animasyonu
 local Sub = Instance.new("TextLabel")
 Sub.Size = UDim2.new(0.6,0,0.05,0)
 Sub.Position = UDim2.new(0.5,0,0.6,0)
 Sub.AnchorPoint = Vector2.new(0.5,0)
 Sub.BackgroundTransparency = 1
-Sub.Text = "Brookhaven'a giriliyor..."
 Sub.Font = Enum.Font.Gotham
 Sub.TextScaled = true
 Sub.TextColor3 = ROXO_MEDIO
 Sub.Parent = Frame
+
+task.spawn(function()
+    local dots = ""
+    while ScreenGui.Parent do
+        for i=1,3 do
+            dots = string.rep(".", i)
+            Sub.Text = "Brookhaven'a giriliyor"..dots
+            task.wait(0.5)
+        end
+    end
+end)
 
 -- Loading bar
 local BarBG = Instance.new("Frame")
@@ -172,6 +170,12 @@ Bar.Size = UDim2.new(0,0,1,0)
 Bar.BackgroundColor3 = ROXO_PRINCIPAL
 Bar.Parent = BarBG
 Instance.new("UICorner", Bar).CornerRadius = UDim.new(0.3,0)
+
+-- Glow efekti
+local Glow = Instance.new("UIGradient")
+Glow.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(200,150,255)), ColorSequenceKeypoint.new(1, ROXO_PRINCIPAL)})
+Glow.Rotation = 90
+Glow.Parent = Bar
 
 local Percent = Instance.new("TextLabel")
 Percent.Size = UDim2.new(0.6,0,0.05,0)
