@@ -2214,16 +2214,16 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local RGBTab = Window:MakeTab({
-    Title = "RGB 🌈",
+    Title = "RGB",
     Icon = "rbxassetid://97889814027474"
 })
 
-RGBTab:AddSection({ "🎨 ÁREA RGB" })
+RGBTab:AddSection({ "ÁREA RGB" })
 
 local rgbSpeed = 3
 
 RGBTab:AddTextBox({
-    Name = "⚡ RGB Hızı",
+    Name = "RGB Hızı",
     Desc = "Escolha uma Velocidade Para O RGB",
     Default = tostring(rgbSpeed),
     TextDisappear = false,
@@ -2235,19 +2235,10 @@ RGBTab:AddTextBox({
     end
 })
 
--- Genel RGB loop fonksiyonu
-local function startRGBLoop(flagFunc, actionFunc, delayTime, mode)
+local function startRGBLoop(flagFunc, actionFunc, delayTime)
     task.spawn(function()
         while flagFunc() do
-            local hue = (tick() * rgbSpeed % 5) / 5
-            local color
-            if mode == "normal" then
-                color = Color3.fromHSV(hue, 1, 1)
-            elseif mode == "dark" then
-                color = Color3.fromHSV(hue, 0.8, 0.4)
-            elseif mode == "vip" then
-                color = Color3.fromHSV(hue, 0.9, 0.3)
-            end
+            local color = Color3.fromHSV((tick() * rgbSpeed % 5) / 5, 1, 1)
             pcall(function()
                 actionFunc(color)
             end)
@@ -2256,187 +2247,69 @@ local function startRGBLoop(flagFunc, actionFunc, delayTime, mode)
     end)
 end
 
--- Toggle flagları
-local rgbNome, rgbNomeDark, rgbNomeVIP = false, false, false
-local rgbBio, rgbBioDark, rgbBioVIP = false, false, false
-local rgbCasa, rgbCasaDark, rgbCasaVIP = false, false, false
-local rgbCarro, rgbCarroDark, rgbCarroVIP = false, false, false
+local rgbNome = false
+local rgbBio = false
+local rgbCasa = false
+local rgbCarro = false
 
--- ========== NOME ==========
 RGBTab:AddToggle({
-    Name = "📝 Nome RGB",
-    Desc = "Normal RGB",
+    Name = "Nome RGB",
+    Desc = "Nome RGB",
     Default = false,
     Callback = function(v)
         rgbNome = v
         if v then
             startRGBLoop(function() return rgbNome end, function(color)
                 RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "normal")
+            end, 0.03)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌑 Nome Dark RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbNomeDark = v
-        if v then
-            startRGBLoop(function() return rgbNomeDark end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 Nome VIP Dark RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbNomeVIP = v
-        if v then
-            startRGBLoop(function() return rgbNomeVIP end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPNameColor", color)
-            end, 0.03, "vip")
-        end
-    end
-})
-
--- ========== BIO ==========
-RGBTab:AddToggle({
-    Name = "💬 Bio RGB",
-    Desc = "Normal RGB",
+    Name = "Bio RGB",
+    Desc = "Bio RGB",
     Default = false,
     Callback = function(v)
         rgbBio = v
         if v then
             startRGBLoop(function() return rgbBio end, function(color)
                 RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "normal")
+            end, 0.03)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌑 Bio Dark RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbBioDark = v
-        if v then
-            startRGBLoop(function() return rgbBioDark end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 Bio VIP Dark RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbBioVIP = v
-        if v then
-            startRGBLoop(function() return rgbBioVIP end, function(color)
-                RE["1RPNam1eColo1r"]:FireServer("PickingRPBioColor", color)
-            end, 0.03, "vip")
-        end
-    end
-})
-
--- ========== CASA ==========
-RGBTab:AddToggle({
-    Name = "🏠 RGB Casa",
-    Desc = "Normal RGB",
+    Name = "RGB Casa",
     Default = false,
     Callback = function(v)
         rgbCasa = v
         if v then
             startRGBLoop(function() return rgbCasa end, function(color)
                 RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "normal")
+            end, 0.1)
         end
     end
 })
 
 RGBTab:AddToggle({
-    Name = "🌌 Dark RGB Casa",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCasaDark = v
-        if v then
-            startRGBLoop(function() return rgbCasaDark end, function(color)
-                RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "dark")
-        end
-    end
-})
-
-RGBTab:AddToggle({
-    Name = "👑 VIP Dark RGB Casa",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCasaVIP = v
-        if v then
-            startRGBLoop(function() return rgbCasaVIP end, function(color)
-                RE["1Player1sHous1e"]:FireServer("ColorPickHouse", color)
-            end, 0.1, "vip")
-        end
-    end
-})
-
--- ========== CARRO ==========
-RGBTab:AddToggle({
-    Name = "🚗 Carro RGB",
-    Desc = "Normal RGB",
+    Name = "Carro RGB",
+    Desc = " Carro RGB",
     Default = false,
     Callback = function(v)
         rgbCarro = v
         if v then
             startRGBLoop(function() return rgbCarro end, function(color)
                 RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "normal")
+            end, 0.05)
         end
     end
 })
 
-RGBTab:AddToggle({
-    Name = "🌑 Dark Carro RGB",
-    Desc = "Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCarroDark = v
-        if v then
-            startRGBLoop(function() return rgbCarroDark end, function(color)
-                RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "dark")
-        end
-    end
-})
+local CarTab = Window:MakeTab({"Veiculo", "car"})
 
-RGBTab:AddToggle({
-    Name = "👑 VIP Dark Carro RGB",
-    Desc = "VIP Dark RGB",
-    Default = false,
-    Callback = function(v)
-        rgbCarroVIP = v
-        if v then
-            startRGBLoop(function() return rgbCarroVIP end, function(color)
-                RE["1Player1sCa1r"]:FireServer("PickingCarColor", color)
-            end, 0.05, "vip")
-        end
-    end
-})
-
-local CarTab = Window:MakeTab({"🚗 Veiculo", "car"})
-
-CarTab:AddSection("🖌️ Decal Pneu")
+CarTab:AddSection("Decal Pneu")
 
 local CurrentDecal = ""
 local CurrentVehicleUUID = nil
@@ -2453,17 +2326,24 @@ local function ApplyDecal(decalId)
         game:GetService("ReplicatedStorage").Remotes.ApplyStateToVehicle:InvokeServer(
             CurrentVehicleUUID,
             {
-                ["Lights"] = {["hazardsActive"]=false, ["lightsOn"]=false},
+                ["Lights"] = {
+                    ["hazardsActive"] = false,
+                    ["lightsOn"] = false,
+                },
                 ["IsLocked"] = false,
                 ["Appearance"] = {
-                    ["IsSmoking"]=false,
-                    ["SuspensionHeight"]=1.1,
-                    ["BabyCarSeatInstalledNumber"]=0,
-                    ["IsOnFire"]=false,
-                    ["WheelDecal"]=formattedDecal,
+                    ["IsSmoking"] = false,
+                    ["SuspensionHeight"] = 1.1,
+                    ["BabyCarSeatInstalledNumber"] = 0,
+                    ["IsOnFire"] = false,
+                    ["WheelDecal"] = formattedDecal,
                 },
-                ["Performance"] = {["Turbo"]=0, ["MaxSpeed"]=25, ["DriftStrength"]=1},
-                ["Sahip"]=game:GetService("Players").LocalPlayer,
+                ["Performance"] = {
+                    ["Turbo"] = 0,
+                    ["MaxSpeed"] = 25,
+                    ["DriftStrength"] = 1,
+                },
+                ["Sahip"] = game:GetService("Players").LocalPlayer,
             }
         )
     end)
@@ -2476,7 +2356,7 @@ game:GetService("ReplicatedStorage").Remotes.PlayerSpawnedVehicle.OnClientEvent:
 end)
 
 CarTab:AddTextBox({
-    Name = "🖼️ Decal",
+    Name = "Decal",
     Description = "ID do decal",
     Default = "",
     PlaceholderText = "Xeno",
@@ -2492,7 +2372,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "✅ Aplicar",
+    Name = "Aplicar",
     Callback = function()
         if CurrentDecal and CurrentDecal:len() > 0 then
             ApplyDecal(CurrentDecal)
@@ -2500,9 +2380,10 @@ CarTab:AddButton({
     end
 })
 
--- ========== Spams ==========
+local spammingHeadLights = false
+local spammingHazardLights = false
+local spammingHorn = false
 
-local spammingHeadLights, spammingHazardLights, spammingHorn = false, false, false
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local function spamHeadLights()
@@ -2526,47 +2407,60 @@ local function spamPlayHorn()
     end
 end
 
-CarTab:AddSection({ "💡 Spams" })
+CarTab:AddSection({ "Spams" })
 
 CarTab:AddToggle({
-    Name = "🔆 Spam HeadLights",
+    Name = "Spam HeadLights",
     Default = false,
     Callback = function(value)
         spammingHeadLights = value
-        if spammingHeadLights then spawn(spamHeadLights) else wait(0.2) ReplicatedStorage.Remotes.ToggleHeadLights:InvokeServer() end
+        if spammingHeadLights then
+            spawn(spamHeadLights)
+        else
+            wait(0.2)
+            ReplicatedStorage.Remotes.ToggleHeadLights:InvokeServer()
+        end
     end
 })
 
 CarTab:AddToggle({
-    Name = "⚠️ Spam HazardLights",
+    Name = "Spam HazardLights",
     Default = false,
     Callback = function(value)
         spammingHazardLights = value
-        if spammingHazardLights then spawn(spamHazardLights) else wait(0.2) ReplicatedStorage.Remotes.ToggleHazardLights:InvokeServer() end
+        if spammingHazardLights then
+            spawn(spamHazardLights)
+        else
+            wait(0.2)
+            ReplicatedStorage.Remotes.ToggleHazardLights:InvokeServer()
+        end
     end
 })
 
 CarTab:AddToggle({
-    Name = "📢 Spam Horn",
+    Name = "Spam Horn",
     Default = false,
     Callback = function(value)
         spammingHorn = value
-        if spammingHorn then spawn(spamPlayHorn) else ReplicatedStorage.Remotes.StopHorn:InvokeServer() end
+        if spammingHorn then
+            spawn(spamPlayHorn)
+        else
+            ReplicatedStorage.Remotes.StopHorn:InvokeServer()
+        end
     end
 })
 
--- ========== Speed & Turbo ==========
+CarTab:AddSection({ "Speed Car & Turbo" })
 
-CarTab:AddSection({ "⚡ Speed Car & Turbo" })
-
-local speedValue, turboValue = 200, 11.3
+local speedValue = 200
+local turboValue = 11.3
 
 local function getAllCars()
     local cars = {}
-    if workspace:FindFirstChild("Vehicles") then
-        for _, v in pairs(workspace.Vehicles:GetChildren()) do
-            if v:FindFirstChild("Seats") and v.Seats:FindFirstChild("VehicleSeat") then
-                table.insert(cars, v)
+    if workspace.Vehicles then
+        for _, vehicle in pairs(workspace.Vehicles:GetChildren()) do
+            if vehicle:FindFirstChild("Seats") and vehicle.Seats:FindFirstChild("VehicleSeat") then
+                table.insert(cars, vehicle)
             end
         end
     end
@@ -2574,41 +2468,73 @@ local function getAllCars()
 end
 
 local function applyToAllCars(valueType, value)
-    for _, vehicle in pairs(getAllCars()) do
-        local seat = vehicle.Seats.VehicleSeat
-        if seat:FindFirstChild(valueType) then
-            seat[valueType].Value = value
+    local cars = getAllCars()
+    local carsModified = 0
+    
+    if #cars == 0 then
+        return
+    end
+    
+    for _, vehicle in pairs(cars) do
+        local vehicleSeat = vehicle.Seats.VehicleSeat
+        
+        local targetObj = vehicleSeat:FindFirstChild(valueType)
+        
+        if targetObj then
+            if targetObj:IsA("NumberValue") then
+                targetObj.Value = value
+                carsModified = carsModified + 1
+            elseif targetObj:IsA("IntValue") then
+                targetObj.Value = value
+                carsModified = carsModified + 1
+            elseif targetObj:IsA("StringValue") then
+                targetObj.Value = tostring(value)
+                carsModified = carsModified + 1
+            else
+                pcall(function()
+                    targetObj.Value = value
+                    carsModified = carsModified + 1
+                end)
+            end
         else
-            pcall(function()
-                if valueType == "MaxSpeed" then seat.MaxSpeed = value
-                elseif valueType == "Turbo" then seat.Turbo = value end
+            local success = pcall(function()
+                if valueType == "MaxSpeed" then
+                    vehicleSeat.MaxSpeed = value
+                elseif valueType == "Turbo" then
+                    vehicleSeat.Turbo = value
+                end
+                carsModified = carsModified + 1
             end)
         end
     end
 end
 
 CarTab:AddTextBox({
-    Name = "🏎️ Velocidade MaxSpeed",
+    Name = "Velocidade MaxSpeed",
     Description = "Digite o valor da velocidade máxima",
     PlaceholderText = "200",
     Callback = function(Value)
-        local n = tonumber(Value)
-        if n then speedValue = n end
+        local numValue = tonumber(Value)
+        if numValue then
+            speedValue = numValue
+        end
     end
 })
 
 CarTab:AddTextBox({
-    Name = "🚀 Potencia Turbo",
+    Name = "Potencia Turbo",
     Description = "Digite o valor do turbo",
     PlaceholderText = "11.3",
     Callback = function(Value)
-        local n = tonumber(Value)
-        if n then turboValue = n end
+        local numValue = tonumber(Value)
+        if numValue then
+            turboValue = numValue
+        end
     end
 })
 
 CarTab:AddButton({
-    Name = "🏁 Aplicar Velocidade",
+    Name = "Aplicar Velocidade",
     Description = "Aplica a velocidade em todos os carros",
     Callback = function()
         applyToAllCars("MaxSpeed", speedValue)
@@ -2616,98 +2542,52 @@ CarTab:AddButton({
 })
 
 CarTab:AddButton({
-    Name = "⚡ Aplicar Turbo",
+    Name = "Aplicar Turbo",
     Description = "Aplica o turbo em todos os carros",
     Callback = function()
         applyToAllCars("Turbo", turboValue)
     end
 })
 
--- ========== Car RGB ==========
+local RGBSection = CarTab:AddSection({"Car RGB"})
 
-CarTab:AddSection({ "🌈 Car RGB" })
-
-local isColorChanging = false
-local colorChangeCoroutine
-
-local function changeCarColor()
-    while isColorChanging do
-        local hue = tick() % 1
-        local color = Color3.fromHSV(hue, 1, 1)
-        for _, vehicle in pairs(getAllCars()) do
-            pcall(function()
-                vehicle.Seats.VehicleSeat.Color = color
-            end)
+CarTab:AddToggle({
+    Name = "Car RGB",
+    Default = false,
+    Callback = function(state)
+        isColorChanging = state
+        if isColorChanging then
+            colorChangeCoroutine = coroutine.create(changeCarColor)
+            coroutine.resume(colorChangeCoroutine)
         end
-        task.wait(0.05)
-    end
-end
-
--- Normal / Dark / VIP Dark RGB
-local function startCarRGBLoop(mode)
-    isColorChanging = true
-    colorChangeCoroutine = coroutine.create(function()
-        while isColorChanging do
-            local hue = tick() % 1
-            local color
-            if mode == "normal" then
-                color = Color3.fromHSV(hue, 1, 1)
-            elseif mode == "dark" then
-                color = Color3.fromHSV(hue, 0.7, 0.4)
-            elseif mode == "vip" then
-                color = Color3.fromHSV(hue, 0.9, 0.3)
-            end
-            for _, vehicle in pairs(getAllCars()) do
-                pcall(function()
-                    vehicle.Seats.VehicleSeat.Color = color
-                end)
-            end
-            task.wait(0.05)
-        end
-    end)
-    coroutine.resume(colorChangeCoroutine)
-end
-
-CarTab:AddToggle({
-    Name = "🚗 Car RGB",
-    Default = false,
-    Callback = function(state)
-        if state then startCarRGBLoop("normal") else isColorChanging = false end
     end
 })
 
-CarTab:AddToggle({
-    Name = "🌑 Dark Car RGB",
-    Default = false,
-    Callback = function(state)
-        if state then startCarRGBLoop("dark") else isColorChanging = false end
-    end
-})
 
-CarTab:AddToggle({
-    Name = "👑 VIP Dark Car RGB",
-    Default = false,
-    Callback = function(state)
-        if state then startCarRGBLoop("vip") else isColorChanging = false end
-    end
-})
-
--- ========== Proteção Hub ==========
 _G.hubCarregando = true
+_G.togglesInicializadas = {}
+
 spawn(function()
+
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Remotes = ReplicatedStorage:WaitForChild("Remotes", 10)
     
     if Remotes then
         local ResetRemote = Remotes:WaitForChild("ResetCharacterAppearance", 10)
+        
         if ResetRemote then
+
             local ResetOriginal = ResetRemote.FireServer
             ResetRemote.FireServer = function(...)
-                if _G.hubCarregando then return end
+                if _G.hubCarregando then
+                    return -- Bloqueia reset durante carregamento
+                end
                 return ResetOriginal(...)
             end
         end
     end
+    
+
     wait(3)
     _G.hubCarregando = false
 end)
