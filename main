@@ -416,7 +416,7 @@ Tab:AddButton({
     Desc = "Guest666 FE",
     Locked = false,
     Callback = function()
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/xenorepositorio-afk/swsw/refs/heads/main/Main.txt"))()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/swsw/refs/heads/main/Main.txt"))()
     end
 })
 
@@ -481,7 +481,7 @@ Tab:AddButton({
 	Desc = "Executa o Goner fe",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/xenorepositorio-afk/GONER/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/GONER/refs/heads/main/Main.txt"))()
 		end)
 	end
 })
@@ -491,7 +491,7 @@ Tab:AddButton({
 	Desc = "Noly FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/xenorepositorio-afk/gubby/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/gubby/refs/heads/main/Main.txt"))()
 		end)
 	end
 })
@@ -530,12 +530,13 @@ Tab:AddButton({
     end
 })
 
+
 Tab:AddButton({
 	Name = "Herobrine",
 	Desc = "Herobrine FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/xenorepositorio-afk/hEROBRINE/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/hEROBRINE/refs/heads/main/Main.txt"))()
 		end)
 	end
 })
@@ -574,7 +575,7 @@ Tab:AddButton({
 	Description = "CARTOON CAT FE",
 	Callback = function()
 		pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/xenorepositorio-afk/cartoon-cat/refs/heads/main/Main.txt"))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/lyrarepositorio-afk/cartoon-cat/refs/heads/main/Main.txt"))()
 		end)
 	end
 })
@@ -946,14 +947,411 @@ Tab:AddButton({
 
 Tab:AddParagraph({ "os scripts FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" })
 
-FunTab:AddSection({Name = "🎯 Hedef Seçimi"})
+local FunTab = Window:MakeTab({"Fun", "rbxassetid://105212753583689"})
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Camera = Workspace.CurrentCamera 
+local LocalPlayer = Players.LocalPlayer
+
+local stalkFOVdeg = 160      
+local fugaMaxDistancia = 65    
+local maxStalkDistance = 65   
+local stalkBehindDistance = 2.5 
+
+local destroyed = false
+local stalking = false
+local viewingTarget = false     
+local stalkConn = nil
+local viewConn = nil            
+local stalkTarget = nil         
+local viewTarget = nil          
+local selectedPlayer = nil      
+local TPToggle = false
+local TPTool = nil
+
+local character
+local hrp
+local hum
+
+local function updateCharacter()
+    character = LocalPlayer.Character
+    if character then
+        hrp = character:WaitForChild("HumanoidRootPart")
+        hum = character:FindFirstChildOfClass("Humanoid")
+    else
+        hrp = nil
+        hum = nil
+    end
+end
+
+updateCharacter()
+
+local function waitForCharacter()
+    if not character or not hrp or not hum then
+        updateCharacter()
+    end
+    
+    while not character or not hrp or not hum do
+        wait(0.1)
+        updateCharacter()
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    task.wait(1)
+    updateCharacter()
+end)
+
+local function pickNearestPlayer()
+    waitForCharacter()
+    
+    local nearestPlayer = nil
+    local minDistance = math.huge
+
+    if not hrp then return nil end 
+
+    for _, pl in ipairs(Players:GetPlayers()) do
+        if pl ~= LocalPlayer and pl.Character and pl.Character:FindFirstChild("HumanoidRootPart") and pl.Character:FindFirstChildOfClass("Humanoid") and pl.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+            local targetHRP = pl.Character.HumanoidRootPart
+            local distance = (hrp.Position - targetHRP.Position).Magnitude
+
+            if distance < minDistance then
+                minDistance = distance
+                nearestPlayer = pl
+            end
+        end
+    end
+
+    return nearestPlayer
+end
+
+local function setStalkerState(isStalking)
+    waitForCharacter()
+    
+    if not character or not hrp then return end
+
+    local transparencyValue = 0 
+    local canCollideValue = not isStalking         
+
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") or part:IsA("Decal") or part:IsA("SpecialMesh") then
+            if part.Name ~= "HumanoidRootPart" then 
+                pcall(function() part.LocalTransparencyModifier = transparencyValue end) 
+            end
+            pcall(function() part.CanCollide = canCollideValue end) 
+        elseif part:IsA("Gömlek") or part:IsA("Pantolonlar") then
+            pcall(function() part.Transparency = transparencyValue end)
+        end
+    end
+
+    if hum then
+        hum.PlatformStand = false
+    end
+end
+
+local function getSafeCFrame(desiredPosition, currentCFrame)
+    local TP_CHECK_HEIGHT = 100     
+    local TP_RAY_LENGTH = 200       
+    
+    local rayOrigin = Vector3.new(desiredPosition.X, desiredPosition.Y + TP_CHECK_HEIGHT, desiredPosition.Z)
+    local rayDirection = Vector3.new(0, -TP_RAY_LENGTH, 0)
+
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    rayParams.FilterDescendantsInstances = {character} 
+
+    local rayResult = Workspace:Raycast(rayOrigin, rayDirection, rayParams)
+
+    if rayResult then
+        local safeY = rayResult.Position.Y + 2.5 
+
+        local lookVector = currentCFrame.LookVector
+        local upVector = currentCFrame.UpVector
+
+        return CFrame.new(desiredPosition.X, safeY, desiredPosition.Z) * CFrame.fromMatrix(Vector3.new(), lookVector, upVector)
+    else
+        return CFrame.new(desiredPosition.X, desiredPosition.Y, desiredPosition.Z) 
+    end
+end
+
+local function teleportStalk(desiredCFrame, targetHRP)
+    waitForCharacter()
+    
+    if destroyed or not hrp or not targetHRP then return end
+
+    local targetY = targetHRP.Position.Y
+    local finalPosition = Vector3.new(desiredCFrame.X, targetY, desiredCFrame.Z)
+
+    local newCFrame = CFrame.new(finalPosition) * (desiredCFrame - desiredCFrame.Position)
+
+    hrp.CFrame = newCFrame
+end
+
+local function stopView()
+    if not viewingTarget then return end
+
+    viewingTarget = false
+    viewTarget = nil
+
+    if viewConn then
+        viewConn:Disconnect()
+        viewConn = nil
+    end
+
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        Camera.CameraSubject = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    else
+        Camera.CameraType = Enum.CameraType.Custom
+    end
+end
+
+local function startView(pl)
+    waitForCharacter()
+    
+    if destroyed or not pl or not pl.Character or not hrp then return end
+
+    if viewingTarget then 
+        stopView()  
+        if viewTarget == pl then return end
+    end
+
+    local targHum = pl.Character:FindFirstChildOfClass("Humanoid")
+    if not targHum then return end
+
+    viewingTarget = true
+    viewTarget = pl
+
+    Camera.CameraSubject = targHum
+
+    if Camera.CameraType == Enum.CameraType.Scriptable then
+        Camera.CameraType = Enum.CameraType.Custom
+    end
+end
+
+local function stalkLoop() end
+
+local function stopStalk()
+    if not stalking then return end 
+
+    stalking = false
+    stalkTarget = nil
+
+    if character and hum then
+        hum.Health = 0
+    end
+
+    setStalkerState(false)  
+
+    if stalkConn then
+        stalkConn:Disconnect()
+        stalkConn = nil
+    end
+    
+    task.wait(2)
+    updateCharacter()
+end
+
+local function startStalk(pl)
+    waitForCharacter()
+    
+    if destroyed or not pl or not pl.Character or not hrp or not hum then 
+        return 
+    end
+
+    if stalking and stalkTarget == pl then  
+        stopStalk()
+        return 
+    end
+
+    if stalking and stalkTarget ~= pl then  
+        stopStalk() 
+    end
+
+    local targHRP = pl.Character:FindFirstChild("HumanoidRootPart")
+    local targHum = pl.Character:FindFirstChildOfClass("Humanoid")
+    if not (targHRP and targHum and targHum.Health > 0) then 
+        return 
+    end
+
+    stalking = true
+    stalkTarget = pl
+
+    setStalkerState(true)
+
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    local fovCos = math.cos(math.rad(stalkFOVdeg * 0.5))
+
+    if stalkConn then stalkConn:Disconnect() end
+
+    stalkLoop = function()
+        if destroyed or not stalking or not stalkTarget or not stalkTarget.Character or not hrp or not hum then  
+            stopStalk() 
+            return 
+        end
+        
+        if not character or not character.Parent then
+            updateCharacter()
+            if not character then
+                stopStalk()
+                return
+            end
+        end
+        
+        targHRP = stalkTarget.Character:FindFirstChild("HumanoidRootPart")
+        targHum = stalkTarget.Character:FindFirstChildOfClass("Humanoid")
+        if not (targHRP and targHum and targHum.Health > 0) then  
+            stopStalk() 
+            return 
+        end
+
+        local CEILING_CHECK_HEIGHT = 8
+        local targetHeadPos = targHRP.Position + Vector3.new(0, 1.5, 0)
+        local distance = (hrp.Position - targHRP.Position).Magnitude
+
+        local rayCeilingParams = RaycastParams.new()
+        rayCeilingParams.FilterType = Enum.RaycastFilterType.Exclude
+        rayCeilingParams.FilterDescendantsInstances = {stalkTarget.Character, character} 
+
+        local rayCeilingResult = Workspace:Raycast(
+            targetHeadPos,  
+            Vector3.new(0, CEILING_CHECK_HEIGHT, 0),  
+            rayCeilingParams
+        )
+
+        if rayCeilingResult and distance < maxStalkDistance then
+             return
+        end
+
+        if distance > maxStalkDistance then
+            local desiredCFrame = targHRP.CFrame * CFrame.new(0, 0, stalkBehindDistance)
+            teleportStalk(desiredCFrame, targHRP)  
+            return
+        end
+
+        local lookAtTarget = Vector3.new(targHRP.Position.X, hrp.Position.Y, targHRP.Position.Z)
+        local newCFrame = CFrame.new(hrp.Position, lookAtTarget)
+        hrp.CFrame = newCFrame
+
+        local dirToMe = hrp.Position - targHRP.Position
+        if dirToMe.Magnitude > 0.001 then
+
+            local lookVector = targHRP.CFrame.LookVector
+            local targetDirection = dirToMe.Unit 
+            local dot = lookVector:Dot(targetDirection)
+
+            if dot >= fovCos then  
+                local rayMaxRange = 30  
+                if distance > rayMaxRange then return end 
+
+                local headPosition = targHRP.Position + Vector3.new(0, 1.5, 0)  
+                local rayDirection = hrp.Position - headPosition
+
+                rayParams.FilterDescendantsInstances = {stalkTarget.Character, character} 
+
+                local rayResult = Workspace:Raycast(headPosition, rayDirection, rayParams)
+
+                local isStalkerHit = rayResult and rayResult.Instance:IsDescendantOf(character)
+                local isClearPath = not rayResult
+
+                if isStalkerHit or isClearPath then
+                    task.spawn(function()
+                        if destroyed or not stalking or not stalkTarget or not stalkTarget.Character or not hrp then return end
+                        local currHRP = stalkTarget.Character:FindFirstChild("HumanoidRootPart")
+                        if not currHRP then return end
+
+                        pcall(function() stalkConn:Disconnect() end)
+                        stalkConn = nil
+
+                        local offset = Vector3.new(math.random(-fugaMaxDistancia, fugaMaxDistancia), 0, math.random(-fugaMaxDistancia, fugaMaxDistancia))
+                        local desiredFugaPos = currHRP.Position + offset
+
+                        hrp.CFrame = getSafeCFrame(desiredFugaPos, CFrame.new(desiredFugaPos))
+
+                        setStalkerState(true) 
+
+                        stalkConn = RunService.RenderStepped:Connect(stalkLoop)
+                    end)
+                    return  
+                end
+            end
+        end
+    end
+
+    stalkConn = RunService.RenderStepped:Connect(stalkLoop)
+end
+
+local function startRandomStalk()
+    waitForCharacter()
+    
+    if stalking then
+        stopStalk()
+    else
+        local nearest = pickNearestPlayer()
+
+        if not nearest then
+            return
+        end
+
+        startStalk(nearest)
+    end
+end
+
+local function toggleClickTP()
+    waitForCharacter()
+    
+    if TPToggle then
+        if TPTool then
+            TPTool:Destroy()
+            TPTool = nil
+        end
+        TPToggle = false
+    else
+        local mouse = LocalPlayer:GetMouse()
+        local tool = Instance.new("Tool")
+        tool.RequiresHandle = false
+        tool.Name = "Tp tool(Equip to Click TP)"
+
+        tool.Activated:Connect(function()
+            waitForCharacter()
+            if destroyed or not hrp then return end 
+
+            local desiredPos = mouse.Hit.Position
+            local pos = getSafeCFrame(desiredPos, CFrame.new(desiredPos)) 
+
+            hrp.CFrame = pos
+        end)
+
+        tool.AncestryChanged:Connect(function()
+            if not tool.Parent or tool.Parent.Name ~= "Backpack" then
+                if TPToggle then
+                    task.spawn(function()
+                        task.wait(0.1)
+                        if tool and not tool.Parent then 
+                             toggleClickTP() 
+                        end
+                    end)
+                end
+            end
+        end)
+
+        tool.Parent = LocalPlayer.Backpack
+        TPTool = tool
+        TPToggle = true
+    end
+end
+
+
+FunTab:AddSection({Name = "Selecionar Alvo"})
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 
 local selectedPlayerName = nil
 local dropdownValue = ""
-local selectedPlayer = nil
 
 local function getPlayerList()
     local PlayerNames = {}
@@ -966,7 +1364,7 @@ local function getPlayerList()
 end
 
 local killDropdown = FunTab:AddDropdown({
-    Name = "👤 Oyuncu Seç",
+    Name = "Oyuncu Seç",
     Options = getPlayerList(),
     Default = "",
     Callback = function(value)
@@ -977,50 +1375,75 @@ local killDropdown = FunTab:AddDropdown({
 })
 
 local function UpdateDropdown()
-    if not killDropdown then return end
-
+    local tablePlayers = Players:GetPlayers()
     local newPlayers = {}
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player.Name ~= LocalPlayer.Name then
-            table.insert(newPlayers, player.Name)
+    if killDropdown then
+        for _, player in ipairs(tablePlayers) do
+            if player.Name ~= LocalPlayer.Name then
+                table.insert(newPlayers, player.Name)
+            end
         end
-    end
-
-    killDropdown:Set(newPlayers)
-
-    if selectedPlayerName and Players:FindFirstChild(selectedPlayerName) then
-        killDropdown:SetValue(selectedPlayerName)
-    else
-        selectedPlayerName = nil
-        selectedPlayer = nil
-        dropdownValue = ""
-        killDropdown:SetValue("")
+        killDropdown:Set(newPlayers)
+        
+        -- Verifica se o jogador selecionado ainda existe
+        if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
+            selectedPlayerName = nil
+            selectedPlayer = nil
+            dropdownValue = ""
+            killDropdown:SetValue("")
+        else
+            -- Mantém o valor selecionado
+            if selectedPlayerName then
+                killDropdown:SetValue(selectedPlayerName)
+            end
+        end
     end
 end
 
-Players.PlayerAdded:Connect(function()
+local function UpdateDropdownManual()
+    local tablePlayers = Players:GetPlayers()
+    local newPlayers = {}
+    if killDropdown then
+        for _, player in ipairs(tablePlayers) do
+            if player.Name ~= LocalPlayer.Name then
+                table.insert(newPlayers, player.Name)
+            end
+        end
+        killDropdown:Set(newPlayers)
+        
+        -- Mantém o valor selecionado se ainda existir
+        if selectedPlayerName and Players:FindFirstChild(selectedPlayerName) then
+            killDropdown:SetValue(selectedPlayerName)
+        else
+            selectedPlayerName = nil
+            selectedPlayer = nil
+            dropdownValue = ""
+            killDropdown:SetValue("")
+        end
+    end
+end
+
+Players.PlayerAdded:Connect(function(pl)
     task.wait(0.5)
     UpdateDropdown()
 end)
 
-Players.PlayerRemoving:Connect(function()
+Players.PlayerRemoving:Connect(function(pl)
     UpdateDropdown()
 end)
 
 FunTab:AddButton({
-    Name = "🔄 Oyuncu Listesini Yenile",
+    Name = "Oyuncu Listesini Güncelle",
     Callback = function()
-        UpdateDropdown()
+        UpdateDropdownManual()
     end
 })
 
-----------------------------------------------------------------
--- Player Controls
-----------------------------------------------------------------
-FunTab:AddSection("🎮 Oyuncu Kontrolleri")
+
+FunTab:AddSection("Player Controls")
 
 local viewToggle = FunTab:AddToggle({
-    Name = "👁️ Oyuncuyu İzle (View)",
+    Name = "Oyuncuyu Görüntüle",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1036,7 +1459,7 @@ local viewToggle = FunTab:AddToggle({
 })
 
 local stalkToggle = FunTab:AddToggle({
-    Name = "🕵️ Oyuncuyu Takip Et (Stalk)",
+    Name = "Oyuncuyu Takip Et",
     Default = false,
     Callback = function(Value)
         if Value then
@@ -1052,14 +1475,14 @@ local stalkToggle = FunTab:AddToggle({
 })
 
 FunTab:AddButton({
-    Name = "🎲 Rastgele Oyuncuyu Takip Et",
+    Name = "Rastgele Oyuncuyu Takip Et",
     Callback = function()
         startRandomStalk()
     end
 })
 
 FunTab:AddButton({
-    Name = "⛔ Tüm Modları Durdur",
+    Name = "Tüm Modları Durdur",
     Callback = function()
         stopStalk()
         stopView()
@@ -1068,25 +1491,20 @@ FunTab:AddButton({
     end
 })
 
-----------------------------------------------------------------
--- Teleport Tools
-----------------------------------------------------------------
-FunTab:AddSection("🚀 Teleport Araçları")
+FunTab:AddSection("Teleport Tools")
 
 FunTab:AddButton({
-    Name = "🖱️ Tıkla TP Aç/Kapat",
+    Name = "Tıkla TP'yi Aç/Kapat",
     Callback = function()
         toggleClickTP()
     end
 })
 
-----------------------------------------------------------------
--- Settings
-----------------------------------------------------------------
-FunTab:AddSection("⚙️ Ayarlar")
+
+FunTab:AddSection("Ayarlar")
 
 FunTab:AddTextBox({
-    Name = "🎯 Görüş Açısı (FOV)",
+    Name = "FOV Angle",
     Default = tostring(stalkFOVdeg),
     TextDisappear = false,
     Callback = function(Value)
@@ -1098,7 +1516,7 @@ FunTab:AddTextBox({
 })
 
 FunTab:AddTextBox({
-    Name = "🏃 Kaçış Mesafesi",
+    Name = "Escape Distance",
     Default = tostring(fugaMaxDistancia),
     TextDisappear = false,
     Callback = function(Value)
@@ -1110,7 +1528,7 @@ FunTab:AddTextBox({
 })
 
 FunTab:AddTextBox({
-    Name = "📏 Takip Mesafesi",
+    Name = "Stalk Distance",
     Default = tostring(maxStalkDistance),
     TextDisappear = false,
     Callback = function(Value)
@@ -1122,7 +1540,7 @@ FunTab:AddTextBox({
 })
 
 FunTab:AddTextBox({
-    Name = "↩️ Arkadan Takip Mesafesi",
+    Name = "Behind Distance",
     Default = tostring(stalkBehindDistance),
     TextDisappear = false,
     Callback = function(Value)
@@ -1133,13 +1551,11 @@ FunTab:AddTextBox({
     end
 })
 
-----------------------------------------------------------------
--- Skins
-----------------------------------------------------------------
-FunTab:AddSection("🧥 Skinler")
+
+FunTab:AddSection("Skins")
 
 FunTab:AddButton({
-    Name = "🕶️ Stalker Skin Uygula",
+    Name = "Uygula Stalker Skin",
     Callback = function()
         local args = {
             [1] = "Really black"
@@ -1203,18 +1619,16 @@ FunTab:AddButton({
     end
 })
 
-----------------------------------------------------------------
--- Runtime Sync & Safety
-----------------------------------------------------------------
+
 coroutine.wrap(function()
     while true do
-        task.wait(1)
-
+        wait(1)
+        
         local currentChar = LocalPlayer.Character
         if currentChar ~= character then
             updateCharacter()
         end
-
+        
         if selectedPlayer and not selectedPlayer.Parent then
             selectedPlayer = nil
             selectedPlayerName = nil
@@ -1224,7 +1638,7 @@ coroutine.wrap(function()
             killDropdown:SetValue("")
             UpdateDropdown()
         end
-
+        
         if not viewingTarget and viewToggle.CurrentValue then
             viewToggle:Set(false)
         end
