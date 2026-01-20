@@ -268,14 +268,14 @@ end
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
 
-local welcomeBlock = createInfoBlock(infoTab, "Xeno Hub'a Hoş Geldiniz - Bugünün Tarihi:", getCurrentDate())
-infoTab:AddParagraph({"Kullanıcı Adınız: " .. (localPlayer.Name or "Desconhecido")})
-infoTab:AddParagraph({"ID'niz: " .. tostring(localPlayer.UserId or 0)})
+local welcomeBlock = createInfoBlock(infoTab, "👋 Xeno Hub'a Hoş Geldiniz | Tarih:", getCurrentDate())
+infoTab:AddParagraph({ "👤 Kullanıcı Adınız: " .. (localPlayer.Name or "Bilinmiyor") })
+infoTab:AddParagraph({ "🆔 ID'niz: " .. tostring(localPlayer.UserId or 0) })
 
-local gameBlock    = createInfoBlock(infoTab, "Sizin Oyununuz: ", "Yükleniyor...")
-local timerBlock   = createInfoBlock(infoTab, "Script Kullanım Süresi: ", "00:00:00")
-local fpsBlock     = createInfoBlock(infoTab, "FPS'niz: ", "FPS: 0")
-local playersBlock = createInfoBlock(infoTab, "Sunucudaki Oyuncu Sayısı: ", tostring(#Players:GetPlayers()))
+local gameBlock    = createInfoBlock(infoTab, "🎮 Oynadığınız Oyun:", "Yükleniyor...")
+local timerBlock   = createInfoBlock(infoTab, "⏱️ Script Kullanım Süresi:", "00:00:00")
+local fpsBlock     = createInfoBlock(infoTab, "📊 FPS'niz:", "FPS: 0")
+local playersBlock = createInfoBlock(infoTab, "👥 Sunucudaki Oyuncu Sayısı:", tostring(#Players:GetPlayers()))
 
 local RunService = game:GetService("RunService")
 local MarketplaceService = game:GetService("MarketplaceService")
