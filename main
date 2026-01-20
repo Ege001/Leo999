@@ -2214,17 +2214,16 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 local RGBTab = Window:MakeTab({
-    Title = "🌈 RGB",
+    Title = "RGB",
     Icon = "rbxassetid://97889814027474"
 })
 
-RGBTab:AddSection({ "🎨 ÁREA RGB" })
+RGBTab:AddSection({ "ÁREA RGB" })
 
 local rgbSpeed = 3
-local darkMode = false -- Dark RGB modu
 
 RGBTab:AddTextBox({
-    Name = "⚡ RGB Hızı",
+    Name = "RGB Hızı",
     Desc = "Escolha uma Velocidade Para O RGB",
     Default = tostring(rgbSpeed),
     TextDisappear = false,
@@ -2236,26 +2235,10 @@ RGBTab:AddTextBox({
     end
 })
 
-RGBTab:AddToggle({
-    Name = "🌑 Dark RGB",
-    Desc = "Ativar Dark RGB Mode (VIP)",
-    Default = false,
-    Callback = function(v)
-        darkMode = v
-    end
-})
-
 local function startRGBLoop(flagFunc, actionFunc, delayTime)
     task.spawn(function()
         while flagFunc() do
-            local t = tick()
-            local color
-            if darkMode then
-                -- Dark RGB: düşük parlaklık + koyu tonlar
-                color = Color3.fromHSV((t * rgbSpeed % 5) / 5, 0.6, 0.4)
-            else
-                color = Color3.fromHSV((t * rgbSpeed % 5) / 5, 1, 1)
-            end
+            local color = Color3.fromHSV((tick() * rgbSpeed % 5) / 5, 1, 1)
             pcall(function()
                 actionFunc(color)
             end)
@@ -2264,14 +2247,13 @@ local function startRGBLoop(flagFunc, actionFunc, delayTime)
     end)
 end
 
---========================= TOGGLES =========================--
 local rgbNome = false
 local rgbBio = false
 local rgbCasa = false
 local rgbCarro = false
 
 RGBTab:AddToggle({
-    Name = "📝 Nome RGB",
+    Name = "Nome RGB",
     Desc = "Nome RGB",
     Default = false,
     Callback = function(v)
@@ -2285,7 +2267,7 @@ RGBTab:AddToggle({
 })
 
 RGBTab:AddToggle({
-    Name = "🖋️ Bio RGB",
+    Name = "Bio RGB",
     Desc = "Bio RGB",
     Default = false,
     Callback = function(v)
@@ -2299,8 +2281,7 @@ RGBTab:AddToggle({
 })
 
 RGBTab:AddToggle({
-    Name = "🏠 Casa RGB",
-    Desc = "Casa RGB",
+    Name = "RGB Casa",
     Default = false,
     Callback = function(v)
         rgbCasa = v
@@ -2313,8 +2294,8 @@ RGBTab:AddToggle({
 })
 
 RGBTab:AddToggle({
-    Name = "🚗 Carro RGB",
-    Desc = "Carro RGB",
+    Name = "Carro RGB",
+    Desc = " Carro RGB",
     Default = false,
     Callback = function(v)
         rgbCarro = v
@@ -2325,6 +2306,7 @@ RGBTab:AddToggle({
         end
     end
 })
+
 
 local CarTab = Window:MakeTab({"Veiculo", "car"})
 
