@@ -4899,6 +4899,52 @@ Tab:AddButton({
 
 local Tab = Window:MakeTab({"Itens/fun", "rbxassetid://127904742940104"})
 
+Tab:AddButton({
+    Title = "ads",
+    Locked = false,
+   Callback = function()
+    -- Player
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    -- ADS GUI (isimleri oyundakiyle aynı olmalı)
+    local adsGui = playerGui:FindFirstChild("AdsGui") or playerGui:FindFirstChild("AdsUI")
+    if adsGui then
+        adsGui.Enabled = true
+    end
+
+    -- ADS Frame
+    local adsFrame
+    if adsGui then
+        adsFrame = adsGui:FindFirstChild("MainFrame") 
+            or adsGui:FindFirstChild("AdsFrame")
+        if adsFrame then
+            adsFrame.Visible = true
+        end
+    end
+
+    -- ADS Button tetikleme (varsa)
+    if adsFrame then
+        local adsButton = adsFrame:FindFirstChild("AdsButton") 
+            or adsFrame:FindFirstChild("WatchAd")
+        if adsButton and adsButton:IsA("TextButton") then
+            pcall(function()
+                adsButton:Activate()
+            end)
+        end
+    end
+
+    -- FireServer (RemoteEvent)
+    local remote = game:GetService("ReplicatedStorage"):FindFirstChild("AdsRemote")
+        or game:GetService("ReplicatedStorage"):FindFirstChild("WatchAdRemote")
+
+    if remote and remote:IsA("RemoteEvent") then
+        remote:FireServer()
+    end
+end
+
+
+
 -- MEGA VIP & ALL GAMEPASSES MENU
 Tab:AddButton({
     Title = "Mega VIP & Gamepass Menüsünü Aç",
