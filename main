@@ -951,6 +951,7 @@ Tab:AddButton({
 Tab:AddParagraph({ "os scripts FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" })
 
 -- (baş kısım senin orijinalin gibi)
+-- (baş kısım senin orijinalin gibi)
 local FunTab = Window:MakeTab({"Fun 📷", "rbxassetid://105212753583689"})
 
 local Players = game:GetService("Players")
@@ -1122,19 +1123,32 @@ local function startView(pl)
     local targHum = pl.Character:FindFirstChildOfClass("Humanoid")
     if not targHum then return end
 
-    -- eğer zaten izliyorsanız:
+    -- Eğer zaten izliyorsak:
     if viewingTarget then
-        -- aynı kişiye tekrar tıklanırsa: izlemeyi kapat
+        -- aynı kişiye tekrar seçilirse kapat
         if viewTarget == pl then
             stopView()
             return
         else
-            -- farklı bir kişiye geçiş: kamerayı yeniden ayarlamak yerine doğrudan hedef değiştir
+            -- farklı kişiye geçiş: kamerayı yeni hedefe ayarla
             viewTarget = pl
             Camera.CameraSubject = targHum
             if Camera.CameraType == Enum.CameraType.Scriptable then
                 Camera.CameraType = Enum.CameraType.Custom
             end
+            return
+        end
+    end
+
+    -- normal başlatma
+    viewingTarget = true
+    viewTarget = pl
+    Camera.CameraSubject = targHum
+
+    if Camera.CameraType == Enum.CameraType.Scriptable then
+        Camera.CameraType = Enum.CameraType.Custom
+    end
+end
             return
         end
     end
@@ -1396,7 +1410,6 @@ local killDropdown = FunTab:AddDropdown({
             if selectedPlayer then
                 startView(selectedPlayer)
             else
-                -- seçili yoksa toggle kapat
                 viewToggle:Set(false)
             end
         end
