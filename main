@@ -950,6 +950,7 @@ Tab:AddButton({
 
 Tab:AddParagraph({ "os scripts FE foi patched,ent so a skin que e FE e o martelo(ou outros equipamentos)" })
 
+-- (baş kısım senin orijinalin gibi)
 local FunTab = Window:MakeTab({"Fun 📷", "rbxassetid://105212753583689"})
 
 local Players = game:GetService("Players")
@@ -1092,6 +1093,7 @@ local function teleportStalk(desiredCFrame, targetHRP)
     hrp.CFrame = newCFrame
 end
 
+-- VIEW: geliştirilmiş stopView ve startView
 local function stopView()
     if not viewingTarget then return end
 
@@ -1103,8 +1105,10 @@ local function stopView()
         viewConn = nil
     end
 
+    -- Kamera konusu olarak local player'a geri dön
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
         Camera.CameraSubject = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        Camera.CameraType = Enum.CameraType.Custom
     else
         Camera.CameraType = Enum.CameraType.Custom
     end
@@ -1115,14 +1119,27 @@ local function startView(pl)
 
     if destroyed or not pl or not pl.Character or not hrp then return end
 
-    if viewingTarget then
-        stopView()
-        if viewTarget == pl then return end
-    end
-
     local targHum = pl.Character:FindFirstChildOfClass("Humanoid")
     if not targHum then return end
 
+    -- eğer zaten izliyorsanız:
+    if viewingTarget then
+        -- aynı kişiye tekrar tıklanırsa: izlemeyi kapat
+        if viewTarget == pl then
+            stopView()
+            return
+        else
+            -- farklı bir kişiye geçiş: kamerayı yeniden ayarlamak yerine doğrudan hedef değiştir
+            viewTarget = pl
+            Camera.CameraSubject = targHum
+            if Camera.CameraType == Enum.CameraType.Scriptable then
+                Camera.CameraType = Enum.CameraType.Custom
+            end
+            return
+        end
+    end
+
+    -- normal başlatma
     viewingTarget = true
     viewTarget = pl
 
@@ -1133,6 +1150,7 @@ local function startView(pl)
     end
 end
 
+-- stalkLoop, stopStalk, startStalk (orijinal mantığın korunması)
 local function stalkLoop() end
 
 local function stopStalk()
@@ -1372,6 +1390,25 @@ local killDropdown = FunTab:AddDropdown({
         selectedPlayerName = value
         dropdownValue = value
         selectedPlayer = Players:FindFirstChild(value)
+
+        -- Eğer view toggle açıksa seçilen kişiyi anında izle
+        if viewToggle and viewToggle.CurrentValue then
+            if selectedPlayer then
+                startView(selectedPlayer)
+            else
+                -- seçili yoksa toggle kapat
+                viewToggle:Set(false)
+            end
+        end
+
+        -- Eğer stalk toggle açıksa seçilen kişiyi anında takip et
+        if stalkToggle and stalkToggle.CurrentValue then
+            if selectedPlayer then
+                startStalk(selectedPlayer)
+            else
+                stalkToggle:Set(false)
+            end
+        end
     end
 })
 
@@ -1388,13 +1425,30 @@ local function UpdateDropdown()
 
         -- Seçili oyuncu halen server'da mı kontrol et
         if selectedPlayerName and not Players:FindFirstChild(selectedPlayerName) then
+            -- seçili kişi yoksa temizle
             selectedPlayerName = nil
             selectedPlayer = nil
             dropdownValue = ""
             if killDropdown.SetValue then killDropdown:SetValue("") end
+
+            -- toggle'ları kapat
+            if viewToggle and viewToggle.CurrentValue then viewToggle:Set(false) end
+            if stalkToggle and stalkToggle.CurrentValue then stalkToggle:Set(false) end
         else
+            -- eğer hala varsa, dropdown'da seçili göster
             if selectedPlayerName and killDropdown.SetValue then
                 killDropdown:SetValue(selectedPlayerName)
+            end
+
+            -- Eğer seçili bir oyuncu varsa ve view/stalk toggle'ları açıksa onlara bağlan
+            if selectedPlayerName and Players:FindFirstChild(selectedPlayerName) then
+                local pl = Players:FindFirstChild(selectedPlayerName)
+                if viewToggle and viewToggle.CurrentValue then
+                    startView(pl)
+                end
+                if stalkToggle and stalkToggle.CurrentValue then
+                    startStalk(pl)
+                end
             end
         end
     end
@@ -1413,11 +1467,20 @@ local function UpdateDropdownManual()
 
         if selectedPlayerName and Players:FindFirstChild(selectedPlayerName) then
             if killDropdown.SetValue then killDropdown:SetValue(selectedPlayerName) end
+            -- Eğer toggle açıksa yeniden başlat
+            local pl = Players:FindFirstChild(selectedPlayerName)
+            if pl then
+                if viewToggle and viewToggle.CurrentValue then startView(pl) end
+                if stalkToggle and stalkToggle.CurrentValue then startStalk(pl) end
+            end
         else
             selectedPlayerName = nil
             selectedPlayer = nil
             dropdownValue = ""
             if killDropdown.SetValue then killDropdown:SetValue("") end
+
+            if viewToggle and viewToggle.CurrentValue then viewToggle:Set(false) end
+            if stalkToggle and stalkToggle.CurrentValue then stalkToggle:Set(false) end
         end
     end
 end
@@ -1440,6 +1503,7 @@ FunTab:AddButton({
 
 FunTab:AddSection("🎮 Oyuncu Kontrolleri")
 
+-- viewToggle ve stalkToggle burada tanımlanıyor; callback'ler güncellendi
 local viewToggle = FunTab:AddToggle({
     Name = "👁️ Oyuncuyu Görüntüle",
     Default = false,
@@ -1448,6 +1512,7 @@ local viewToggle = FunTab:AddToggle({
             if selectedPlayer then
                 startView(selectedPlayer)
             else
+                -- seçili yoksa toggle'u kapat ve kullanıcıyı bildir (sessizce kapatmak istersen mesaj ekleme)
                 viewToggle:Set(false)
             end
         else
@@ -1484,8 +1549,8 @@ FunTab:AddButton({
     Callback = function()
         stopStalk()
         stopView()
-        viewToggle:Set(false)
-        stalkToggle:Set(false)
+        if viewToggle then viewToggle:Set(false) end
+        if stalkToggle then stalkToggle:Set(false) end
     end
 })
 
@@ -1628,9 +1693,9 @@ coroutine.wrap(function()
             selectedPlayer = nil
             selectedPlayerName = nil
             dropdownValue = ""
-            viewToggle:Set(false)
-            stalkToggle:Set(false)
             if killDropdown.SetValue then killDropdown:SetValue("") end
+            if viewToggle then viewToggle:Set(false) end
+            if stalkToggle then stalkToggle:Set(false) end
             UpdateDropdown()
         end
 
