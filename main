@@ -5150,6 +5150,46 @@ Tab:AddButton({
             end
         end)
 
+-- 7. FUTURISTIC THEME (LOCAL THEMES)
+local FutureThemeBtn = Instance.new("TextButton")
+FutureThemeBtn.Size = UDim2.new(0.96, 0, 0, 40)
+FutureThemeBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
+FutureThemeBtn.Text = "FUTURISTIC THEME"
+FutureThemeBtn.TextColor3 = Color3.new(1,1,1)
+FutureThemeBtn.Font = Enum.Font.GothamBold
+FutureThemeBtn.TextSize = 13
+FutureThemeBtn.Parent = LeftFrame
+Instance.new("UICorner", FutureThemeBtn)
+
+FutureThemeBtn.MouseButton1Click:Connect(function()
+    local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+    local ThemesFolder = PlayerGui:FindFirstChild("LocalThemes")
+
+    if not ThemesFolder then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Theme Error",
+            Text = "LocalThemes klasörü bulunamadı!",
+            Duration = 3
+        })
+        return
+    end
+
+    -- Tüm futuristik temaları aktif et
+    for _, theme in ipairs(ThemesFolder:GetChildren()) do
+        if theme:IsA("Folder") or theme:IsA("Frame") then
+            pcall(function()
+                theme.Visible = true
+                theme.Enabled = true
+            end)
+        end
+    end
+
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Futuristic Theme",
+        Text = "Tüm futuristik temalar aktif edildi!",
+        Duration = 3
+    })
+end)
 
         -- 6. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
