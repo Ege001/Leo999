@@ -5150,7 +5150,7 @@ Tab:AddButton({
             end
         end)
 
--- 7. FUTURISTIC THEME (LOCAL THEMES)
+-- 7. FUTURISTIC THEME (WorkspaceCom SAFE)
 local FutureThemeBtn = Instance.new("TextButton")
 FutureThemeBtn.Size = UDim2.new(0.96, 0, 0, 40)
 FutureThemeBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
@@ -5162,31 +5162,46 @@ FutureThemeBtn.Parent = LeftFrame
 Instance.new("UICorner", FutureThemeBtn)
 
 FutureThemeBtn.MouseButton1Click:Connect(function()
-    local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-    local ThemesFolder = PlayerGui:FindFirstChild("LocalThemes")
+    local Workspace = game:GetService("Workspace")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-    if not ThemesFolder then
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Theme Error",
-            Text = "LocalThemes klasörü bulunamadı!",
-            Duration = 3
-        })
-        return
+    -- WorkspaceCom klasörü
+    local WC = Workspace:FindFirstChild("WorkspaceCom")
+    if not WC then
+        WC = Instance.new("Folder")
+        WC.Name = "WorkspaceCom"
+        WC.Parent = Workspace
     end
 
-    -- Tüm futuristik temaları aktif et
-    for _, theme in ipairs(ThemesFolder:GetChildren()) do
-        if theme:IsA("Folder") or theme:IsA("Frame") then
-            pcall(function()
-                theme.Visible = true
-                theme.Enabled = true
-            end)
-        end
+    -- İçindeki tüm future objeleri aç
+    for _, v in ipairs(WC:GetDescendants()) do
+        pcall(function()
+            if v:IsA("BasePart") then
+                v.Transparency = 0
+                v.CanCollide = false
+            elseif v:IsA("ParticleEmitter") or v:IsA("Beam") then
+                v.Enabled = true
+            elseif v:IsA("Light") then
+                v.Enabled = true
+            end
+        end)
+    end
+
+    -- RemoteEvent varsa FireServer dene (SAFE)
+    local remote =
+        ReplicatedStorage:FindFirstChild("RemoteEvent")
+        or ReplicatedStorage:FindFirstChild("RE")
+        or ReplicatedStorage:FindFirstChild("Remotes")
+
+    if remote and remote:IsA("RemoteEvent") then
+        pcall(function()
+            remote:FireServer("ApplyTheme", "Futuristic")
+        end)
     end
 
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Futuristic Theme",
-        Text = "Tüm futuristik temalar aktif edildi!",
+        Text = "Tema aktif edildi!",
         Duration = 3
     })
 end)
