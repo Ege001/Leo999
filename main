@@ -4907,10 +4907,10 @@ local LocalPlayer = Players.LocalPlayer
 
 -- UI Kütüphanesine Ekle
 Tab:AddButton({
-    Title = "REKLAM PANELİNİ ZORLA (FULL V2)",
+    Title = "REKLAM PANELİNİ ZORLA (ULTIMATE V3)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: REKLAM SÜRESİNİ VE KONTROLÜNÜ MANİPÜLE ET (10,000 SAAT)
+        -- 1. ADIM: TÜM KONTROLLERİ VE SÜRELERİ KIR (100,000 SAAT + BYPASS)
         spawn(function()
             local success, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4919,40 +4919,49 @@ Tab:AddButton({
             if success and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- Reklam izleme süresini 10.000 saat yap (Saniye cinsinden)
-                -- ADS2.txt Satır 143'teki GetUnlockedDuration'ı hedef alır
+                -- Reklam süresini 100.000 saat yap (Saniye: 360,000,000)
                 AdvertisementsController.GetUnlockedDuration = function()
-                    return 36000000 -- 10,000 Saat
+                    return 360000000 
                 end
 
-                -- Reklam her zaman hazır (Bypass)
+                -- Reklam uygunluk kontrolünü kır (Bypass IsEligible)
+                AdvertisementsController.IsEligibleForRewardedVideoAd = function()
+                    return true
+                end
+
+                -- Reklam hazır mı kontrolünü kır
                 AdvertisementsController.IsRewardedVideoAdReady = function()
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
+
+                -- AllPassesFetched (Bypass) - Tüm geçişlerin yüklendiğini simüle et
+                if AdvertisementsController.AllPassesFetched then
+                    AdvertisementsController.AllPassesFetched = true
+                end
                 
-                print(">> [ADS] Süre 10,000 saate ayarlandı ve Reklam Kontrolü Bypass edildi.")
+                print(">> [ADS] Sistem Kırıldı: 100,000 Saat & Bypass Aktif.")
             end
         end)
 
-        -- 2. ADIM: EXTEND UNLOCK SİSTEMİNİ TETİKLE
+        -- 2. ADIM: PANEL VE BUTON TETİKLEME (RE & CONTROLLER)
         spawn(function()
             local success, ExtendUnlockController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
             end)
 
             if success and ExtendUnlockController then
-                -- Paneli zorla çağır
+                -- Paneli zorla çağır (ADS.txt mantığı)
                 ExtendUnlockController.ShowExtendCurrentHousePanel(true)
-                print(">> [ADS] ExtendUnlockController tetiklendi.")
+                print(">> [ADS] ExtendUnlockController zorlandı.")
             end
         end)
 
-        -- 3. ADIM: ADSTORE VE DİĞER GUI'LERİ BRUTE FORCE İLE AÇ
+        -- 3. ADIM: ADSTORE VE TÜM BUTONLARI ETKİNLEŞTİR (GUI BRUTE FORCE)
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
         
-        -- Panelin kapanmasını engellemek ve AdStore'u açık tutmak için döngü
-        local endTime = tick() + 10
+        -- Panelleri ve butonları sürekli açık tutan döngü
+        local endTime = tick() + 15 -- 15 saniye boyunca sistemi zorla
         local connection
         
         connection = RunService.RenderStepped:Connect(function()
@@ -4961,41 +4970,45 @@ Tab:AddButton({
                 return
             end
 
-            -- MainGUIHandler içindeki kritik panelleri tara
+            -- MainGUIHandler içindeki tüm nesneleri tara
             for _, guiObject in pairs(MainGUIHandler:GetDescendants()) do
                 if guiObject:IsA("GuiObject") then
                     local name = string.lower(guiObject.Name)
                     
-                    -- HEDEF: AdStore (Senin belirttiğin özel frame)
-                    if name == "adstore" then
+                    -- HEDEF: AdStore ve AdStore içindeki tüm butonlar
+                    if name == "adstore" or name:find("adstore") then
                         guiObject.Visible = true
-                        -- Eğer bir butonun altındaysa üst frame'i de aç
-                        if guiObject.Parent:IsA("GuiObject") then
-                            guiObject.Parent.Visible = true
+                        if guiObject:IsA("Frame") then
+                            -- İçindeki tüm butonları etkinleştir
+                            for _, btn in pairs(guiObject:GetDescendants()) do
+                                if btn:IsA("ImageButton") or btn:IsA("TextButton") then
+                                    btn.Visible = true
+                                    btn.Active = true
+                                    btn.Selectable = true
+                                end
+                            end
                         end
-                    end
-
-                    -- HEDEF: ShopButtons
-                    if name == "shopbuttons" then
-                        guiObject.Visible = true
                     end
 
                     -- HEDEF: ExtendProductUnlock (ADS2.txt Paneli)
                     if name == "extendproductunlock" then
                         guiObject.Visible = true
                         guiObject.Position = UDim2.new(0.5, 0, 0.5, 0)
+                        
+                        -- Timer metinlerini manipüle et (00:00 yerine 1000000:00)
+                        local timerLabel = guiObject:FindFirstChild("Timer", true)
+                        if timerLabel and timerLabel:IsA("TextLabel") then
+                            timerLabel.Text = "1000000:00"
+                        end
                     end
 
-                    -- REKLAM BUTONLARINI AKTİF ET
-                    if name:find("video") or name:find("adbutton") then
-                        if name:find("unavailable") then
-                            guiObject.Visible = false
+                    -- REKLAM BUTONLARI (VideoAdAvailable vb.)
+                    if name:find("video") or name:find("adbutton") or name:find("unlock") then
+                        if name:find("unavailable") or name:find("loading") then
+                            guiObject.Visible = false -- Yükleniyor veya Müsait Değil yazılarını gizle
                         else
                             guiObject.Visible = true
-                            -- Eğer buton kilitliyse kilidini açmayı dene
-                            if guiObject:IsA("ImageButton") or guiObject:IsA("TextButton") then
-                                guiObject.Active = true
-                            end
+                            guiObject.Active = true
                         end
                     end
                 end
@@ -5004,8 +5017,8 @@ Tab:AddButton({
 
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "FULL ADS UNLOCKED",
-            Text = "AdStore açıldı ve süre 10,000 saate çıkarıldı!",
+            Title = "SYSTEM CRACKED",
+            Text = "100,000 Saat Tanımlandı & AdStore Açıldı!",
             Duration = 5
         })
     end
