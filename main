@@ -4848,7 +4848,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
-local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
 -- UI Kütüphanesine Ekle
@@ -4856,7 +4855,7 @@ Tab:AddButton({
     Title = "FULL PREMIUM & GAMEPASS BYPASS (ULTIMATE V6)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: REKLAM SİSTEMİNİ KÖKTEN DÜZELT (ADS.txt & ADS2.txt MANTIĞI)
+        -- 1. ADIM: REKLAM MODÜLÜNÜ VE YEŞİL BUTON TETİKLEYİCİSİNİ DÜZELT
         spawn(function()
             local success, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4865,55 +4864,44 @@ Tab:AddButton({
             if success and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- Reklam süresini 20 saat olarak ayarla (PC & Mobil Uyumluluk)
+                -- Reklam süresini maksimum yap (20 Saat)
                 AdvertisementsController.GetUnlockedDuration = function()
                     return 72000 
                 end
 
-                -- Reklamların her zaman hazır olduğunu simüle et
+                -- Oyun reklam izleme isteği gönderdiğinde ANINDA "İzlendi" cevabı ver
+                -- Yeşil butona basıldığında bu fonksiyon çalışır, biz bunu otomatik onaylıyoruz
+                AdvertisementsController.ShowRewardedVideoAd = function(self, ...)
+                    return Promise.resolve(true) -- Reklam bitti, eşyayı ver komutu
+                end
+
+                -- Reklamların her zaman aktif ve hazır görünmesini sağla
                 AdvertisementsController.IsEligibleForRewardedVideoAd = function() return true end
                 AdvertisementsController.IsRewardedVideoAdReady = function()
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
 
-                -- AllPassesFetched Yamasını Kır
                 if AdvertisementsController.AllPassesFetched ~= nil then
                     AdvertisementsController.AllPassesFetched = true
-                end
-
-                -- REKLAM BİTİNCE EŞYAYI VERME MANTIĞI (PC/Mobile Fix)
-                -- Bir reklam butonuna basıldığında beklemeden ödülü tetikler
-                local oldShowVideo = AdvertisementsController.ShowRewardedVideoAd
-                AdvertisementsController.ShowRewardedVideoAd = function(self, ...)
-                    -- Reklam izleme sürecini bypass et ve direkt "Başarılı" döndür
-                    return Promise.resolve(true)
                 end
             end
         end)
 
-        -- 2. ADIM: PREMIUM ÖZELLİKLERİ VE GAMEPASSLERİ TETİKLE
+        -- 2. ADIM: GAMEPASS VE VIP YETKİLERİNİ ZORLA
         spawn(function()
-            local successRemotes, Remotes = pcall(function()
-                return require(ReplicatedStorage.Packages.Remotes)
-            end)
-            
-            if successRemotes and Remotes then
-                print(">> [BYPASS] RemoteEvent ve FireServer yetkileri aktif.")
-            end
-
-            -- TÜM GAMEPASS MODÜLLERİNİ EZ
             local successG, GamepassController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
             end)
 
             if successG and GamepassController then
+                -- Satın alma kontrolünü her zaman "Sahip" döndür
                 GamepassController.OwnsGamepass = function() return true end
                 if GamepassController.AllPassesFetched ~= nil then
                     GamepassController.AllPassesFetched = true
                 end
             end
 
-            -- VERİ SEVİYESİNDE BYPASS (REPLICATED DATA)
+            -- ReplicatedData üzerinden VIP ve Gamepass verilerini manipüle et
             local successData, ReplicatedData = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Data.ReplicatedDataController)
             end)
@@ -4934,7 +4922,7 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: MOBİL VE PC UYUMLU DÖNGÜSEL GÖRÜNÜRLÜK (DEX MANTIĞI)
+        -- 3. ADIM: YEŞİL BUTONU VE DİĞER ETKİLEŞİMLERİ TETİKLE (PC & MOBİL)
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
         
@@ -4951,47 +4939,40 @@ Tab:AddButton({
                 if guiObject:IsA("GuiObject") then
                     local name = string.lower(guiObject.Name)
 
-                    -- HEDEF: Reklam Panelleri ve Premium İçerikler
+                    -- Eğer bir reklam paneli açılmışsa
                     if name == "extendproductunlock" or name:find("adstore") or name:find("premium") then
                         guiObject.Visible = true
                         
-                        -- Başlıkta Kullanıcı Adını Göster
-                        local titleLabel = guiObject:FindFirstChild("Title", true)
-                        if titleLabel and titleLabel:IsA("TextLabel") then
-                            titleLabel.Text = "OWNER: " .. LocalPlayer.Name:upper()
-                        end
-
-                        -- Butonları Aktif Et (PC Click & Mobile Touch)
+                        -- Panelin içindeki tüm butonları (Yeşil buton dahil) tıklanabilir ve aktif yap
                         for _, btn in pairs(guiObject:GetDescendants()) do
                             if btn:IsA("ImageButton") or btn:IsA("TextButton") then
-                                if name:find("available") or name:find("adbutton") or name:find("unlock") then
+                                -- Yeşil buton genellikle "Available" veya "AdButton" ismini taşır
+                                if name:find("available") or name:find("adbutton") or name:find("unlock") or btn.BackgroundColor3 == Color3.fromRGB(0, 255, 0) then
                                     btn.Visible = true
                                     btn.Active = true
                                     btn.Selectable = true
+                                    btn.ZIndex = 100 -- En üstte olsun ki tıklama boşa gitmesin
                                     
-                                    -- Fiyatları FREE/BEDAVA yap
+                                    -- Fiyat etiketini BEDAVA yap
                                     local priceLabel = btn:FindFirstChild("Price", true) or btn:FindFirstChild("Value", true)
                                     if priceLabel and priceLabel:IsA("TextLabel") then
                                         priceLabel.Text = "FREE"
                                     end
-                                elseif name:find("unavailable") or name:find("loading") then
-                                    btn.Visible = false
                                 end
                             end
                         end
                     end
                     
-                    -- Görünürlüğü ve Tıklanabilirliği Zorla
-                    if guiObject:IsA("ImageButton") and (name:find("ads") or name:find("premium") or name:find("videoad")) then
+                    -- Mobilde ve PC'de butonun üzerine gelindiğinde veya basıldığında tetiklenmeyi zorla
+                    if guiObject:IsA("ImageButton") and (name:find("ads") or name:find("videoad")) then
                         guiObject.Visible = true
                         guiObject.Active = true
-                        guiObject.Selectable = true -- Mobil için önemli
                     end
                 end
             end
         end)
 
-        -- 4. ADIM: MODÜLÜ TETİKLE (PANELİ AÇ)
+        -- 4. ADIM: PANELİ OTOMATİK ÇAĞIR VE TEST ET
         spawn(function()
             local successExtend, ExtendUnlockController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
@@ -5004,8 +4985,8 @@ Tab:AddButton({
 
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "BYPASS AKTİF",
-            Text = "PC & Mobil uyumlu sistem yüklendi!",
+            Title = "V6 REPAIR OK",
+            Text = "Yeşil buton tamiri yapıldı! Basınca anında verir.",
             Duration = 5
         })
     end
