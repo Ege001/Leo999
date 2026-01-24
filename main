@@ -4910,7 +4910,7 @@ Tab:AddButton({
     Title = "REKLAM PANELİNİ ZORLA (ULTIMATE V3)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: TÜM KONTROLLERİ VE SÜRELERİ KIR (999 SAAT + BYPASS)
+        -- 1. ADIM: TÜM KONTROLLERİ VE SÜRELERİ AYARLA (20 SAAT + BYPASS)
         spawn(function()
             local success, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4919,9 +4919,10 @@ Tab:AddButton({
             if success and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- Reklam süresini 999 saat yap (3,596,400 saniye)
+                -- Reklam süresini tam 20 saat yap (72,000 saniye)
+                -- ADS2.txt ve ADS.txt içindeki süreyi bu fonksiyon belirler
                 AdvertisementsController.GetUnlockedDuration = function()
-                    return 3596400 
+                    return 72000 
                 end
 
                 -- Reklam uygunluk kontrolünü kır (IsEligible)
@@ -4929,21 +4930,21 @@ Tab:AddButton({
                     return true
                 end
 
-                -- Reklam hazır mı kontrolünü kır (Her zaman IsAvailable döndürür)
+                -- Reklam hazır mı kontrolünü kır (Her zaman IsAvailable)
                 AdvertisementsController.IsRewardedVideoAdReady = function()
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
 
-                -- AllPassesFetched (Bypass) - Tüm geçişlerin yüklendiğini simüle et
+                -- AllPassesFetched (Bypass) - Modüllerin hata almasını engeller
                 if AdvertisementsController.AllPassesFetched ~= nil then
                     AdvertisementsController.AllPassesFetched = true
                 end
                 
-                print(">> [ADS] Sistem Kırıldı: 999 Saat & Bypass Aktif.")
+                print(">> [ADS] Sistem Ayarlandı: 20 Saat & Bypass Aktif.")
             end
         end)
 
-        -- 2. ADIM: PANEL VE BUTON TETİKLEME (ADS.txt ve ADS2.txt MANTIĞI)
+        -- 2. ADIM: MODÜLLERİ TETİKLE (ADS.txt ve ADS2.txt MANTIĞI)
         spawn(function()
             local success, ExtendUnlockController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
@@ -4956,11 +4957,11 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: SADECE REKLAM BUTONLARINI VE ANA PANELİ ZORLA (VISIBLE = TRUE)
+        -- 3. ADIM: SADECE REKLAM BUTONUNU ZORLA (VISIBLE = TRUE)
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
         
-        -- Panelleri ve butonları sürekli açık tutan döngü (Kapanmasını engellemek için)
+        -- Butonları sürekli açık tutan döngü (Kapanmasını engellemek için)
         local endTime = tick() + 20 
         local connection
         
@@ -4970,7 +4971,7 @@ Tab:AddButton({
                 return
             end
 
-            -- MainGUIHandler içindeki kritik hedefleri tara
+            -- MainGUIHandler içindeki reklam öğelerini tara
             for _, guiObject in pairs(MainGUIHandler:GetDescendants()) do
                 if guiObject:IsA("GuiObject") then
                     local name = string.lower(guiObject.Name)
@@ -4980,16 +4981,16 @@ Tab:AddButton({
                         guiObject.Visible = true
                         guiObject.Position = UDim2.new(0.5, 0, 0.5, 0) -- Ekrana sabitle
                         
-                        -- Timer metnini manipüle et (999 Saat)
+                        -- Timer metnini manipüle et (20 Saat)
                         local timerLabel = guiObject:FindFirstChild("Timer", true)
                         if timerLabel and timerLabel:IsA("TextLabel") then
-                            timerLabel.Text = "999:00:00"
+                            timerLabel.Text = "20:00:00"
                         end
 
-                        -- Panel içindeki tüm ImageButton türündeki reklam butonlarını zorla
+                        -- Panel içindeki ImageButton reklam butonlarını zorla
                         for _, btn in pairs(guiObject:GetDescendants()) do
                             if btn:IsA("ImageButton") then
-                                -- VideoAdAvailable butonunu zorla aç, Unavailable olanı kapat
+                                -- VideoAdAvailable butonunu zorla aç, Unavailable/Loading olanı kapat
                                 if string.find(string.lower(btn.Name), "available") then
                                     btn.Visible = true
                                     btn.Active = true
@@ -5001,10 +5002,12 @@ Tab:AddButton({
                         end
                     end
                     
-                    -- HEDEF: Ekranın sağ/sol tarafındaki küçük "Ads" ImageButton'ları
+                    -- HEDEF: Küçük "Ads" veya "VideoAd" butonlarını her zaman açık tut (Dex Explorer mantığı)
                     if guiObject:IsA("ImageButton") and (name:find("ads") or name:find("videoad")) then
-                        guiObject.Visible = true
-                        guiObject.Active = true
+                        if not name:find("unavailable") then
+                            guiObject.Visible = true
+                            guiObject.Active = true
+                        end
                     end
                 end
             end
@@ -5012,8 +5015,8 @@ Tab:AddButton({
 
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "ADS BYPASS AKTİF",
-            Text = "Reklam butonu zorla açıldı ve süre 999 saat yapıldı!",
+            Title = "ADS BYPASS",
+            Text = "Reklam butonu aktif ve süre 20 saat yapıldı!",
             Duration = 5
         })
     end
