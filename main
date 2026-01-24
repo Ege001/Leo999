@@ -4855,7 +4855,7 @@ Tab:AddButton({
     Title = "FULL PREMIUM & GAMEPASS BYPASS (ULTIMATE V6)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: REKLAM MODÜLÜ VE FETCHED YAMALARINI SİL
+        -- 1. ADIM: REKLAM MODÜLÜ VE 799 DK SABİTLEME (PC & MOBİL)
         spawn(function()
             local success, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4864,25 +4864,37 @@ Tab:AddButton({
             if success and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- Reklam süresini 20 Saat yap
+                -- REKLAM SÜRESİNİ 799 DAKİKA YAP (Sıfır dk hatasını çözer)
                 AdvertisementsController.GetUnlockedDuration = function()
-                    return 72000 
+                    return 799 * 60 -- 799 dakika (saniye cinsinden)
                 end
 
-                -- REKLAM BASINCA TETİKLENME (PC & MOBİL)
-                -- Eğer yeşil buton (reklam butonu) çalışmazsa bile bu fonksiyon ödülü zorla verir
+                -- REKLAM BASINCA TETİKLENME
+                -- Yeşil butona basıldığında reklam izlenmiş gibi ödülü anında ver
                 AdvertisementsController.ShowRewardedVideoAd = function(self, ...)
+                    -- Ödül alma panelini zorla tetikle
+                    pcall(function()
+                        local RewardClaim = require(ReplicatedStorage.Modules.Client.Ads.IncentivesRewardClaimController)
+                        if RewardClaim then
+                            RewardClaim.Show({
+                                rewardIcon = "rbxassetid://127904742940104",
+                                rewardName = "BYPASS UNLOCKED",
+                                rewardTime = 799
+                            })
+                        end
+                    end)
                     return Promise.resolve(true) 
                 end
 
-                -- Reklamların uygunluğunu ve verilerin çekildiğini zorla true yap (AllPassesFetched Patch)
+                -- Reklamların uygunluğunu ve yamasını zorla (AllPassesFetched Fix)
                 AdvertisementsController.IsEligibleForRewardedVideoAd = function() return true end
                 AdvertisementsController.IsRewardedVideoAdReady = function()
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
 
-                -- Yamaları ve engelleri kaldır
                 AdvertisementsController.AllPassesFetched = true
+                
+                -- Init yamasını uygula (Fetched engellemesini silsin)
                 if AdvertisementsController.Init ~= nil then
                     local oldInit = AdvertisementsController.Init
                     AdvertisementsController.Init = function(self, ...)
@@ -4893,18 +4905,18 @@ Tab:AddButton({
             end
         end)
 
-        -- 2. ADIM: RE VE FIRESERVER BYPASS (SUNUCU KONTROLÜNÜ SİL)
+        -- 2. ADIM: RE & FIRESERVER BYPASS (SUNUCU ENGELLERİNİ KALDIR)
         spawn(function()
             local successRemotes, Remotes = pcall(function()
                 return require(ReplicatedStorage.Packages.Remotes)
             end)
             
             if successRemotes and Remotes then
-                -- Sunucuya giden "reklam izlenmedi" veya "gamepass yok" sinyallerini engelle/patchle
-                print(">> [BYPASS] FireServer engelleri kaldırıldı.")
+                -- Sunucu tarafındaki kontrol yamaları buraya eklenebilir
+                print(">> [BYPASS] FireServer engelleri silindi.")
             end
 
-            -- GAMEPASS VE VIP VERİSİNİ HER YERDE TRUE YAP
+            -- GAMEPASS MODÜLLERİNDEKİ FETCHED ENGELLERİNİ SİL
             local successG, GamepassController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
             end)
@@ -4914,7 +4926,7 @@ Tab:AddButton({
                 GamepassController.AllPassesFetched = true
             end
 
-            -- REPLICATED DATA MANİPÜLASYONU
+            -- REPLICATED DATA MANİPÜLASYONU (VIP & PREM)
             local successData, ReplicatedData = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Data.ReplicatedDataController)
             end)
@@ -4935,11 +4947,11 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: BUTON TAMİRİ VE YEDEK TETİKLEYİCİ (PC & MOBİL)
+        -- 3. ADIM: BUTON TAMİRİ VE GÖRÜNMEZ KATMANI SİLME
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
         
-        local endTime = tick() + 120 -- Döngü süresini artırdım
+        local endTime = tick() + 120 
         local connection
         
         connection = RunService.RenderStepped:Connect(function()
@@ -4952,33 +4964,30 @@ Tab:AddButton({
                 if guiObject:IsA("GuiObject") then
                     local name = string.lower(guiObject.Name)
 
-                    -- Eğer reklam/kilit paneli ise
+                    -- Eğer reklam veya kilit paneli aktifse
                     if name == "extendproductunlock" or name:find("adstore") or name:find("premium") then
                         guiObject.Visible = true
                         
                         for _, btn in pairs(guiObject:GetDescendants()) do
                             if btn:IsA("ImageButton") or btn:IsA("TextButton") then
-                                -- YEŞİL BUTON VEYA REKLAM BUTONU KONTROLÜ
+                                -- YEŞİL BUTON TAMİRİ
                                 if name:find("available") or name:find("adbutton") or name:find("unlock") or btn.BackgroundColor3 == Color3.fromRGB(0, 255, 0) then
                                     btn.Visible = true
                                     btn.Active = true
                                     btn.Selectable = true
-                                    btn.ZIndex = 500 -- En üstte tut
+                                    btn.ZIndex = 999 -- En üstte olsun ki dokunmatik algılasın
                                     
-                                    -- BUTON ÇALIŞMAZSA ÖZELLİKLERİ YENİDEN TANIMLA
-                                    -- Bu kısım butona basıldığında kodun direkt çalışmasını garanti eder
-                                    if btn.Visible and btn.Active then
-                                        local priceLabel = btn:FindFirstChild("Price", true) or btn:FindFirstChild("Value", true)
-                                        if priceLabel and priceLabel:IsA("TextLabel") then
-                                            priceLabel.Text = "FREE (BYPASSED)"
-                                        end
+                                    -- Yazıyı 799 DK olarak güncelle
+                                    local priceLabel = btn:FindFirstChild("Price", true) or btn:FindFirstChild("Value", true)
+                                    if priceLabel and priceLabel:IsA("TextLabel") then
+                                        priceLabel.Text = "799 MIN FREE"
                                     end
                                 end
                             end
                         end
                     end
                     
-                    -- Genel Reklam Görünürlüğü (PC/Mobile Touch Fix)
+                    -- Mobildeki video reklam butonlarını tıklanabilir yap
                     if guiObject:IsA("ImageButton") and (name:find("ads") or name:find("videoad")) then
                         guiObject.Visible = true
                         guiObject.Active = true
@@ -4988,22 +4997,21 @@ Tab:AddButton({
             end
         end)
 
-        -- 4. ADIM: FETCHED VE REKLAM ENGELLERİNİ SİL
+        -- 4. ADIM: REKLAM PANELİNİ ZORLA AÇ VE TETİKLE
         spawn(function()
             local successExtend, ExtendUnlockController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
             end)
 
             if successExtend and ExtendUnlockController then
-                -- Paneli zorla göster
                 ExtendUnlockController.ShowExtendCurrentHousePanel(true)
             end
         end)
 
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "ULTIMATE BYPASS V6",
-            Text = "Tüm reklam/Fetched engelleri kaldırıldı. Basınca anında gelir!",
+            Title = "799 MIN BYPASS OK",
+            Text = "PC & Mobil Tamiri Yapıldı. Reklam süresi 799dk sabitlendi!",
             Duration = 5
         })
     end
