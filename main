@@ -4899,96 +4899,102 @@ Tab:AddButton({
 
 local Tab = Window:MakeTab({"🎉 İtems / Fun 🎮", "rbxassetid://127904742940104"})
 
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
+
+-- UI Kütüphanesine Ekle
 Tab:AddButton({
-    Title = "Tüm Reklam Sistemini Aç (Full Ads)",
+    Title = "REKLAM PANELİNİ ZORLA (FULL)",
     Locked = false,
     Callback = function()
-        local Players = game:GetService("Players")
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local LocalPlayer = Players.LocalPlayer
-        local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-        local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
+        -- 1. ADIM: REKLAM KONTROLÜNÜ SAKATLA (HER ZAMAN "HAZIR" OLSUN)
+        -- Oyun sunucuya "Reklam var mı?" diye sormadan biz "VAR" diyoruz.
+        spawn(function()
+            local success, AdvertisementsController = pcall(function()
+                return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
+            end)
 
-        -------------------------------------------------------------
-        -- 1. ADIM: REKLAM KONTROLÜNÜ BYPASS ET (HER ZAMAN "HAZIR" OLSUN)
-        -------------------------------------------------------------
-        local successAds, AdvertisementsController = pcall(function()
-            return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
-        end)
-
-        if successAds and AdvertisementsController then
-            local Promise = require(ReplicatedStorage.Packages.Promise)
-            
-            -- Eğer daha önce bypass yapmadıysak, fonksiyonu değiştiriyoruz
-            if not getgenv().AdBypassActive then
-                getgenv().AdBypassActive = true
+            if success and AdvertisementsController then
+                local Promise = require(ReplicatedStorage.Packages.Promise)
+                
+                -- Fonksiyonu eziyoruz (Hook)
                 AdvertisementsController.IsRewardedVideoAdReady = function()
-                    -- Sisteme "Evet, reklam izlenebilir, cihaz uygun" yalanını söylüyoruz
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
-                print("Reklam kontrolü bypass edildi: Her zaman MÜSAİT.")
+                print(">> [ADS] Reklam kontrolü bypass edildi.")
             end
-        end
-
-        -------------------------------------------------------------
-        -- 2. ADIM: CONTROLLER İLE PANELİ TETİKLE (ADS.txt MANTIĞI)
-        -------------------------------------------------------------
-        local successUnlock, ExtendUnlockController = pcall(function()
-            return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
         end)
 
-        if successUnlock and ExtendUnlockController then
-            -- Paneli oyunun kendi fonksiyonuyla açıyoruz
-            ExtendUnlockController.ShowExtendCurrentHousePanel(true)
-        end
+        -- 2. ADIM: SİSTEMİN KENDİ FONKSİYONUYLA PANELİ ÇAĞIR
+        spawn(function()
+            local success, ExtendUnlockController = pcall(function()
+                return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
+            end)
 
-        -------------------------------------------------------------
-        -- 3. ADIM: SENİN İSTEDİĞİN GUI'LERİ ZORLA GÖRÜNÜR YAP
-        -------------------------------------------------------------
-        -- MainGUIHandler içindeki ShopButtons ve Ads kısımlarını tarar
+            if success and ExtendUnlockController then
+                -- true parametresi "uyarı" modunu açar ve paneli getirir
+                ExtendUnlockController.ShowExtendCurrentHousePanel(true)
+                print(">> [ADS] Controller tetiklendi.")
+            end
+        end)
+
+        -- 3. ADIM: GUI TARAMASI VE ZORLA GÖRÜNÜR YAPMA (BRUTE FORCE)
+        -- Bu kısım MainGUIHandler altındaki her şeyi tarar, adı "Ad", "Shop", "Unlock" olanları açar.
         
-        local function ForceShowAdsUI(parent)
-            for _, child in pairs(parent:GetDescendants()) do
-                -- İsminde "Ad", "Shop", "Unlock" veya "Button" geçen şüpheli her şeyi kontrol et
-                local name = string.lower(child.Name)
-                if (name:find("ad") or name:find("shop") or name:find("unlock")) and child:IsA("GuiObject") then
+        local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+        local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
+        
+        -- Panelin kapanmasını engellemek için 5 saniyelik döngü
+        local endTime = tick() + 5
+        local connection
+        
+        connection = RunService.RenderStepped:Connect(function()
+            if tick() > endTime then
+                if connection then connection:Disconnect() end
+                return
+            end
+
+            -- MainGUIHandler içindeki kritik yerleri bul ve aç
+            for _, guiObject in pairs(MainGUIHandler:GetDescendants()) do
+                if guiObject:IsA("GuiObject") then -- Sadece Frame, Button vb.
+                    local name = string.lower(guiObject.Name)
                     
-                    -- Özellikle "ShopButtons" veya "VideoAd" ise affetme, aç
-                    if name:find("shopbutton") or name:find("video") then
-                        child.Visible = true
-                        print("Zorla açılan GUI: " .. child.Name)
+                    -- HEDEF 1: ExtendProductUnlock (Büyük Panel)
+                    if name == "extendproductunlock" then
+                        guiObject.Visible = true
+                        guiObject.Position = UDim2.new(0.5, 0, 0.5, 0) -- Ortala
                     end
-                    
-                    -- Eğer butonun içinde "VideoAdUnavailable" varsa onu gizle, "Available" olanı aç
-                    if name == "videoadunavailable" then
-                        child.Visible = false
-                    elseif name == "videoadavailable" then
-                        child.Visible = true
+
+                    -- HEDEF 2: ShopButtons ve Altındakiler
+                    if name == "shopbuttons" then
+                        guiObject.Visible = true
+                    end
+
+                    -- HEDEF 3: Video Reklam Butonları
+                    if name:find("video") or name:find("adbutton") then
+                        -- Eğer "Unavailable" (Müsait Değil) butonuysa GİZLE
+                        if name:find("unavailable") then
+                            guiObject.Visible = false
+                        else
+                            -- Diğer tüm reklam butonlarını AÇ
+                            guiObject.Visible = true
+                        end
                     end
                 end
             end
-        end
+        end)
 
-        -- MainGUIHandler içindeki ilgili yerlere bak
-        if MainGUIHandler:FindFirstChild("ShopButtons") then
-            MainGUIHandler.ShopButtons.Visible = true
-            ForceShowAdsUI(MainGUIHandler.ShopButtons)
-        end
-        
-        -- Panelin kendisi genellikle "ExtendProductUnlock" adındadır
-        if MainGUIHandler:FindFirstChild("ExtendProductUnlock") then
-            MainGUIHandler.ExtendProductUnlock.Visible = true
-            ForceShowAdsUI(MainGUIHandler.ExtendProductUnlock)
-        end
-
-        -- Bildirim Gönder
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Reklam Sistemi Açıldı",
-            Text = "GUI'ler görünür yapıldı ve Logic bypass edildi.",
+        -- Bildirim
+        StarterGui:SetCore("SendNotification", {
+            Title = "FULL FORCE ADS",
+            Text = "Tüm reklam panelleri zorla açılıyor...",
             Duration = 3
         })
     end
-}
+})
 
 -- MEGA VIP & ALL GAMEPASSES MENU
 Tab:AddButton({
