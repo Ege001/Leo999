@@ -171,6 +171,25 @@ Bar.BackgroundColor3 = ROXO_PRINCIPAL
 Bar.Parent = BarBG
 Instance.new("UICorner", Bar).CornerRadius = UDim.new(0.3,0)
 
+-- SKIP BUTTON (bozmadan ek)
+local SkipButton = Instance.new("TextButton")
+SkipButton.Size = UDim2.new(0,110,0,40)
+SkipButton.Position = UDim2.new(0.85,0,0.8,0)
+SkipButton.AnchorPoint = Vector2.new(0.5,0)
+SkipButton.BackgroundColor3 = ROXO_PRINCIPAL
+SkipButton.Text = "SKIP"
+SkipButton.TextColor3 = Color3.new(1,1,1)
+SkipButton.Font = Enum.Font.GothamBold
+SkipButton.TextScaled = true
+SkipButton.Parent = Frame
+Instance.new("UICorner", SkipButton).CornerRadius = UDim.new(0.3,0)
+
+local SkipStroke = Instance.new("UIStroke")
+SkipStroke.Color = ROXO_MEDIO
+SkipStroke.Thickness = 2
+SkipStroke.Transparency = 0.2
+SkipStroke.Parent = SkipButton
+
 -- Glow efekti
 local Glow = Instance.new("UIGradient")
 Glow.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(200,150,255)), ColorSequenceKeypoint.new(1, ROXO_PRINCIPAL)})
