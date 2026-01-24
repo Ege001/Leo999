@@ -4899,46 +4899,69 @@ Tab:AddButton({
 
 local Tab = Window:MakeTab({"🎉 İtems / Fun 🎮", "rbxassetid://127904742940104"})
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- UI Kütüphanesine ekle (Mevcut Tab yapına uygun)
 Tab:AddButton({
-    Title = "Futuristic Theme",
+    Title = "Ad Panelini Zorla Aç",
     Locked = false,
     Callback = function()
-        local Players = game:GetService("Players")
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local StarterGui = game:GetService("StarterGui")
-        local LocalPlayer = Players.LocalPlayer
+        -- ADS.txt dosyasında kullanılan Controller'ı buluyoruz
+        local success, ExtendUnlockController = pcall(function()
+            return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
+        end)
 
-        -- Modülleri ve Remote'u dekompile koddaki gibi çekiyoruz
-        local Game8Settings = require(StarterGui:WaitForChild("Player8Handler"):WaitForChild("Game8Settings"))
-        local GameUtil = require(ReplicatedStorage.Modules.Shared.Game.GameUtil)
-        local ThemeRemote = Game8Settings.ThemeRemote
-        
-        local THEME_NAME = "Futuristic" -- Brookhaven'ın buton adı
-
-        -- Brookhaven'ın kendi mantığı: VIP Server sahibiysen farklı remote argümanı kullanılır
-        local function triggerTheme()
-            local requestType = "AskForTheme"
+        if success and ExtendUnlockController then
+            -- ADS.txt Satır 48'deki fonksiyonu tetikleyerek paneli açıyoruz
+            -- true parametresi "uyarı" modunu simüle eder ve paneli açar
+            ExtendUnlockController.ShowExtendCurrentHousePanel(true)
             
-            -- Özel sunucu sahibi kontrolü (Satır 76-85'teki mantık)
-            if GameUtil.IsPrivateServerOwner(LocalPlayer) then
-                requestType = "AskForServerSidedThemeChange"
-            end
-
-            -- Temayı tetikle
-            ThemeRemote:FireServer(requestType, THEME_NAME)
-        end
-
-        -- Çalıştır ve Bildirim Ver
-        local success, err = pcall(triggerTheme)
-
-        if success then
-            StarterGui:SetCore("SendNotification", {
-                Title = "Başarılı!",
-                Text = THEME_NAME .. " teması yükleniyor...",
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Panel Açıldı",
+                Text = "Süre uzatma paneli ekrana getirildi.",
                 Duration = 3
             })
         else
-            warn("Hata: " .. tostring(err))
+            warn("ExtendUnlockController bulunamadı!")
+        end
+    end
+})
+
+Tab:AddButton({
+    Title = "Reklam Engelini Kaldır (Bypass)",
+    Locked = false,
+    Callback = function()
+        -- ADS2.txt dosyasında kullanılan Controller'ı buluyoruz
+        local success, AdvertisementsController = pcall(function()
+            return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
+        end)
+
+        if success and AdvertisementsController then
+            -- ADS2.txt Satır 44'teki kontrolü atlatmak için fonksiyonu değiştiriyoruz.
+            -- Normalde sistem reklam var mı diye sunucuya sorar, biz "hep var" dedirtiyoruz.
+            
+            local Promise = require(ReplicatedStorage.Packages.Promise) -- Promise kütüphanesi lazım
+            
+            -- Orijinal fonksiyonu yedekle (bozmamak için)
+            if not getgenv().OriginalIsReady then
+                getgenv().OriginalIsReady = AdvertisementsController.IsRewardedVideoAdReady
+            end
+
+            -- Fonksiyonu Hook'luyoruz (Override)
+            AdvertisementsController.IsRewardedVideoAdReady = function()
+                -- Enum.AdAvailabilityResult.IsAvailable döndürerek reklamın hazır olduğunu söylüyoruz
+                return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
+            end
+
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Bypass Aktif",
+                Text = "Artık 'Video Ad Unavailable' hatası almayacaksın.",
+                Duration = 3
+            })
+        else
+            warn("AdvertisementsController bulunamadı!")
         end
     end
 })
