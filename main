@@ -5415,14 +5415,14 @@ Tab:AddButton({
 
 --[[
     BROOKHAVEN SELECTABLE JOB SYSTEM (FULL VERSION)
-    Açıklama: Listedeki işlerden birini seçmenizi sağlar, kafa üstü yazısını günceller 
-    ve sunucuya (FireServer) senkronizasyon gönderir.
+    Açıklama: Listedeki işlerden birini seçmenizi sağlar, karakterin üzerindeki 
+    Job Billboard'u günceller ve sunucuya senkronizasyon gönderir.
 ]]
 
 local plr = game:GetService("Players").LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 
--- İş Listesi (Jobs.txt dosyasındaki popüler verilerle)
+-- İş Listesi (Jobs.txt dosyasındaki verilere göre)
 local JobsData = {
     {Name = "VIP", Icon = "18458871100"},
     {Name = "Police", Icon = "9893743955"},
@@ -5439,88 +5439,88 @@ local JobsData = {
 -- Ana Panel (Kaydırılabilir Liste İçin)
 local JobMenu = Instance.new("ScrollingFrame")
 JobMenu.Name = "JobSelectorMenu"
-JobMenu.Size = UDim2.new(0, 180, 0, 200)
-JobMenu.Position = UDim2.new(1, 10, 0, 0) -- Butonun yanına açılır
-JobMenu.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+JobMenu.Size = UDim2.new(0, 180, 0, 220)
+JobMenu.Position = UDim2.new(1, 10, 0, 0)
+JobMenu.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 JobMenu.BorderSizePixel = 0
 JobMenu.CanvasSize = UDim2.new(0, 0, 0, #JobsData * 35)
 JobMenu.ScrollBarThickness = 4
 JobMenu.Visible = false
-JobMenu.Parent = LeftFrame -- GUI'nizdeki sol panel
+JobMenu.Parent = LeftFrame -- GUI panelinizin adı
 Instance.new("UICorner", JobMenu)
 
 -- Ana Aç/Kapat Butonu
 local MainBtn = Instance.new("TextButton")
 MainBtn.Size = UDim2.new(0.96, 0, 0, 38)
-MainBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
-MainBtn.Text = "SELECT JOB (MENU)"
+MainBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+MainBtn.Text = "MESLEK SEÇ (JOB)"
 MainBtn.TextColor3 = Color3.new(1, 1, 1)
 MainBtn.Font = Enum.Font.GothamBold
 MainBtn.TextSize = 14
 MainBtn.Parent = LeftFrame
 Instance.new("UICorner", MainBtn)
 
--- Menü Açma/Kapama Fonksiyonu
 MainBtn.MouseButton1Click:Connect(function()
     JobMenu.Visible = not JobMenu.Visible
 end)
 
--- İş Seçme Fonksiyonu (Tüm İşlemler Burada)
+-- Meslek Ayarlama Fonksiyonu
 local function SetJob(jobName, jobIcon)
-    -- 1. Remote Event Bulma
     local trigger = rs:FindFirstChild("1Playe1rTrigge1rEven1t") 
         or rs:FindFirstChild("1PlayerTriggerEvent")
 
-    -- 2. Local Verileri Güncelle
-    local playersBag = plr:FindFirstChild("PlayersBag")
-    if playersBag then
-        local jobFolder = playersBag:FindFirstChild("Job")
-        if jobFolder then
-            pcall(function()
-                if jobFolder:IsA("BoolValue") then jobFolder.Value = true end
-                jobFolder.JobName.Value = jobName
-                jobFolder.JobTitlePic.Value = jobIcon
-                jobFolder.JobOrStudent.Value = true
-            end)
-        end
+    -- 1. Local Verileri Değiştir (Sadece Job kısımları)
+    local pb = plr:FindFirstChild("PlayersBag")
+    if pb and pb:FindFirstChild("Job") then
+        local job = pb.Job
+        pcall(function()
+            job.Value = true
+            job.JobName.Value = jobName
+            job.JobTitlePic.Value = jobIcon
+            job.JobOrStudent.Value = true
+        end)
     end
 
-    -- 3. Sunucuya Gönder (Herkesin görmesi için)
+    -- 2. Sunucuya Senkronize Et (Herkesin Job'u görmesi için)
     if trigger then
-        local events = {
+        local remoteCalls = {
             {"JobFeed", jobName, jobIcon},
             {"JobTitle", jobName},
-            {"JobChange", jobName, jobIcon},
             {"SetJob", jobName}
         }
-        for _, args in ipairs(events) do
+        for _, args in ipairs(remoteCalls) do
             pcall(function() trigger:FireServer(unpack(args)) end)
         end
     end
 
-    -- 4. Billboard (Kafa Üstü Yazı) Güncelleme
+    -- 3. Kafa Üstündeki Billboard'u Güncelle (Sadece Job yazısını bulur)
     local char = plr.Character
     if char and char:FindFirstChild("Head") then
-        for _, v in ipairs(char.Head:GetChildren()) do
-            if v:IsA("BillboardGui") then
-                local label = v:FindFirstChildWhichIsA("TextLabel")
-                local icon = v:FindFirstChildWhichIsA("ImageLabel")
-                if label then label.Text = jobName end
-                if icon then icon.Image = "rbxassetid://" .. jobIcon end
+        for _, gui in ipairs(char.Head:GetChildren()) do
+            if gui:IsA("BillboardGui") then
+                -- Brookhaven'da meslek yazısı genellikle alttaki veya yanındaki label'dır
+                -- İsmi (Name) değiştirmemek için sadece meslek içeriğini kontrol ediyoruz
+                local textLabel = gui:FindFirstChildWhichIsA("TextLabel")
+                local imageLabel = gui:FindFirstChildWhichIsA("ImageLabel")
+                
+                -- Eğer BillboardGui meslek içinse (genellikle ismi JobGui olur)
+                if gui.Name == "JobGui" or gui.Name == "RankGui" then
+                    if textLabel then textLabel.Text = jobName end
+                    if imageLabel then imageLabel.Image = "rbxassetid://" .. jobIcon end
+                end
             end
         end
     end
     
-    print("Seçilen İş: " .. jobName)
-    JobMenu.Visible = false -- Seçince menüyü kapat
+    JobMenu.Visible = false
 end
 
--- Listedeki Butonları Oluşturma
+-- Butonları Listeye Ekle
 for i, data in ipairs(JobsData) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -10, 0, 30)
     btn.Position = UDim2.new(0, 5, 0, (i-1) * 35)
-    btn.BackgroundColor3 = (data.Name == "VIP") and Color3.fromRGB(255, 180, 0) or Color3.fromRGB(50, 50, 50)
+    btn.BackgroundColor3 = (data.Name == "VIP") and Color3.fromRGB(200, 150, 0) or Color3.fromRGB(45, 45, 45)
     btn.Text = data.Name
     btn.TextColor3 = Color3.new(1, 1, 1)
     btn.Font = Enum.Font.Gotham
@@ -5532,7 +5532,6 @@ for i, data in ipairs(JobsData) do
         SetJob(data.Name, data.Icon)
     end)
 end
-
         -- 6. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
         -- === START: GetCar compatibility helper ===
