@@ -5674,15 +5674,20 @@ Tab:AddButton({
     Title = "🍬 Candy Cane",
     Locked = false,
     Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
         local args = {
             [1] = "AcceptedToolToServer",
             [2] = "CandyCaneTool",
-            [3] = game:GetService("Players").LocalPlayer
+            [3] = LocalPlayer
         }
 
-        game:GetService("ReplicatedStorage")
-            .RE:FindFirstChild("1Playe1rTrigge1rEven1t")
-            :FireServer(unpack(args))
+        local re = ReplicatedStorage:FindFirstChild("RE")
+        if re and re:FindFirstChild("1Playe1rTrigge1rEven1t") then
+            re["1Playe1rTrigge1rEven1t"]:FireServer(unpack(args))
+        end
     end
 })
 
