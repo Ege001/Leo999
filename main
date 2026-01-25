@@ -5415,45 +5415,63 @@ Tab:AddButton({
 
 --[[
     BROOKHAVEN SELECTABLE JOB SYSTEM (FULL VERSION)
-    Açıklama: Listedeki işlerden birini seçmenizi sağlar, karakterin üzerindeki 
-    Job Billboard'u günceller ve sunucuya senkronizasyon gönderir.
+    Açıklama: Jobs2.txt dosyasındaki tüm meslekleri içerir. 
+    Karakterin üzerindeki Job Billboard'u günceller ve sunucuya senkronizasyon gönderir.
 ]]
 
 local plr = game:GetService("Players").LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 
--- İş Listesi (Jobs.txt dosyasındaki verilere göre)
+-- İş Listesi (Jobs2.txt ve Jobs.txt verileriyle güncellendi)
 local JobsData = {
     {Name = "VIP", Icon = "18458871100"},
+    {Name = "S.W.A.T.", Icon = "5214218197"},
     {Name = "Police", Icon = "9893743955"},
+    {Name = "Military Police", Icon = "9892927005"},
+    {Name = "Astronaut", Icon = "7592172566"},
+    {Name = "Agency", Icon = "8416982159"},
+    {Name = "Starbrooks", Icon = "7607407475"},
+    {Name = "Spy", Icon = "6241338674"},
     {Name = "Hospital", Icon = "5183367120"},
-    {Name = "Dancer", Icon = "5650351691"},
+    {Name = "Doctor", Icon = "5183367120"},
     {Name = "Firefighter", Icon = "5183368146"},
+    {Name = "Bank", Icon = "5183368649"},
+    {Name = "Actor", Icon = "5220910709"},
+    {Name = "Dancer", Icon = "5650351691"},
+    {Name = "Singer", Icon = "5288270536"},
+    {Name = "Teacher", Icon = "5183367647"},
+    {Name = "Student", Icon = "5183367956"},
+    {Name = "Principal", Icon = "5288302265"},
+    {Name = "Bodyguard", Icon = "5650351950"},
     {Name = "Grocery Store", Icon = "5183368377"},
-    {Name = "Bank", Icon = "5183367502"},
-    {Name = "Teacher", Icon = "5183367873"},
-    {Name = "Photographer", Icon = "7592171969"},
-    {Name = "Construction", Icon = "14544396959"}
+    {Name = "Burger Barn", Icon = "6241436839"},
+    {Name = "Animal Rescue", Icon = "18124970215"},
+    {Name = "Veterinarian", Icon = "18124980670"},
+    {Name = "Taxi Driver", Icon = "7397453524"},
+    {Name = "Race Car Driver", Icon = "7592171797"},
+    {Name = "Construction", Icon = "14544396959"},
+    {Name = "UTuber", Icon = "52882719"}
 }
 
 -- Ana Panel (Kaydırılabilir Liste İçin)
 local JobMenu = Instance.new("ScrollingFrame")
 JobMenu.Name = "JobSelectorMenu"
-JobMenu.Size = UDim2.new(0, 180, 0, 220)
+JobMenu.Size = UDim2.new(0, 200, 0, 250)
 JobMenu.Position = UDim2.new(1, 10, 0, 0)
-JobMenu.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+JobMenu.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 JobMenu.BorderSizePixel = 0
-JobMenu.CanvasSize = UDim2.new(0, 0, 0, #JobsData * 35)
-JobMenu.ScrollBarThickness = 4
+JobMenu.CanvasSize = UDim2.new(0, 0, 0, #JobsData * 32)
+JobMenu.ScrollBarThickness = 5
 JobMenu.Visible = false
 JobMenu.Parent = LeftFrame -- GUI panelinizin adı
 Instance.new("UICorner", JobMenu)
 
 -- Ana Aç/Kapat Butonu
 local MainBtn = Instance.new("TextButton")
+MainBtn.Name = "OpenJobMenuBtn"
 MainBtn.Size = UDim2.new(0.96, 0, 0, 38)
 MainBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
-MainBtn.Text = "MESLEK SEÇ (JOB)"
+MainBtn.Text = "MESLEK LİSTESİ (JOB)"
 MainBtn.TextColor3 = Color3.new(1, 1, 1)
 MainBtn.Font = Enum.Font.GothamBold
 MainBtn.TextSize = 14
@@ -5469,7 +5487,7 @@ local function SetJob(jobName, jobIcon)
     local trigger = rs:FindFirstChild("1Playe1rTrigge1rEven1t") 
         or rs:FindFirstChild("1PlayerTriggerEvent")
 
-    -- 1. Local Verileri Değiştir (Sadece Job kısımları)
+    -- 1. Local Verileri Değiştir
     local pb = plr:FindFirstChild("PlayersBag")
     if pb and pb:FindFirstChild("Job") then
         local job = pb.Job
@@ -5481,30 +5499,29 @@ local function SetJob(jobName, jobIcon)
         end)
     end
 
-    -- 2. Sunucuya Senkronize Et (Herkesin Job'u görmesi için)
+    -- 2. Sunucuya Senkronize Et
     if trigger then
         local remoteCalls = {
             {"JobFeed", jobName, jobIcon},
             {"JobTitle", jobName},
-            {"SetJob", jobName}
+            {"SetJob", jobName},
+            {"JobChange", jobName, jobIcon}
         }
         for _, args in ipairs(remoteCalls) do
             pcall(function() trigger:FireServer(unpack(args)) end)
         end
     end
 
-    -- 3. Kafa Üstündeki Billboard'u Güncelle (Sadece Job yazısını bulur)
+    -- 3. Kafa Üstündeki Billboard'u Güncelle
     local char = plr.Character
     if char and char:FindFirstChild("Head") then
         for _, gui in ipairs(char.Head:GetChildren()) do
             if gui:IsA("BillboardGui") then
-                -- Brookhaven'da meslek yazısı genellikle alttaki veya yanındaki label'dır
-                -- İsmi (Name) değiştirmemek için sadece meslek içeriğini kontrol ediyoruz
                 local textLabel = gui:FindFirstChildWhichIsA("TextLabel")
                 local imageLabel = gui:FindFirstChildWhichIsA("ImageLabel")
                 
-                -- Eğer BillboardGui meslek içinse (genellikle ismi JobGui olur)
-                if gui.Name == "JobGui" or gui.Name == "RankGui" then
+                -- Billboard ismi genellikle JobGui veya RankGui olur
+                if gui.Name == "JobGui" or gui.Name == "RankGui" or textLabel then
                     if textLabel then textLabel.Text = jobName end
                     if imageLabel then imageLabel.Image = "rbxassetid://" .. jobIcon end
                 end
@@ -5518,13 +5535,15 @@ end
 -- Butonları Listeye Ekle
 for i, data in ipairs(JobsData) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.Position = UDim2.new(0, 5, 0, (i-1) * 35)
-    btn.BackgroundColor3 = (data.Name == "VIP") and Color3.fromRGB(200, 150, 0) or Color3.fromRGB(45, 45, 45)
-    btn.Text = data.Name
+    btn.Size = UDim2.new(1, -10, 0, 28)
+    btn.Position = UDim2.new(0, 5, 0, (i-1) * 32)
+    btn.BackgroundColor3 = (data.Name == "VIP") and Color3.fromRGB(180, 140, 0) or Color3.fromRGB(40, 40, 40)
+    btn.BorderSizePixel = 0
+    btn.Text = "  " .. data.Name
+    btn.TextXAlignment = Enum.TextXAlignment.Left
     btn.TextColor3 = Color3.new(1, 1, 1)
     btn.Font = Enum.Font.Gotham
-    btn.TextSize = 12
+    btn.TextSize = 11
     btn.Parent = JobMenu
     Instance.new("UICorner", btn)
 
