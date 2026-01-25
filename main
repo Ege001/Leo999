@@ -4931,7 +4931,7 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: AD_BUTTON VE COMPONENT BYPASS (PC & MOBİL)
+        -- 3. ADIM: AD_BUTTON VE ADSTORE TETİKLEME (ÖZEL ADSTORE AÇICI)
         spawn(function()
             local successBtn, AdButton = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Components.Ads.AdButton)
@@ -4942,6 +4942,13 @@ Tab:AddButton({
                 if AdButton.OnClicked then
                     local oldClicked = AdButton.OnClicked
                     AdButton.OnClicked = function(self, ...)
+                        -- AdStore panelini açmak için zorla tetikle
+                        pcall(function()
+                            local AdStoreController = require(ReplicatedStorage.Modules.Client.Ads.AdStoreController)
+                            if AdStoreController then
+                                AdStoreController.Show() -- AdStore panelini açar
+                            end
+                        end)
                         -- Tıklama anında "Reklam bitti" sinyalini tetiklet
                         return oldClicked(self, ...)
                     end
@@ -4991,7 +4998,7 @@ Tab:AddButton({
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
             Title = "ULTIMATE TRIGGER ACTIVE",
-            Text = "Reklam yok yazısı ve fetched kontrolleri silindi!",
+            Text = "AdStore tetikleyici aktif edildi!",
             Duration = 5
         })
     end
