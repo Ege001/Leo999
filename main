@@ -4855,7 +4855,7 @@ Tab:AddButton({
     Title = "VIP & PREMIUM & ADSTORE BYPASS (NO WAIT)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: REKLAM KONTROLCÜSÜNÜ VE SÜRE BEKLEMESİNİ EZ
+        -- 1. ADIM: REKLAM KONTROLCÜSÜNÜ VE MOBİL REKLAM SİSTEMİNİ EZ
         spawn(function()
             local success, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4864,22 +4864,26 @@ Tab:AddButton({
             if success and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- Reklam süresini sınırsız yap (24 saatlik buffer)
+                -- Reklam süresini sınırsız yap ve her zaman "Hazır" döndür
                 AdvertisementsController.GetUnlockedDuration = function() return 86400 end
                 AdvertisementsController.IsEligibleForRewardedVideoAd = function() return true end
+                -- Reklamın mobil dahil her zaman kullanılabilir olduğunu doğrula
                 AdvertisementsController.IsRewardedVideoAdReady = function()
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
                 end
+                
+                -- Sahte video reklam özelliğini aç (Butonların gelmesi için)
+                if AdvertisementsController.FakeVideoAdToggled then
+                    AdvertisementsController.FakeVideoAdToggled:Fire(true)
+                end
 
-                -- Tüm veri çekme flaglerini 'true' yap
                 AdvertisementsController.AllPassesFetched = true
                 AdvertisementsController.AdsFetched = true
             end
         end)
 
-        -- 2. ADIM: TÜM PREMIUM VE VIP GAMEPASSLERİ AÇ
+        -- 2. ADIM: TÜM SHOP VE GAMEPASS ÖZELLİKLERİNİ FULL SÜRÜME GEÇİR
         spawn(function()
-            -- Gamepass Modülleri
             local successG, GamepassUnlockController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
             end)
@@ -4892,17 +4896,18 @@ Tab:AddButton({
             end
             
             if successGC then
-                -- Tüm gamepass sorgularına "EVET" cevabı ver (Kullanım için kritik)
+                -- Kullanım yetkilerini ver
                 GamepassController.IsPermanentlyOwned = function() return true end
                 GamepassController.OwnsGamepass = function() return true end
-                -- Yeni: Gamepass açıldığında tetiklenen sinyalleri bypass et
+                
+                -- VIP ve Premium sinyallerini zorla ateşle
                 if GamepassController.OnGamepassUnlocked then
                     GamepassController.OnGamepassUnlocked:Fire("VIP")
                     GamepassController.OnGamepassUnlocked:Fire("Premium")
                 end
             end
 
-            -- REPLICATED DATA BYPASS (Sunucu verisini kandır)
+            -- ReplicatedData Bypass (Sunucuyu kandırma)
             local successData, ReplicatedData = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Data.ReplicatedDataController)
             end)
@@ -4912,12 +4917,10 @@ Tab:AddButton({
                 ReplicatedData.GetReplicatedData = function(self, ...)
                     local data = oldGetData(self, ...)
                     if type(data) == "table" and data.session then
-                        -- VIP, Premium ve Tüm Gamepass ID'lerini aktif et
                         data.session.isVip = true
                         data.session.hasPremium = true
                         data.session.gamepasses = data.session.gamepasses or {}
                         
-                        -- Metatable ile olmayan ID'leri bile 'true' döndür (Tüm Shop Ürünleri)
                         setmetatable(data.session.gamepasses, {
                             __index = function() return true end
                         })
@@ -4927,50 +4930,56 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: ADSTORE X BUTONU VE BEKLETME SÜRELERİNİ KALDIR
+        -- 3. ADIM: MOBİL UYUMLU X BUTONU VE REKLAM PANELİ YAMASI
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         
-        -- Sürekli kontrol döngüsü (X butonlarını ve görünürlüğü yönetir)
         RunService.Heartbeat:Connect(function()
-            local MainGUIHandler = PlayerGui:FindFirstChild("MainGUIHandler")
-            local NoResetGUIHandler = PlayerGui:FindFirstChild("NoResetGUIHandler")
-            
-            local handlers = {MainGUIHandler, NoResetGUIHandler}
+            local handlers = {
+                PlayerGui:FindFirstChild("MainGUIHandler"),
+                PlayerGui:FindFirstChild("NoResetGUIHandler")
+            }
             
             for _, handler in pairs(handlers) do
                 if handler then
                     for _, obj in pairs(handler:GetDescendants()) do
                         local name = string.lower(obj.Name)
                         
-                        -- 1. Bekleme Sürelerini (Timer) ve Kilitleri Atla
+                        -- Sayaçları ve bekletme yazılarını sil
                         if obj:IsA("TextLabel") and (name:find("timer") or name:find("wait") or name:find("loading")) then
                             obj.Text = "READY!"
                             obj.Visible = false
                         end
 
-                        -- 2. X (Kapatma) Butonlarını Beklemeden Aktif Et
+                        -- X Butonlarını mobilde ve PC'de anında aktif et
                         if (name == "close" or name == "exit" or name == "x") and obj:IsA("GuiObject") then
                             obj.Visible = true
                             if obj:IsA("ImageButton") or obj:IsA("TextButton") then
                                 obj.Active = true
-                                -- Yeni: Bazı panellerde tıklanabilirliği engelleyen canvas gruplarını bypass et
+                                obj.Interactable = true
+                                -- Mobil dokunmatik hassasiyeti ve tıklama engeli kaldırma
                                 if obj:IsA("CanvasGroup") then obj.BlocksRaycasts = true end
+                                -- X butonu gecikmesini sağlayan scriptleri etkisiz kılmak için
+                                if obj:FindFirstChildOfClass("LocalScript") then
+                                    obj:FindFirstChildOfClass("LocalScript").Enabled = false
+                                end
                             end
                         end
 
-                        -- 3. AdStore ve Premium Panellerini Düzenle
-                        if name:find("adstore") or name:find("premium") or name:find("productunlock") then
+                        -- Reklam (AdStore) butonlarını zorla göster
+                        if name:find("adstore") or name:find("premium") or name:find("productunlock") or name:find("ads") then
+                            obj.Visible = true
                             for _, child in pairs(obj:GetDescendants()) do
-                                -- Fiyatları BEDAVA yap
+                                -- Fiyatları kaldır
                                 if child:IsA("TextLabel") and (child.Text:find("R$") or child.Text:find("%d+")) then
                                     if not child.Parent:FindFirstChild("Icon") then 
                                         child.Text = "FREE"
                                     end
                                 end
-                                -- Butonları tıklanabilir yap ve kilit simgelerini kaldır
+                                -- Butonları ve kilitleri aç
                                 if child:IsA("ImageButton") or child:IsA("TextButton") then
                                     child.Active = true
                                     child.Visible = true
+                                    child.AutoButtonColor = true
                                 end
                                 if child.Name == "Lock" or child.Name == "Locked" then
                                     child.Visible = false
@@ -4982,29 +4991,29 @@ Tab:AddButton({
             end
         end)
 
-        -- 4. ADIM: AUTOMATIC UNLOCKER (DEX Tarzı Zorlama)
+        -- 4. ADIM: MOBİL REKLAM ÇAĞIRICI (FORCED AD BUTTON)
         spawn(function()
-            local successExtend, ExtendUnlockController = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
+            local successJoin, AdJoinController = pcall(function()
+                return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementJoinController)
             end)
-            if successExtend then
-                -- Panel açıldığında bekleme callback'lerini temizle
-                if debug and debug.setconstant then
-                    pcall(function()
-                        debug.setconstant(ExtendUnlockController.ShowExtendCurrentHousePanel, 1, 0)
-                    end)
+            if successJoin then
+                -- Reklam izleme ekranının mobilde gelmeme sorununu çözer
+                AdJoinController.CheckAd = function() return true end
+                if AdJoinController.OnAdAvailabilityChanged then
+                    AdJoinController.OnAdAvailabilityChanged:Fire(true)
                 end
             end
         end)
 
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "FULL SHOP UNLOCKED",
-            Text = "Premium, VIP ve tüm Gamepass özellikleri aktif!",
+            Title = "ULTRA BYPASS ACTIVE",
+            Text = "Mobilde Reklamlar ve X Butonları Full Aktif!",
             Duration = 5
         })
     end
 })
+
 local Tab = Window:MakeTab({"🎉 İtems / Fun 🎮", "rbxassetid://127904742940104"})
 
 local Players = game:GetService("Players")
