@@ -5717,6 +5717,58 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
+    Title = "🎃 Trick or Treat Bag",
+    Locked = false,
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
+        local args = {
+            [1] = "AcceptedToolToServer",
+            [2] = "TrickOrTreatBag",
+            [3] = LocalPlayer
+        }
+
+        ReplicatedStorage
+            .RE:FindFirstChild("1Playe1rTrigge1rEven1t")
+            :FireServer(unpack(args))
+    end
+})
+
+Tab:AddButton({
+    Title = "🤍 White Stick / Rod",
+    Locked = false,
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
+        local possibleNames = {
+            "WhiteStick",
+            "WhiteRod",
+            "Rod",
+            "Stick"
+        }
+
+        local re = ReplicatedStorage:FindFirstChild("RE")
+        local trigger = re and re:FindFirstChild("1Playe1rTrigge1rEven1t")
+        if not trigger then return end
+
+        for _, itemName in ipairs(possibleNames) do
+            pcall(function()
+                trigger:FireServer(
+                    "AcceptedToolToServer",
+                    itemName,
+                    LocalPlayer
+                )
+            end)
+        end
+    end
+})
+
+
+Tab:AddButton({
     Title = "🧪 Green Crystal",
     Locked = false,
     Callback = function()
