@@ -34,7 +34,7 @@ Gradient.Color = ColorSequence.new{
 Gradient.Rotation = 90
 Gradient.Parent = Frame
 
--- Global kontrol değişkeni
+-- Global kontrol değişkeni (Sistemi durdurmak için)
 local isSkipped = false
 
 -- Noktalar
@@ -125,7 +125,10 @@ Stroke.Parent = Avatar
 local angle = 0
 local rotationConn
 rotationConn = RunService.RenderStepped:Connect(function(dt)
-    if isSkipped then rotationConn:Disconnect() return end
+    if isSkipped or not ScreenGui.Parent then 
+        rotationConn:Disconnect() 
+        return 
+    end
     angle += dt * 30
     LogoFrame.Rotation = angle % 360
 end)
@@ -209,14 +212,14 @@ SkipButton.MouseButton1Click:Connect(function()
     if isSkipped then return end
     isSkipped = true
 
-    -- Sesi ve GUI'yi anında temizle
+    -- Sesi durdur ve her şeyi anında temizle
     pcall(function()
         if Sound then Sound:Stop() Sound:Destroy() end
         if ScreenGui then ScreenGui:Destroy() end
     end)
 end)
 
--- Progress Döngüsü
+-- Progress (Yüzde) Döngüsü
 for i=1,100 do
     if isSkipped then break end
     Bar.Size = UDim2.new(i/100,0,1,0)
@@ -224,11 +227,13 @@ for i=1,100 do
     task.wait(0.04)
 end
 
--- Bitiş
+-- Otomatik Kapanış (Eğer skip edilmediyse)
 if not isSkipped then
     task.wait(0.5)
-    if Sound then Sound:Stop() end
-    if ScreenGui then ScreenGui:Destroy() end
+    pcall(function()
+        if Sound then Sound:Stop() end
+        if ScreenGui then ScreenGui:Destroy() end
+    end)
 end
 
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/kayrus99/refs/heads/main/kayrusLINDO"))()
