@@ -4,232 +4,262 @@ local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
-local ROXO_PRINCIPAL = Color3.fromRGB(145, 90, 230)
-local ROXO_MEDIO     = Color3.fromRGB(110, 70, 190)
-local ROXO_ESCURO    = Color3.fromRGB(55, 35, 110)
+-- Configurações de Cores
+local COLORS = {
+    PRIMARY = Color3.fromRGB(145, 90, 230),
+    SECONDARY = Color3.fromRGB(110, 70, 190),
+    DARK = Color3.fromRGB(25, 15, 50),
+    ACCENT = Color3.fromRGB(200, 160, 255),
+    WHITE = Color3.fromRGB(255, 255, 255)
+}
 
+-- Variáveis de Controle
+local isSkipped = false
+local connections = {}
+
+-- Criar ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "XenoHubLoading"
+ScreenGui.Name = "XenoHub_Loading"
 ScreenGui.IgnoreGuiInset = true
+ScreenGui.DisplayOrder = 999
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
+-- Fundo Principal
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(1, 0, 1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+local BackgroundGradient = Instance.new("UIGradient")
+BackgroundGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 10, 30)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 10))
+})
+BackgroundGradient.Rotation = 45
+BackgroundGradient.Parent = MainFrame
+
+-- Container para Partículas (Fica atrás de tudo)
+local ParticleContainer = Instance.new("Frame")
+ParticleContainer.Size = UDim2.new(1, 0, 1, 0)
+ParticleContainer.BackgroundTransparency = 1
+ParticleContainer.Parent = MainFrame
+
+-- Som
 local Sound = Instance.new("Sound")
 Sound.SoundId = "rbxassetid://14145620056"
 Sound.Volume = 0.5
 Sound.Looped = true
 Sound.Parent = ScreenGui
-Sound:Play()
+pcall(function() Sound:Play() end)
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(1,0,1,0)
-Frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
-Frame.Parent = ScreenGui
-
-local Gradient = Instance.new("UIGradient")
-Gradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, ROXO_PRINCIPAL),
-    ColorSequenceKeypoint.new(0.5, ROXO_MEDIO),
-    ColorSequenceKeypoint.new(1, ROXO_ESCURO)
-}
-Gradient.Rotation = 90
-Gradient.Parent = Frame
-
--- Noktalar
-for i = 1, 35 do
-    local ponto = Instance.new("Frame")
-    ponto.Size = UDim2.new(0, math.random(4,7), 0, math.random(4,7))
-    ponto.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    ponto.AnchorPoint = Vector2.new(0.5,0.5)
-    ponto.BackgroundColor3 = ROXO_PRINCIPAL
-    ponto.BackgroundTransparency = 0.25
-    ponto.Parent = Frame
-    Instance.new("UICorner", ponto).CornerRadius = UDim.new(1,0)
-
-    local stroke = Instance.new("UIStroke")
-    stroke.Color = ROXO_PRINCIPAL
-    stroke.Thickness = 1
-    stroke.Transparency = 0.4
-    stroke.Parent = ponto
-
-    task.spawn(function()
-        while ScreenGui.Parent do
-            TweenService:Create(ponto,TweenInfo.new(math.random(2,3),Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Size=UDim2.new(0,9,0,9),BackgroundTransparency=0.05}):Play()
-            task.wait(1.5)
-            TweenService:Create(ponto,TweenInfo.new(math.random(2,3),Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Size=UDim2.new(0,5,0,5),BackgroundTransparency=0.35}):Play()
-            task.wait(1.5)
-        end
-    end)
+-- Funções Utilitárias
+local function createCorner(parent, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = radius or UDim.new(0, 8)
+    corner.Parent = parent
+    return corner
 end
 
--- Çizgiler
-for i=1,20 do
-    local line = Instance.new("Frame")
-    line.Size = UDim2.new(0, math.random(60,200), 0, 2)
-    line.Position = UDim2.new(-0.3,0, math.random(),0)
-    line.AnchorPoint = Vector2.new(0,0.5)
-    line.BackgroundColor3 = ROXO_PRINCIPAL
-    line.BackgroundTransparency = 0.35
-    line.Parent = Frame
-    Instance.new("UICorner", line).CornerRadius = UDim.new(1,0)
-
-    task.spawn(function()
-        while ScreenGui.Parent do
-            local tween = TweenService:Create(line,TweenInfo.new(math.random(2,4),Enum.EasingStyle.Linear),{Position=UDim2.new(1.3,0, math.random(),0)})
-            tween:Play()
-            tween.Completed:Wait()
-            line.Position = UDim2.new(-0.3,0, math.random(),0)
-        end
-    end)
-end
-
--- Başlık
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(0.7,0,0.12,0)
-Title.Position = UDim2.new(0.5,0,0.1,0)
-Title.AnchorPoint = Vector2.new(0.5,0)
-Title.BackgroundTransparency = 1
-Title.Text = "💎 XENO HUB 🚀"
-Title.Font = Enum.Font.GothamBlack
-Title.TextScaled = true
-Title.TextColor3 = ROXO_PRINCIPAL
-Title.Parent = Frame
-
--- Avatar
-local LogoFrame = Instance.new("Frame")
-LogoFrame.Size = UDim2.new(0,110,0,110)
-LogoFrame.Position = UDim2.new(0.5,0,0.35,0)
-LogoFrame.AnchorPoint = Vector2.new(0.5,0.5)
-LogoFrame.BackgroundTransparency = 1
-LogoFrame.Parent = Frame
-
-local thumb = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
-local Avatar = Instance.new("ImageLabel")
-Avatar.Size = UDim2.new(1,0,1,0)
-Avatar.BackgroundTransparency = 1
-Avatar.Image = thumb
-Avatar.Parent = LogoFrame
-Instance.new("UICorner", Avatar).CornerRadius = UDim.new(1,0)
-
-local Stroke = Instance.new("UIStroke")
-Stroke.Thickness = 4
-Stroke.Color = ROXO_PRINCIPAL
-Stroke.Transparency = 0.15
-Stroke.Parent = Avatar
-
--- Döndürme
-local angle = 0
-RunService.RenderStepped:Connect(function(dt)
-    angle += dt * 30
-    LogoFrame.Rotation = angle % 360
-end)
-
--- Kullanıcı adı
-local Nick = Instance.new("TextLabel")
-Nick.Size = UDim2.new(0.45,0,0.05,0)
-Nick.Position = UDim2.new(0.5,0,0.53,0)
-Nick.AnchorPoint = Vector2.new(0.5,0)
-Nick.BackgroundTransparency = 1
-Nick.Text = "👑 "..player.Name
-Nick.Font = Enum.Font.GothamBold
-Nick.TextScaled = true
-Nick.TextColor3 = ROXO_PRINCIPAL
-Nick.Parent = Frame
-
--- Alt yazı animasyonu
-local Sub = Instance.new("TextLabel")
-Sub.Size = UDim2.new(0.6,0,0.05,0)
-Sub.Position = UDim2.new(0.5,0,0.6,0)
-Sub.AnchorPoint = Vector2.new(0.5,0)
-Sub.BackgroundTransparency = 1
-Sub.Font = Enum.Font.Gotham
-Sub.TextScaled = true
-Sub.TextColor3 = ROXO_MEDIO
-Sub.Parent = Frame
-
+-- Gerador de Partículas e Linhas
 task.spawn(function()
-    local dots = ""
-    while ScreenGui.Parent do
-        for i=1,3 do
-            dots = string.rep(".", i)
-            Sub.Text = "Brookhaven'a giriliyor"..dots
-            task.wait(0.5)
-        end
+    for i = 1, 40 do
+        if isSkipped then break end
+        local p = Instance.new("Frame")
+        p.Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5))
+        p.Position = UDim2.new(math.random(), 0, math.random(), 0)
+        p.BackgroundColor3 = COLORS.PRIMARY
+        p.BackgroundTransparency = 0.6
+        p.BorderSizePixel = 0
+        p.Parent = ParticleContainer
+        createCorner(p, UDim.new(1, 0))
+
+        task.spawn(function()
+            while not isSkipped and ScreenGui.Parent do
+                local speed = math.random(10, 20) / 10
+                local tween = TweenService:Create(p, TweenInfo.new(speed, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                    Position = UDim2.new(p.Position.X.Scale, 0, p.Position.Y.Scale - 0.05, 0),
+                    BackgroundTransparency = 0.2
+                })
+                tween:Play()
+                task.wait(speed * 2)
+            end
+        end)
     end
 end)
 
--- Loading bar
-local BarBG = Instance.new("Frame")
-BarBG.Size = UDim2.new(0.6,0,0.05,0)
-BarBG.Position = UDim2.new(0.2,0,0.8,0)
-BarBG.BackgroundColor3 = ROXO_ESCURO
-BarBG.Parent = Frame
-Instance.new("UICorner", BarBG).CornerRadius = UDim.new(0.3,0)
+-- Logo / Avatar
+local LogoContainer = Instance.new("Frame")
+LogoContainer.Size = UDim2.new(0, 150, 0, 150)
+LogoContainer.Position = UDim2.new(0.5, 0, 0.4, 0)
+LogoContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+LogoContainer.BackgroundTransparency = 1
+LogoContainer.Parent = MainFrame
 
-local Bar = Instance.new("Frame")
-Bar.Size = UDim2.new(0,0,1,0)
-Bar.BackgroundColor3 = ROXO_PRINCIPAL
-Bar.Parent = BarBG
-Instance.new("UICorner", Bar).CornerRadius = UDim.new(0.3,0)
+local OuterRing = Instance.new("Frame")
+OuterRing.Size = UDim2.new(1, 20, 1, 20)
+OuterRing.Position = UDim2.new(0.5, 0, 0.5, 0)
+OuterRing.AnchorPoint = Vector2.new(0.5, 0.5)
+OuterRing.BackgroundColor3 = COLORS.PRIMARY
+OuterRing.Parent = LogoContainer
+createCorner(OuterRing, UDim.new(1, 0))
 
--- SKIP
-local SkipButton = Instance.new("TextButton")
-SkipButton.Size = UDim2.new(0,110,0,40)
-SkipButton.Position = UDim2.new(0.85,0,0.8,0)
-SkipButton.BackgroundColor3 = ROXO_PRINCIPAL
-SkipButton.Text = "SKIP"
-SkipButton.TextColor3 = Color3.new(1,1,1)
-SkipButton.Font = Enum.Font.GothamBold
-SkipButton.TextScaled = true
-SkipButton.Parent = Frame
-Instance.new("UICorner", SkipButton).CornerRadius = UDim.new(0.3,0)
+local AvatarImg = Instance.new("ImageLabel")
+AvatarImg.Size = UDim2.new(1, -10, 1, -10)
+AvatarImg.Position = UDim2.new(0.5, 0, 0.5, 0)
+AvatarImg.AnchorPoint = Vector2.new(0.5, 0.5)
+AvatarImg.BackgroundColor3 = COLORS.DARK
+AvatarImg.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
+AvatarImg.Parent = OuterRing
+createCorner(AvatarImg, UDim.new(1, 0))
 
-local skipped = false
-SkipButton.MouseButton1Click:Connect(function()
-    if skipped then return end
-    skipped = true
-
-    -- %100 yap
-    Bar.Size = UDim2.new(1,0,1,0)
-    Percent.Text = "100%"
-
-    -- sesi kesin kapat
-    pcall(function()
-        Sound:Stop()
-        Sound:Destroy()
-    end)
-
-    -- gui'yi tamamen sil
-    pcall(function()
-        ScreenGui:Destroy()
-    end)
+-- Rotação do Logo
+local rotateConn = RunService.RenderStepped:Connect(function(dt)
+    LogoContainer.Rotation += dt * 30
+    OuterRing.Rotation -= dt * 60 -- Contra-rotação para efeito visual
 end)
+table.insert(connections, rotateConn)
 
--- Glow efekti
-local Glow = Instance.new("UIGradient")
-Glow.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(200,150,255)), ColorSequenceKeypoint.new(1, ROXO_PRINCIPAL)})
-Glow.Rotation = 90
-Glow.Parent = Bar
+-- Textos
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0.1, 0)
+Title.Position = UDim2.new(0.5, 0, 0.15, 0)
+Title.AnchorPoint = Vector2.new(0.5, 0.5)
+Title.BackgroundTransparency = 1
+Title.Text = "XENO HUB"
+Title.TextColor3 = COLORS.WHITE
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 50
+Title.Parent = MainFrame
 
-local Percent = Instance.new("TextLabel")
-Percent.Size = UDim2.new(0.6,0,0.05,0)
-Percent.Position = UDim2.new(0.2,0,0.87,0)
-Percent.BackgroundTransparency = 1
-Percent.Text = "0%"
-Percent.Font = Enum.Font.GothamBold
-Percent.TextScaled = true
-Percent.TextColor3 = Color3.new(1,1,1)
-Percent.Parent = Frame
+local TitleStroke = Instance.new("UIStroke")
+TitleStroke.Thickness = 2
+TitleStroke.Color = COLORS.PRIMARY
+TitleStroke.Parent = Title
 
--- Progress
-for i=1,100 do
-    Bar.Size = UDim2.new(i/100,0,1,0)
-    Percent.Text = i.."%"
-    task.wait(0.04)
+local TipText = Instance.new("TextLabel")
+TipText.Size = UDim2.new(0.8, 0, 0.05, 0)
+TipText.Position = UDim2.new(0.5, 0, 0.7, 0)
+TipText.AnchorPoint = Vector2.new(0.5, 0.5)
+TipText.BackgroundTransparency = 1
+TipText.Text = "Preparando módulos de script..."
+TipText.TextColor3 = COLORS.ACCENT
+TipText.Font = Enum.Font.GothamMedium
+TipText.TextSize = 18
+TipText.Parent = MainFrame
+
+-- Progress Bar
+local ProgressBG = Instance.new("Frame")
+ProgressBG.Size = UDim2.new(0.4, 0, 0.015, 0)
+ProgressBG.Position = UDim2.new(0.5, 0, 0.75, 0)
+ProgressBG.AnchorPoint = Vector2.new(0.5, 0.5)
+ProgressBG.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+ProgressBG.Parent = MainFrame
+createCorner(ProgressBG, UDim.new(1, 0))
+
+local ProgressBar = Instance.new("Frame")
+ProgressBar.Size = UDim2.new(0, 0, 1, 0)
+ProgressBar.BackgroundColor3 = COLORS.PRIMARY
+ProgressBar.Parent = ProgressBG
+createCorner(ProgressBar, UDim.new(1, 0))
+
+local Percentage = Instance.new("TextLabel")
+Percentage.Size = UDim2.new(0, 50, 0, 20)
+Percentage.Position = UDim2.new(0.5, 0, 0.78, 0)
+Percentage.AnchorPoint = Vector2.new(0.5, 0)
+Percentage.BackgroundTransparency = 1
+Percentage.Text = "0%"
+Percentage.TextColor3 = COLORS.WHITE
+Percentage.Font = Enum.Font.GothamBold
+Percentage.TextSize = 14
+Percentage.Parent = MainFrame
+
+-- Botão Skip
+local SkipBtn = Instance.new("TextButton")
+SkipBtn.Size = UDim2.new(0, 100, 0, 35)
+SkipBtn.Position = UDim2.new(0.9, 0, 0.9, 0)
+SkipBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+SkipBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+SkipBtn.Text = "SKIP"
+SkipBtn.Font = Enum.Font.GothamBold
+SkipBtn.TextColor3 = COLORS.WHITE
+SkipBtn.TextSize = 14
+SkipBtn.AutoButtonColor = true
+SkipBtn.Parent = MainFrame
+createCorner(SkipBtn, UDim.new(0, 6))
+
+local SkipStroke = Instance.new("UIStroke")
+SkipStroke.Color = COLORS.PRIMARY
+SkipStroke.Thickness = 1.5
+SkipStroke.Parent = SkipBtn
+
+-- Função de Fechamento Limpo
+local function Finalize()
+    if isSkipped then return end
+    isSkipped = true
+
+    -- Parar conexões
+    for _, conn in pairs(connections) do
+        conn:Disconnect()
+    end
+
+    -- Fade Out
+    local fadeTween = TweenService:Create(MainFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 0, -1, 0) -- Sobe a tela
+    })
+    
+    -- Esconder elementos internos
+    for _, child in pairs(MainFrame:GetDescendants()) do
+        if child:IsA("TextLabel") or child:IsA("ImageLabel") or child:IsA("Frame") then
+            TweenService:Create(child, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
+        end
+    end
+
+    fadeTween:Play()
+    pcall(function()
+        TweenService:Create(Sound, TweenInfo.new(0.8), {Volume = 0}):Play()
+    end)
+
+    fadeTween.Completed:Wait()
+    pcall(function() Sound:Stop() end)
+    ScreenGui:Destroy()
 end
 
-task.wait(0.5)
-Sound:Stop()
-ScreenGui:Destroy()
+SkipBtn.MouseButton1Click:Connect(Finalize)
+
+-- Lógica de Progresso
+local tips = {
+    "Carregando Brookhaven...",
+    "Injetando Xeno Hub...",
+    "Otimizando performance...",
+    "Verificando permissões...",
+    "Quase lá, prepare-se!"
+}
+
+task.spawn(function()
+    for i = 1, 100 do
+        if isSkipped then break end
+        
+        local targetSize = UDim2.new(i/100, 0, 1, 0)
+        TweenService:Create(ProgressBar, TweenInfo.new(0.1), {Size = targetSize}):Play()
+        Percentage.Text = i.."%"
+        
+        if i % 25 == 0 then
+            TipText.Text = tips[math.random(1, #tips)]
+        end
+        
+        -- Velocidade variável para parecer real
+        task.wait(math.random(2, 8) / 100)
+    end
+    
+    if not isSkipped then
+        TipText.Text = "CONCLUÍDO!"
+        task.wait(0.5)
+        Finalize()
+    end
+end)
 
 local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/kayrus99/refs/heads/main/kayrusLINDO"))()
 
