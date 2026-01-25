@@ -5416,41 +5416,60 @@ Tab:AddButton({
 -- VIP JOB BUTONU
 local VIPJobBtn = Instance.new("TextButton")
 VIPJobBtn.Size = UDim2.new(0.96, 0, 0, 38)
-VIPJobBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 0) -- VIP rengi (Turuncu/Altın)
-VIPJobBtn.Text = "VIP JOB AL (HERKES GÖRÜR)"
-VIPJobBtn.TextColor3 = Color3.new(1, 1, 1)
+VIPJobBtn.BackgroundColor3 = Color3.fromRGB(230, 190, 0) -- Altın rengi
+VIPJobBtn.Text = "BECOME VIP JOB"
+VIPJobBtn.TextColor3 = Color3.new(0, 0, 0)
 VIPJobBtn.Font = Enum.Font.GothamBold
 VIPJobBtn.TextSize = 13
 VIPJobBtn.Parent = LeftFrame
 Instance.new("UICorner", VIPJobBtn)
 
 VIPJobBtn.MouseButton1Click:Connect(function()
-    local plr = game.Players.LocalPlayer
-    -- Brookhaven'ın ana iletişim kanalını bul
-    local trigger = game.ReplicatedStorage:FindFirstChild("1Playe1rTrigge1rEven1t") 
-        or game.ReplicatedStorage:FindFirstChild("1PlayerTriggerEvent")
+    local plr = game:GetService("Players").LocalPlayer
+    local trigger = game:GetService("ReplicatedStorage"):FindFirstChild("1Playe1rTrigge1rEven1t") 
+        or game:GetService("ReplicatedStorage"):FindFirstChild("1PlayerTriggerEvent")
 
-    if trigger then
-        -- VIP İş Bilgileri (Görüntüye Göre)
-        local jobName = "VIP"
-        local jobIconID = "18458871100"
-
-        -- Sunucuya iş değişikliğini bildir (Herkesin görmesi için tetikleyiciler)
-        local jobEvents = {
-            {"JobFeed", jobName, jobIconID}, -- İş seçme ana tetikleyicisi
-            {"JobTitle", jobName},
-            {"JobChange", jobName, jobIconID}
-        }
-
-        for _, args in ipairs(jobEvents) do
-            pcall(function()
-                trigger:FireServer(unpack(args))
-            end)
+    -- 1. VERİLERİ LOCALDE GÜNCELLE (Kendi ekranın ve Billboard için)
+    local playersBag = plr:FindFirstChild("PlayersBag")
+    if playersBag then
+        local jobFolder = playersBag:FindFirstChild("Job")
+        if jobFolder then
+            -- Job klasörünü aktif et
+            if jobFolder:IsA("BoolValue") then jobFolder.Value = true end
+            
+            -- Değerleri ekran görüntündeki gibi setle
+            if jobFolder:FindFirstChild("JobName") then
+                jobFolder.JobName.Value = "VIP"
+            end
+            if jobFolder:FindFirstChild("JobTitlePic") then
+                jobFolder.JobTitlePic.Value = "18458871100"
+            end
+            if jobFolder:FindFirstChild("JobOrStudent") then
+                jobFolder.JobOrStudent.Value = true
+            end
         end
-        
-        print("VIP Job tetiklendi!")
-    else
-        warn("Tetikleyici RemoteEvent bulunamadı!")
+    end
+
+    -- 2. SUNUCUYA BİLDİR (Diğerlerinin görmesi için)
+    if trigger then
+        -- Brookhaven'ın iş seçme protokolleri
+        pcall(function()
+            trigger:FireServer("JobFeed", "VIP", "18458871100")
+            trigger:FireServer("JobTitle", "VIP")
+            -- Karakterin üstündeki Billboard'u güncellemesi için zorla
+            trigger:FireServer("SetJob", "VIP") 
+        end)
+    end
+    
+    -- 3. KARAKTER ÜZERİNDEKİ BILLBOARD'U BUL VE GÜNCELLE (Zorunlu güncelleme)
+    local char = plr.Character
+    if char and char:FindFirstChild("Head") then
+        for _, v in ipairs(char.Head:GetChildren()) do
+            if v:IsA("BillboardGui") and v.Name == "JobGui" then -- Brookhaven özel billboard adı
+                local label = v:FindFirstChildWhichIsA("TextLabel")
+                if label then label.Text = "VIP" end
+            end
+        end
     end
 end)
 
