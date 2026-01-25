@@ -5494,7 +5494,7 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Title = "MoneyGun",
+    Title = "💸 Money Gun",
     Locked = false,
     Callback = function()
         local rep = game:GetService("ReplicatedStorage")
@@ -5513,25 +5513,24 @@ Tab:AddButton({
         end
 
         local ok, err = pcall(function()
-            -- Prefer an explicit GetItem remote if it exists (several possible spellings)
             local re = rep:FindFirstChild("RE") or rep:FindFirstChild("Remotes") or rep
             local candidates = {"GetItem", "Getİtem", "Get_Item", "GetTool", "GetToolToServer"}
+
             for _, name in ipairs(candidates) do
                 local r = re:FindFirstChild(name)
                 if r then
                     if r.InvokeServer then
                         r:InvokeServer(itemName)
-                        tryNotify("MoneyGun", "Requested via "..name.." (InvokeServer).")
+                        tryNotify("💸 Money Gun", "Requested via "..name.." ⚡")
                         return
                     elseif r.FireServer then
                         r:FireServer(itemName)
-                        tryNotify("MoneyGun", "Requested via "..name.." (FireServer).")
+                        tryNotify("💸 Money Gun", "Requested via "..name.." 🔥")
                         return
                     end
                 end
             end
 
-            -- Fallback: use the same trigger used by other items in this script
             local trigger = re:FindFirstChild("1Playe1rTrigge1rEven1t") or rep:FindFirstChild("1Playe1rTrigge1rEven1t")
             if trigger then
                 local args = {
@@ -5539,40 +5538,39 @@ Tab:AddButton({
                     [2] = itemName,
                     [3] = localPlayer
                 }
+
                 if trigger.FireServer then
                     trigger:FireServer(unpack(args))
-                    tryNotify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (FireServer).")
+                    tryNotify("💸 Money Gun", "Triggered successfully 🎯")
                     return
                 elseif trigger.InvokeServer then
                     trigger:InvokeServer(unpack(args))
-                    tryNotify("MoneyGun", "Requested via 1Playe1rTrigge1rEven1t (InvokeServer).")
+                    tryNotify("💸 Money Gun", "Triggered successfully ⚙️")
                     return
                 end
             end
 
-            -- Very last resort: try a generic Remotes/GetItem on top-level Remotes folder
             local topRemotes = rep:FindFirstChild("Remotes")
             if topRemotes then
                 local r = topRemotes:FindFirstChild("GetItem") or topRemotes:FindFirstChild("Getİtem")
                 if r and r.FireServer then
                     r:FireServer(itemName)
-                    tryNotify("MoneyGun", "Requested via Remotes/GetItem (FireServer).")
+                    tryNotify("💸 Money Gun", "Requested via Remotes 📡")
                     return
                 end
             end
 
-            -- If nothing worked, notify user
-            tryNotify("MoneyGun", "Hayır suitable remote found to request MoneyGun.")
+            tryNotify("💸 Money Gun", "No suitable remote found ❌")
         end)
 
         if not ok then
-            tryNotify("MoneyGun", "Error requesting MoneyGun: " .. tostring(err))
+            tryNotify("💸 Money Gun", "Error: "..tostring(err).." ⚠️")
         end
     end
 })
 
 Tab:AddButton({
-    Title = "Planör",
+    Title = "🪂 Glider",
     Locked = false,
     Callback = function()
         local args = {
@@ -5580,13 +5578,12 @@ Tab:AddButton({
             [2] = "Glider",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Snowball Cannon",
+    Title = "❄️ Snowball Cannon",
     Locked = false,
     Callback = function()
         local args = {
@@ -5594,13 +5591,12 @@ Tab:AddButton({
             [2] = "SnowballCannon",
             [3] = game.Players.LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE["1Playe1rTrigge1rEven1t"]:FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "SnowBall",
+    Title = "☃️ Snowball",
     Locked = false,
     Callback = function()
         local args = {
@@ -5608,13 +5604,12 @@ Tab:AddButton({
             [2] = "SnowBall",
             [3] = game.Players.LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE["1Playe1rTrigge1rEven1t"]:FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Lollipop Peppermint",
+    Title = "🍭 Peppermint Lollipop",
     Locked = false,
     Callback = function()
         local args = {
@@ -5622,13 +5617,12 @@ Tab:AddButton({
             [2] = "Lollipop",
             [3] = game.Players.LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE["1Playe1rTrigge1rEven1t"]:FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "canhão",
+    Title = "💣 Cannon",
     Locked = false,
     Callback = function()
         local args = {
@@ -5636,13 +5630,12 @@ Tab:AddButton({
             [2] = "Cannon",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Bola de basquete dourada",
+    Title = "🏀 Golden Basketball",
     Locked = false,
     Callback = function()
         local args = {
@@ -5650,13 +5643,12 @@ Tab:AddButton({
             [2] = "GoldenBasketball",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Balão de Agua",
+    Title = "💦 Water Balloon",
     Locked = false,
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -5666,7 +5658,7 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Title = "Lançador de ovo",
+    Title = "🥚 Egg Launcher",
     Locked = false,
     Callback = function()
         local args = {
@@ -5674,13 +5666,12 @@ Tab:AddButton({
             [2] = "EggLauncher",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "foice",
+    Title = "🪓 Scythe",
     Locked = false,
     Callback = function()
         local args = {
@@ -5688,13 +5679,12 @@ Tab:AddButton({
             [2] = "Scythe",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Cristal Verde",
+    Title = "🧪 Green Crystal",
     Locked = false,
     Callback = function()
         local args = {
@@ -5702,13 +5692,12 @@ Tab:AddButton({
             [2] = "UraniumRod",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Serra Eletrica",
+    Title = "🪚 Chainsaw",
     Locked = false,
     Callback = function()
         local args = {
@@ -5716,16 +5705,15 @@ Tab:AddButton({
             [2] = "Chainsaw",
             [3] = game:GetService("Players").LocalPlayer
         }
-
         game:GetService("ReplicatedStorage").RE:FindFirstChild("1Playe1rTrigge1rEven1t"):FireServer(unpack(args))
     end
 })
 
 Tab:AddButton({
-    Title = "Telekiness V5",
+    Title = "🧠 Telekinesis V5",
     Locked = false,
     Callback = function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/fe-telekinessv5/refs/heads/main/Main.txt"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/BRENOPOOF/fe-telekinessv5/refs/heads/main/Main.txt"))()
     end
 })
 
