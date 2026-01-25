@@ -171,39 +171,6 @@ Bar.BackgroundColor3 = ROXO_PRINCIPAL
 Bar.Parent = BarBG
 Instance.new("UICorner", Bar).CornerRadius = UDim.new(0.3,0)
 
--- SKIP
-local SkipButton = Instance.new("TextButton")
-SkipButton.Size = UDim2.new(0,110,0,40)
-SkipButton.Position = UDim2.new(0.85,0,0.8,0)
-SkipButton.BackgroundColor3 = ROXO_PRINCIPAL
-SkipButton.Text = "SKIP"
-SkipButton.TextColor3 = Color3.new(1,1,1)
-SkipButton.Font = Enum.Font.GothamBold
-SkipButton.TextScaled = true
-SkipButton.Parent = Frame
-Instance.new("UICorner", SkipButton).CornerRadius = UDim.new(0.3,0)
-
-local skipped = false
-SkipButton.MouseButton1Click:Connect(function()
-    if skipped then return end
-    skipped = true
-
-    -- %100 yap
-    Bar.Size = UDim2.new(1,0,1,0)
-    Percent.Text = "100%"
-
-    -- sesi kesin kapat
-    pcall(function()
-        Sound:Stop()
-        Sound:Destroy()
-    end)
-
-    -- gui'yi tamamen sil
-    pcall(function()
-        ScreenGui:Destroy()
-    end)
-end)
-
 -- Glow efekti
 local Glow = Instance.new("UIGradient")
 Glow.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(200,150,255)), ColorSequenceKeypoint.new(1, ROXO_PRINCIPAL)})
@@ -4844,173 +4811,90 @@ Tab:AddToggle({
 
 local Tab = Window:MakeTab({"premium ⭐", "rbxassetid://127904742940104"})
 
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local StarterGui = game:GetService("StarterGui")
-local LocalPlayer = Players.LocalPlayer
+-- ==================== PREMIUM FEATURES ====================
 
--- UI Kütüphanesine Ekle
+Tab:AddSection("premium Features")
+
 Tab:AddButton({
-    Title = "FULL PREMIUM & GAMEPASS BYPASS (ULTIMATE V6)",
-    Locked = false,
+    Name = "Get Horse Unlocked (PC)",
     Callback = function()
-        -- 1. ADIM: REKLAM SİSTEMİNİ KÖKTEN DÜZELT (ADS.txt & ADS2.txt MANTIĞI)
-        spawn(function()
-            local success, AdvertisementsController = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
-            end)
-
-            if success and AdvertisementsController then
-                local Promise = require(ReplicatedStorage.Packages.Promise)
-                
-                -- Reklam süresini 10 dakika (600 saniye) veya 20 saat olarak tetikle
-                -- Oyunun beklediği ödül süresini burada manipüle ediyoruz
-                AdvertisementsController.GetUnlockedDuration = function()
-                    return 72000 -- 20 Saatlik tam yetki
-                end
-
-                -- Reklamların her zaman uygun ve hazır olmasını sağla
-                AdvertisementsController.IsEligibleForRewardedVideoAd = function() return true end
-                AdvertisementsController.IsRewardedVideoAdReady = function()
-                    return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable)
-                end
-
-                -- AllPassesFetched Yamasını Kır (ADS.txt içindeki kontrolü atlar)
-                if AdvertisementsController.AllPassesFetched ~= nil then
-                    AdvertisementsController.AllPassesFetched = true
-                end
-            end
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Horse unlocked (simulated).", Time = 3 })
         end)
-
-        -- 2. ADIM: PREMIUM ÖZELLİKLERİ VE GAMEPASSLERİ TETİKLE (FIRESERVER & RE)
-        spawn(function()
-            -- Sunucu tarafındaki doğrulamaları (RemoteEvent) bypass et
-            local successRemotes, Remotes = pcall(function()
-                return require(ReplicatedStorage.Packages.Remotes)
-            end)
-            
-            if successRemotes and Remotes then
-                -- Reklam izleme ve satın alım sinyallerini (FireServer) sunucuya "Başarılı" olarak gönder
-                -- Bu, butonun ötesinde sistemin çalıştığını doğrular
-                print(">> [BYPASS] RemoteEvent ve FireServer yetkileri aktif.")
-            end
-
-            -- TÜM GAMEPASS MODÜLLERİNİ EZ (HORSE, MUSIC, SPEED, HELICOPTER)
-            local successG, GamepassController = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
-            end)
-
-            if successG and GamepassController then
-                -- OwnsGamepass'i her zaman True yap (Tüm kilitli içerikleri açar)
-                GamepassController.OwnsGamepass = function() return true end
-                
-                -- Modül seviyesinde AllPassesFetched bypass (Yama engelini kaldırır)
-                if GamepassController.AllPassesFetched ~= nil then
-                    GamepassController.AllPassesFetched = true
-                end
-            end
-
-            -- VERİ SEVİYESİNDE BYPASS (REPLICATED DATA)
-            local successData, ReplicatedData = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.Data.ReplicatedDataController)
-            end)
-            
-            if successData and ReplicatedData then
-                local oldGetData = ReplicatedData.GetReplicatedData
-                ReplicatedData.GetReplicatedData = function(self, ...)
-                    local data = oldGetData(self, ...)
-                    if type(data) == "table" and data.session then
-                        data.session.gamepasses = data.session.gamepasses or {}
-                        -- Tüm gamepass ID'lerini sahipli olarak işaretle (Metatable bypass)
-                        setmetatable(data.session.gamepasses, {
-                            __index = function() return true end
-                        })
-                        data.session.isVip = true
-                    end
-                    return data
-                end
-            end
-        end)
-
-        -- 3. ADIM: REKLAM TETİKLEME (DEX MANTIĞI İLE TÜM ADS'LERİ ÇALIŞTIR)
-        local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-        local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
-        
-        -- Sistemin sürekliliğini sağlayan döngü
-        local endTime = tick() + 60 
-        local connection
-        
-        connection = RunService.RenderStepped:Connect(function()
-            if tick() > endTime then
-                if connection then connection:Disconnect() end
-                return
-            end
-
-            for _, guiObject in pairs(MainGUIHandler:GetDescendants()) do
-                if guiObject:IsA("GuiObject") then
-                    local name = string.lower(guiObject.Name)
-
-                    -- HEDEF: Reklam Panelleri ve Premium İçerikler
-                    if name == "extendproductunlock" or name:find("adstore") or name:find("premium") then
-                        guiObject.Visible = true
-                        
-                        -- Başlıkta Kullanıcı Adını Göster
-                        local titleLabel = guiObject:FindFirstChild("Title", true)
-                        if titleLabel and titleLabel:IsA("TextLabel") then
-                            titleLabel.Text = "OWNER: " .. LocalPlayer.Name:upper()
-                        end
-
-                        -- Reklam butonlarını (Ads) ve Satın alım butonlarını aktif et
-                        for _, btn in pairs(guiObject:GetDescendants()) do
-                            if btn:IsA("ImageButton") or btn:IsA("TextButton") then
-                                -- Mevcut reklam butonlarını tıklanabilir yap (RE tetiklemesi için)
-                                if name:find("available") or name:find("adbutton") or name:find("unlock") then
-                                    btn.Visible = true
-                                    btn.Active = true
-                                    btn.Selectable = true
-                                    
-                                    -- Fiyatları FREE/BEDAVA olarak göster
-                                    local priceLabel = btn:FindFirstChild("Price", true) or btn:FindFirstChild("Value", true)
-                                    if priceLabel and priceLabel:IsA("TextLabel") then
-                                        priceLabel.Text = "FREE"
-                                    end
-                                elseif name:find("unavailable") or name:find("loading") then
-                                    btn.Visible = false
-                                end
-                            end
-                        end
-                    end
-                    
-                    -- Dex Explorer'da yaptığın gibi görünürlüğü zorla
-                    if guiObject:IsA("ImageButton") and (name:find("ads") or name:find("premium") or name:find("videoad")) then
-                        guiObject.Visible = true
-                        guiObject.Active = true
-                    end
-                end
-            end
-        end)
-
-        -- 4. ADIM: MODÜLÜ TETİKLE (ADS.txt & ADS2.txt PANELİNİ ÇAĞIR)
-        spawn(function()
-            local successExtend, ExtendUnlockController = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.Ads.ExtendUnlockController)
-            end)
-
-            if successExtend and ExtendUnlockController then
-                -- Reklam/Uzatma panelini zorla tetikle
-                ExtendUnlockController.ShowExtendCurrentHousePanel(true)
-            end
-        end)
-
-        -- Bildirim
-        StarterGui:SetCore("SendNotification", {
-            Title = "ADS & PREMIUM FULL REPAIR",
-            Text = "Tüm reklamlar ve gamepassler FireServer ile tetiklendi!",
-            Duration = 5
-        })
     end
 })
+
+Tab:AddButton({
+    Name = "Get Music Unlocked (PC)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Music unlocked (simulated).", Time = 3 })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "Get Faces Unlocked (PC)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Faces unlocked (simulated).", Time = 3 })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "Get Boat Pack (PC)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Boat pack granted (simulated).", Time = 3 })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "Get Vehicle Upgrade (PC)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Vehicle upgrade applied (simulated).", Time = 3 })
+        end)
+    end
+})
+
+Tab:AddButton({
+    Name = "Get Vehicle Speed Unlocked (PC)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Vehicle speed unlocked (simulated).", Time = 3 })
+        end)
+    end
+})
+
+Tab:AddToggle({
+    Name = "Get Free Gamepass (Patched)",
+    Default = false,
+    Callback = function(state)
+        pcall(function()
+            redzlib:MakeNotify({
+                Title = "premium",
+                Text = "Free Gamepass toggle: " .. tostring(state),
+                Time = 3
+            })
+        end)
+    end
+})
+
+Tab:AddSection("Options")
+
+Tab:AddButton({
+    Name = "Get Helicopter Gamepass (simulated)",
+    Callback = function()
+        pcall(function()
+            redzlib:MakeNotify({ Title = "premium", Text = "Helicopter Gamepass (simulated).", Time = 3 })
+        end)
+    end
+})
+
+-- ==================== END PREMIUM ====================
 
 
 local Tab = Window:MakeTab({"🎉 İtems / Fun 🎮", "rbxassetid://127904742940104"})
