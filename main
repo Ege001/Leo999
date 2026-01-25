@@ -5671,6 +5671,22 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
+    Title = "🍬 Candy Cane",
+    Locked = false,
+    Callback = function()
+        local args = {
+            [1] = "AcceptedToolToServer",
+            [2] = "CandyCaneTool",
+            [3] = game:GetService("Players").LocalPlayer
+        }
+
+        game:GetService("ReplicatedStorage")
+            .RE:FindFirstChild("1Playe1rTrigge1rEven1t")
+            :FireServer(unpack(args))
+    end
+})
+
+Tab:AddButton({
     Title = "🪓 Scythe",
     Locked = false,
     Callback = function()
