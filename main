@@ -4855,7 +4855,7 @@ Tab:AddButton({
     Title = "ULTIMATE MODULE BYPASS (FORCE TRIGGER)",
     Locked = false,
     Callback = function()
-        -- 1. ADIM: REPLICA VE DATA KATMANINI ELE GEÇİR (FETCHED VE PATCH SİLME)
+        -- 1. ADIM: REPLICA VE TÜM GAMEPASS VERİLERİNİ ELE GEÇİR
         spawn(function()
             local successReplica, ReplicaController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Data.ReplicaController)
@@ -4867,17 +4867,24 @@ Tab:AddButton({
                     local replica = oldGetReplica(self, name)
                     if replica and replica.Data then
                         if type(replica.Data) == "table" then
-                            -- Tüm verileri önceden yüklenmiş (Fetched) ve Premium olarak işaretle
+                            -- Premium, VIP ve Reklam Kilidini Aç
                             replica.Data.IsVip = true
                             replica.Data.UnlockAds = true
-                            replica.Data.AllPassesFetched = true -- Fetched kontrolünü sil
-                            replica.Data.AdFreeTimestamp = tick() + (9999 * 60)
+                            replica.Data.AllPassesFetched = true
+                            replica.Data.AdFreeTimestamp = tick() + (999999 * 60)
                             
-                            -- Gamepass ve Item sahipliğini zorla
+                            -- TÜM GAMEPASSLERİ SAHİP OLARAK İŞARETLE (FORCE OWNERSHIP)
                             if not replica.Data.Gamepasses then replica.Data.Gamepasses = {} end
+                            
+                            -- Metatable kullanarak her türlü Gamepass ID'sine "true" döndür
                             setmetatable(replica.Data.Gamepasses, {
                                 __index = function() return true end
                             })
+                            
+                            -- Özel mülk ve araç kilitlerini aç
+                            replica.Data.HasPremium = true
+                            replica.Data.HasSpeed = true
+                            replica.Data.HasMusic = true
                         end
                     end
                     return replica
@@ -4885,7 +4892,32 @@ Tab:AddButton({
             end
         end)
 
-        -- 2. ADIM: REKLAM SİSTEMİNİ VE "YOK" UYARISINI KÖKTEN SİL
+        -- 2. ADIM: GAMEPASS KONTROLÜNÜ VE BUTONLARI YAMALA (SAHİPSİN DİYECEK)
+        spawn(function()
+            local successG, GamepassController = pcall(function()
+                return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
+            end)
+
+            if successG and GamepassController then
+                -- Oyun "Bu gamepass var mı?" diye sorduğunda her zaman evet de
+                GamepassController.OwnsGamepass = function() return true end
+                GamepassController.AllPassesFetched = true
+                
+                -- Satın alma fonksiyonlarını devre dışı bırak (Zaten sahipsin uyarısı için)
+                if GamepassController.PromptPurchase then
+                    GamepassController.PromptPurchase = function()
+                        StarterGui:SetCore("SendNotification", {
+                            Title = "GAMEPASS SYSTEM",
+                            Text = "You already own this gamepass!",
+                            Duration = 3
+                        })
+                        return true
+                    end
+                end
+            end
+        end)
+
+        -- 3. ADIM: REKLAM SİSTEMİNİ VE REKLAM YOK HATASINI SİL
         spawn(function()
             local successAds, AdvertisementsController = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Ads.AdvertisementsController)
@@ -4894,30 +4926,23 @@ Tab:AddButton({
             if successAds and AdvertisementsController then
                 local Promise = require(ReplicatedStorage.Packages.Promise)
                 
-                -- "Reklam mevcut değil" uyarısını asla gösterme, her zaman hazır de
                 AdvertisementsController.IsEligibleForRewardedVideoAd = function() return true end
                 AdvertisementsController.IsRewardedVideoAdReady = function() 
                     return Promise.resolve(Enum.AdAvailabilityResult.IsAvailable) 
                 end
                 
-                -- AllPassesFetched kontrolünü her yerde true yap
                 AdvertisementsController.AllPassesFetched = true
-                
-                -- Süreyi maksimuma sabitle
                 AdvertisementsController.GetUnlockedDuration = function() return 999 * 60 end
 
-                -- REKLAM BUTONUNA BASILDIĞINDA ANINDA VE TETİKLİ ÖDÜL VER
                 AdvertisementsController.ShowRewardedVideoAd = function(self, ...)
                     pcall(function()
                         local Incentives = require(ReplicatedStorage.Modules.Client.Ads.IncentivesController)
                         local RewardClaim = require(ReplicatedStorage.Modules.Client.Ads.IncentivesRewardClaimController)
                         
-                        -- Sunucuya "Ödül Talebi" sinyalini (FireServer) zorla gönder
                         if Incentives and Incentives.ClaimReward then
                             Incentives.ClaimReward()
                         end
                         
-                        -- Başarı panelini anında göster
                         if RewardClaim then
                             RewardClaim.Show({
                                 rewardIcon = "rbxassetid://127904742940104",
@@ -4931,74 +4956,59 @@ Tab:AddButton({
             end
         end)
 
-        -- 3. ADIM: AD_BUTTON VE ADSTORE TETİKLEME (ÖZEL ADSTORE AÇICI)
+        -- 4. ADIM: AD_BUTTON VE ADSTORE PANELİNİ OTOMATİK TETİKLE
         spawn(function()
             local successBtn, AdButton = pcall(function()
                 return require(ReplicatedStorage.Modules.Client.Components.Ads.AdButton)
             end)
             
             if successBtn and AdButton then
-                -- Buton tıklandığında gerçekleşen tüm kontrolleri bypass et
                 if AdButton.OnClicked then
                     local oldClicked = AdButton.OnClicked
                     AdButton.OnClicked = function(self, ...)
-                        -- AdStore panelini açmak için zorla tetikle
                         pcall(function()
                             local AdStoreController = require(ReplicatedStorage.Modules.Client.Ads.AdStoreController)
                             if AdStoreController then
-                                AdStoreController.Show() -- AdStore panelini açar
+                                AdStoreController.Show()
                             end
                         end)
-                        -- Tıklama anında "Reklam bitti" sinyalini tetiklet
                         return oldClicked(self, ...)
                     end
                 end
             end
         end)
 
-        -- 4. ADIM: UI ÜZERİNDEKİ TÜM ADS İÇERİKLERİNİ TETİKLE VE GÖRÜNÜR YAP
+        -- 5. ADIM: UI ÜZERİNDEKİ TÜM KİLİTLERİ VE BUTONLARI AKTİF ET
         local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
         local MainGUIHandler = PlayerGui:WaitForChild("MainGUIHandler")
         
         local connection
         connection = RunService.RenderStepped:Connect(function()
             for _, guiObject in pairs(MainGUIHandler:GetDescendants()) do
-                if guiObject:IsA("ImageButton") or guiObject:IsA("TextButton") then
+                if guiObject:IsA("GuiObject") then
                     local name = string.lower(guiObject.Name)
                     
-                    -- Sadece Reklam ve Kilitli butonları hedef al
-                    if name:find("ad") or name:find("unlock") or name:find("video") or guiObject.BackgroundColor3 == Color3.fromRGB(0, 255, 0) then
+                    -- Reklam, Kilit veya Gamepass butonlarını hedef al
+                    if name:find("ad") or name:find("unlock") or name:find("video") or name:find("pass") or guiObject.BackgroundColor3 == Color3.fromRGB(0, 255, 0) then
                         guiObject.Visible = true
                         guiObject.Active = true
                         guiObject.Selectable = true
-                        guiObject.ZIndex = 20000 -- En üst katman
+                        guiObject.ZIndex = 20000 
                         
-                        -- Fiyat/Süre etiketlerini güncelle
+                        -- Yazıları "Zaten Sahipsin" veya "Açık" yap
                         local label = guiObject:FindFirstChildOfClass("TextLabel") or guiObject:FindFirstChild("Price", true) or guiObject:FindFirstChild("Value", true)
                         if label then
-                            label.Text = "READY TO UNLOCK"
+                            label.Text = "OWNED / FREE"
                         end
                     end
                 end
             end
         end)
 
-        -- 5. ADIM: FETCHED VE MODÜL KONTROLLERİNİ SİL (GLOBAL PATCH)
-        spawn(function()
-            local successG, GamepassController = pcall(function()
-                return require(ReplicatedStorage.Modules.Client.UI.GamepassUnlockController)
-            end)
-
-            if successG and GamepassController then
-                GamepassController.OwnsGamepass = function() return true end
-                GamepassController.AllPassesFetched = true
-            end
-        end)
-
         -- Bildirim
         StarterGui:SetCore("SendNotification", {
-            Title = "ULTIMATE TRIGGER ACTIVE",
-            Text = "AdStore tetikleyici aktif edildi!",
+            Title = "ALL GAMEPASS BYPASS ACTIVE",
+            Text = "Tüm gamepass'ler ve reklamlar ele geçirildi!",
             Duration = 5
         })
     end
