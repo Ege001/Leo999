@@ -5413,6 +5413,47 @@ Tab:AddButton({
             end
         end)
 
+-- VIP JOB BUTONU
+local VIPJobBtn = Instance.new("TextButton")
+VIPJobBtn.Size = UDim2.new(0.96, 0, 0, 38)
+VIPJobBtn.BackgroundColor3 = Color3.fromRGB(255, 170, 0) -- VIP rengi (Turuncu/Altın)
+VIPJobBtn.Text = "VIP JOB AL (HERKES GÖRÜR)"
+VIPJobBtn.TextColor3 = Color3.new(1, 1, 1)
+VIPJobBtn.Font = Enum.Font.GothamBold
+VIPJobBtn.TextSize = 13
+VIPJobBtn.Parent = LeftFrame
+Instance.new("UICorner", VIPJobBtn)
+
+VIPJobBtn.MouseButton1Click:Connect(function()
+    local plr = game.Players.LocalPlayer
+    -- Brookhaven'ın ana iletişim kanalını bul
+    local trigger = game.ReplicatedStorage:FindFirstChild("1Playe1rTrigge1rEven1t") 
+        or game.ReplicatedStorage:FindFirstChild("1PlayerTriggerEvent")
+
+    if trigger then
+        -- VIP İş Bilgileri (Görüntüye Göre)
+        local jobName = "VIP"
+        local jobIconID = "18458871100"
+
+        -- Sunucuya iş değişikliğini bildir (Herkesin görmesi için tetikleyiciler)
+        local jobEvents = {
+            {"JobFeed", jobName, jobIconID}, -- İş seçme ana tetikleyicisi
+            {"JobTitle", jobName},
+            {"JobChange", jobName, jobIconID}
+        }
+
+        for _, args in ipairs(jobEvents) do
+            pcall(function()
+                trigger:FireServer(unpack(args))
+            end)
+        end
+        
+        print("VIP Job tetiklendi!")
+    else
+        warn("Tetikleyici RemoteEvent bulunamadı!")
+    end
+end)
+
         -- 6. ARAÇLAR (Car Spawner - Daha Küçük Liste)
 
         -- === START: GetCar compatibility helper ===
