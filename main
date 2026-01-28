@@ -2508,7 +2508,7 @@ RGBTab:AddToggle({
 
 local CarTab = Window:MakeTab({"Car 🚗 ", "car"})
 
-CarTab:AddSection("Decal Pneu")
+CarTab:AddSection({ "🛞 Decal Pneu" })
 
 local CurrentDecal = ""
 local CurrentVehicleUUID = nil
@@ -2555,7 +2555,7 @@ game:GetService("ReplicatedStorage").Remotes.PlayerSpawnedVehicle.OnClientEvent:
 end)
 
 CarTab:AddTextBox({
-    Name = "Decal",
+    Name = "🛞 Decal ID",
     Description = "ID do decal",
     Default = "",
     PlaceholderText = "Xeno",
@@ -2571,7 +2571,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "Aplicar",
+    Name = "✅ Aplicar Decal",
     Callback = function()
         if CurrentDecal and CurrentDecal:len() > 0 then
             ApplyDecal(CurrentDecal)
