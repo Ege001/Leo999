@@ -2558,7 +2558,7 @@ CarTab:AddTextBox({
     Name = "🛞 Decal ID",
     Description = "ID do decal",
     Default = "",
-    PlaceholderText = "Xeno",
+    PlaceholderText = "Patched",
     ClearText = false,
     Callback = function(text)
         if text and text:gsub(" ", ""):len() > 0 then
@@ -2571,7 +2571,7 @@ CarTab:AddTextBox({
 })
 
 CarTab:AddButton({
-    Name = "✅ Aplicar Decal",
+    Name = "✅ Aplicar Decal (Patched)",
     Callback = function()
         if CurrentDecal and CurrentDecal:len() > 0 then
             ApplyDecal(CurrentDecal)
