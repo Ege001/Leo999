@@ -2507,8 +2507,8 @@ RGBTab:AddToggle({
 })
 
 --[[ 
-    BROOKHAVEN CAR MASTER (ULTIMATE DEVELOPED VERSION)
-    Özellik: Gelişmiş Tekerlek Decal Sistemi, Geri Getirilen Spams, Hız ve RGB Modülleri
+    BROOKHAVEN CAR MASTER (ULTIMATE DEVELOPED VERSION - V3)
+    Özellik: Gelişmiş Tekerlek Decal Sistemi, Turbo, Drift, RGB Fix ve Full Trigger
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -2522,7 +2522,8 @@ local CarTab = Window:MakeTab({"Araba 🚗", "car"})
 local CurrentDecal = ""
 local CurrentVehicleUUID = nil
 local speedValue = 250
-local turboValue = 15.0
+local turboValue = 50 -- Turbo varsayılanı yükseltildi
+local driftValue = 1.0
 local isColorChanging = false
 
 -- FONKSİYON: Oyuncunun Brookhaven aracını UUID veya Model bazlı bulur
@@ -2542,120 +2543,139 @@ local function GetVehicleIdentity()
     return nil
 end
 
--- FONKSİYON: Tekerlek Decal Uygulama ve Tetikleme (Brookhaven Özel)
-local function ApplyWheelDecal(decalId)
+-- FONKSİYON: Araç Durumunu Güncelle (Ana Çekirdek)
+local function UpdateVehicleState(updates)
     local vehicleId = GetVehicleIdentity()
-    
     if not vehicleId then
-        warn("Hata: Araç bulunamadı! Lütfen aracınızı spawn edin veya içine binin.")
+        warn("Araç bulunamadı! Lütfen araca binin.")
         return
     end
 
-    -- ID Formatlama: rbxassetid formatı Brookhaven sunucusu için en sağlıklısıdır
-    local finalTexture = "rbxassetid://" .. decalId
-
     pcall(function()
-        -- 1. ADIM: Sunucuya araç durumunu gönder (FireServer/InvokeServer)
-        -- Brookhaven hem Invoke hem Fire kullanabilir, en garantisi InvokeServer'dır.
         local Remote = ReplicatedStorage.Remotes.ApplyStateToVehicle
         
-        local vehicleState = {
+        -- Mevcut ayarları koruyarak güncelleme yap
+        -- Brookhaven tüm tabloyu istediği için varsayılanları dolu tutuyoruz
+        local fullState = {
             ["Appearance"] = {
-                ["WheelDecal"] = finalTexture,
-                ["SuspensionHeight"] = 1.1, -- Tekerleklerin görünmesi için ideal yükseklik
+                ["WheelDecal"] = "rbxassetid://" .. CurrentDecal,
+                ["SuspensionHeight"] = 1.1,
                 ["IsSmoking"] = false,
                 ["IsOnFire"] = false,
-                ["BabyCarSeatInstalledNumber"] = 0
+                ["BabyCarSeatInstalledNumber"] = 0,
+                ["Color"] = updates.Color, -- RGB için eklendi
+                ["BodyColor"] = updates.Color -- Çift katmanlı boyama
             },
             ["Performance"] = {
-                ["Turbo"] = 0,
-                ["MaxSpeed"] = 25,
+                ["Turbo"] = turboValue,
+                ["MaxSpeed"] = speedValue,
+                ["DriftStrength"] = driftValue,
+                ["SteerSpeed"] = 1.5
             },
             ["IsLocked"] = false,
             ["Sahip"] = LocalPlayer
         }
 
         -- Ana tetikleyici
-        Remote:InvokeServer(vehicleId, vehicleState)
+        Remote:InvokeServer(vehicleId, fullState)
         
-        -- 2. ADIM: Zorunlu Senkronizasyon (Tetikleyici)
-        -- Brookhaven tekerlekleri bazen yükseklik değişmeden resmi yenilemez.
-        if ReplicatedStorage.Remotes:FindFirstChild("SuspensionHeightChanged") then
-            -- Client eventini manuel ateşleyerek görseli zorla yeniliyoruz
-            firesignal(ReplicatedStorage.Remotes.SuspensionHeightChanged.OnClientEvent, vehicleId)
+        -- Görsel Zorlama (Force Update)
+        if updates.ForceRefresh then
+             -- Süspansiyonu çok hızlı değiştirip düzelterek texture'ı yükletiyoruz
+            if ReplicatedStorage.Remotes:FindFirstChild("SuspensionHeightChanged") then
+                firesignal(ReplicatedStorage.Remotes.SuspensionHeightChanged.OnClientEvent, vehicleId)
+            end
         end
-        
-        -- Ekstra tetikleyici: Far aç/kapat yaparak güncelleme zorlama (opsiyonel)
-        ReplicatedStorage.Remotes.ToggleHeadLights:InvokeServer()
-        task.wait(0.1)
-        ReplicatedStorage.Remotes.ToggleHeadLights:InvokeServer()
     end)
 end
 
 -- ==========================================
--- BÖLÜM: TEKERLEK TASARIMI
+-- BÖLÜM: TEKERLEK TASARIMI (DECAL)
 -- ==========================================
 CarTab:AddSection({ "🛞 Tekerlek Tasarımı (Decal)" })
 
 CarTab:AddTextBox({
     Name = "Tekerlek Resim ID",
-    Description = "Decal veya Image ID girin",
-    PlaceholderText = "Örn: 123456789",
+    Description = "Örn: 100406090821380",
+    PlaceholderText = "ID Yapıştır...",
     Callback = function(text)
-        local cleanId = text:match("%d+")
-        if cleanId then
+        -- Sadece sayıları al, boşlukları sil
+        local cleanId = text:gsub("%D", "")
+        if cleanId and #cleanId > 0 then
             CurrentDecal = cleanId
         end
     end
 })
 
 CarTab:AddButton({
-    Name = "✅ Aplicar (Tekerlekleri Dönüştür)",
-    Description = "ID'yi tekerleklere basar ve güncellemeyi tetikler",
+    Name = "✅ Aplicar (Tekerlek + Yenile)",
+    Description = "Tekerlekleri değiştirir ve oyunu yeniler",
     Callback = function()
         if CurrentDecal ~= "" then
-            ApplyWheelDecal(CurrentDecal)
+            UpdateVehicleState({ ForceRefresh = true })
         else
-            warn("Lütfen önce bir ID girin!")
+            warn("Lütfen önce geçerli bir ID girin!")
         end
     end
 })
 
 -- ==========================================
--- BÖLÜM: ARAÇ PERFORMANS
+-- BÖLÜM: FULL PERFORMANS (HIZ, TURBO, DRIFT)
 -- ==========================================
-CarTab:AddSection({ "🏎️ Performans & Hız" })
-
-local function applySpeedToAll(type, val)
-    if not workspace:FindFirstChild("Vehicles") then return end
-    for _, v in pairs(workspace.Vehicles:GetChildren()) do
-        local seat = v:FindFirstChildWhichIsA("VehicleSeat", true)
-        if seat then
-            pcall(function()
-                if type == "MaxSpeed" then
-                    seat.MaxSpeed = val
-                elseif type == "Turbo" then
-                    local t = seat:FindFirstChild("Turbo") or seat:FindFirstChild("TurboValue")
-                    if t then t.Value = val end
-                end
-            end)
-        end
-    end
-end
+CarTab:AddSection({ "🏎️ Full Performans Ayarları" })
 
 CarTab:AddTextBox({
-    Name = "Max Hız Değeri",
-    PlaceholderText = "200",
-    Callback = function(v) speedValue = tonumber(v) or 200 end
+    Name = "Hız (Speed)",
+    PlaceholderText = "300",
+    Callback = function(v) 
+        speedValue = tonumber(v) or 200 
+    end
+})
+
+CarTab:AddTextBox({
+    Name = "Turbo Gücü",
+    PlaceholderText = "50",
+    Callback = function(v) 
+        turboValue = tonumber(v) or 50 
+    end
+})
+
+CarTab:AddTextBox({
+    Name = "Drift (Kayma)",
+    PlaceholderText = "1.5 (Normal) - 5 (Drift)",
+    Callback = function(v) 
+        driftValue = tonumber(v) or 1.0 
+    end
 })
 
 CarTab:AddButton({
-    Name = "🚀 Hızı Uygula",
-    Callback = function() applySpeedToAll("MaxSpeed", speedValue) end
+    Name = "🚀 Tüm Ayarları Uygula",
+    Description = "Hız, Turbo ve Drift ayarlarını sunucuya işler",
+    Callback = function() 
+        UpdateVehicleState({ ForceRefresh = false })
+        
+        -- Client tarafında da koltuk değerlerini zorla
+        if workspace:FindFirstChild("Vehicles") then
+            for _, v in pairs(workspace.Vehicles:GetChildren()) do
+                local seat = v:FindFirstChildWhichIsA("VehicleSeat", true)
+                if seat then
+                    pcall(function()
+                        seat.MaxSpeed = speedValue
+                        seat.Torque = turboValue * 10
+                        seat.TurnSpeed = 1.5
+                        
+                        -- Turbo Value Objesi varsa güncelle
+                        local tVal = seat:FindFirstChild("Turbo") or seat:FindFirstChild("TurboValue")
+                        if tVal then tVal.Value = turboValue end
+                    end)
+                end
+            end
+        end
+    end
 })
 
 -- ==========================================
--- BÖLÜM: EĞLENCE & SPAM (GERİ GETİRİLDİ)
+-- BÖLÜM: EĞLENCE & SPAM
 -- ==========================================
 CarTab:AddSection({ "🚨 Araç Efektleri & Spams" })
 
@@ -2666,7 +2686,7 @@ local function doSpam(key, remoteName)
         pcall(function()
             ReplicatedStorage.Remotes[remoteName]:InvokeServer()
         end)
-        task.wait(0.15)
+        task.wait(0.12) -- Hızlandırıldı
     end
 end
 
@@ -2699,27 +2719,43 @@ CarTab:AddToggle({
 })
 
 -- ==========================================
--- BÖLÜM: GÖRSEL EFEKTLER
+-- BÖLÜM: GÖRSEL EFEKTLER (RGB FIX)
 -- ==========================================
-CarTab:AddSection({ "🌈 Görsel Modlar" })
+CarTab:AddSection({ "🌈 Görsel Modlar (Premium Fix)" })
 
 local function rgbLoop()
     while isColorChanging do
         local vid = GetVehicleIdentity()
         if vid then
-            local color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+            -- Renk oluştur
+            local hue = tick() % 3 / 3 -- 3 saniyede bir tam tur
+            local color = Color3.fromHSV(hue, 1, 1)
+            
             pcall(function()
-                ReplicatedStorage.Remotes.ApplyStateToVehicle:InvokeServer(vid, {
-                    ["Appearance"] = { ["Color"] = color }
+                -- Brookhaven RGB Fix: Hem Color hem BodyColor gönderilmeli
+                local Remote = ReplicatedStorage.Remotes.ApplyStateToVehicle
+                Remote:InvokeServer(vid, {
+                    ["Appearance"] = { 
+                        ["Color"] = color,
+                        ["BodyColor"] = color,
+                        ["WheelDecal"] = "rbxassetid://" .. CurrentDecal, -- Decal kaybolmasın diye tekrar gönderiyoruz
+                        ["SuspensionHeight"] = 1.1
+                    },
+                    ["Performance"] = {
+                        ["Turbo"] = turboValue,
+                        ["MaxSpeed"] = speedValue
+                    },
+                    ["Sahip"] = LocalPlayer
                 })
             end)
         end
-        task.wait(0.6)
+        task.wait(0.5) -- Sunucuyu yormamak için ideal süre
     end
 end
 
 CarTab:AddToggle({
-    Name = "🌈 RGB Araba",
+    Name = "🌈 RGB Araba (Full Renk)",
+    Description = "Premium boyamayı tetikler",
     Callback = function(state)
         isColorChanging = state
         if state then task.spawn(rgbLoop) end
@@ -2752,7 +2788,7 @@ task.spawn(function()
     _G.hubCarregando = false
 end)
 
-print("Brookhaven Car Master (Full Trigger) Başarıyla Yüklendi!")
+print("Brookhaven Car Master V3 (Full Özellik) Yüklendi!")
 
 -- 🧍‍♂️ VIP DARK KARAKTER MENÜSÜ 🖤✨
 local Tab = Window:MakeTab({"🧍‍♂️ Avatar 🖤", "rbxassetid://10734952036"})
